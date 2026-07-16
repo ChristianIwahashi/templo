@@ -19,13 +19,49 @@ enum Papel {
 }
 
 model Usuario {
-  idUsuario Int     @id @default(autoincrement())
-  nome      String  @db.VarChar(100)
-  email     String  @db.VarChar(100)
-  senha     String  @db.VarChar(255)
-  telefone  String  @db.VarChar(15)
-  ativo     Boolean @default(true)
-  papel     Papel   @default(ALUNO)
+  idUsuario Int      @id @default(autoincrement())
+  nome      String   @db.VarChar(100)
+  email     String   @db.VarChar(100)
+  senha     String   @db.VarChar(255)
+  telefone  String   @db.VarChar(15)
+  ativo     Boolean  @default(true)
+  papel     Papel
+
+  gestor    Gestor?
+  aluno     Aluno?
+  professor Professor?
 
   @@map("usuarios")
+}
+
+model Gestor {
+  idUsuario Int      @id
+  usuario   Usuario  @relation(fields: [idUsuario], references: [idUsuario], onDelete: Cascade)
+
+  alunosMatriculados       Aluno[]     @relation("GestorParaAluno")
+  professoresMatriculados  Professor[] @relation("GestorParaProfessor")
+
+  @@map("gestores")
+}
+
+model Aluno {
+  idUsuario      Int      @id
+  usuario        Usuario  @relation(fields: [idUsuario], references: [idUsuario], onDelete: Cascade)
+  dataNascimento DateTime @db.Date
+
+  idGestor       Int
+  gestor         Gestor @relation("GestorParaAluno", fields: [idGestor], references: [idUsuario])
+
+  @@map("alunos")
+}
+
+model Professor {
+  idUsuario Int      @id
+  usuario   Usuario  @relation(fields: [idUsuario], references: [idUsuario], onDelete: Cascade)
+
+  idGestor  Int
+  gestor    Gestor   @relation("GestorParaProfessor", fields: [idGestor], references: [idUsuario])
+
+
+  @@map("professores")
 }
