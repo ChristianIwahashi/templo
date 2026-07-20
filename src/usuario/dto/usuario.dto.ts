@@ -1,4 +1,5 @@
-import { IsBoolean, IsEmail, IsEnum, IsString, Length } from "class-validator";
+import { Type } from "class-transformer";
+import { IsBoolean, IsDateString, IsEmail, IsEnum, IsInt, IsString, Length, ValidateIf } from "class-validator";
 
 export type Papel = 'ALUNO' | 'GESTOR' | 'PROFESSOR';
 
@@ -25,4 +26,13 @@ export class UsuarioDto {
         message: 'O papel deve ser ALUNO, GESTOR ou PROFESSOR.',
     })
     papel!: Papel;
+
+    @ValidateIf(o => o.papel === 'ALUNO')
+    @IsDateString({}, { message: 'A data de nascimento deve ser uma data válida (YYYY-MM-DD).' })
+    dataNascimento?: string;
+
+    @ValidateIf(o => o.papel === 'ALUNO' || o.papel === 'PROFESSOR')
+    @IsInt({ message: 'O ID do gestor responsável é obrigatório para alunos e professores.' })
+    @Type(() => Number)
+    idGestor?: number;
 }
