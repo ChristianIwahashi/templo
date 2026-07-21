@@ -52,6 +52,9 @@ model Aluno {
   idGestor       Int
   gestor         Gestor @relation("GestorParaAluno", fields: [idGestor], references: [idUsuario])
 
+  idTurma        Int
+  turma          Turma  @relation("TurmaParaAluno", fields: [idTurma], references: [idTurma])
+
   @@map("alunos")
 }
 
@@ -62,6 +65,18 @@ model Professor {
   idGestor  Int
   gestor    Gestor   @relation("GestorParaProfessor", fields: [idGestor], references: [idUsuario])
 
+  turmas Turma[] @relation("ProfessorParaTurma")
 
   @@map("professores")
+}
+
+model Turma {
+  idTurma      Int      @id
+
+  idProfessor  Int
+  professor    Professor   @relation("ProfessorParaTurma", fields: [idProfessor], references: [idUsuario])
+
+  alunos Aluno[] @relation("TurmaParaAluno")
+
+  @@map("turmas")
 }
