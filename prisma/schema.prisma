@@ -52,8 +52,8 @@ model Aluno {
   idGestor       Int
   gestor         Gestor @relation("GestorParaAluno", fields: [idGestor], references: [idUsuario])
 
-  idTurma        Int
-  turma          Turma  @relation("TurmaParaAluno", fields: [idTurma], references: [idTurma])
+  idTurma        Int?
+  turma          Turma?  @relation("TurmaParaAluno", fields: [idTurma], references: [idTurma])
 
   @@map("alunos")
 }
@@ -71,7 +71,7 @@ model Professor {
 }
 
 model Turma {
-  idTurma      Int      @id
+  idTurma      Int      @id @default(autoincrement())
 
   idProfessor  Int
   professor    Professor   @relation("ProfessorParaTurma", fields: [idProfessor], references: [idUsuario])

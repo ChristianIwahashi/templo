@@ -66,7 +66,7 @@ export class TurmaService {
     async update(idTurma: number, data: TurmaDto) {
         await this.getById(idTurma);
 
-        const professorExists = await.prisma.professor.findUnique({
+        const professorExists = await this.prisma.professor.findUnique({
             where: { idUsuario: data.idProfessor }
         });
 
@@ -88,5 +88,27 @@ export class TurmaService {
         return await this.prisma.turma.delete({
             where: { idTurma }
         });
+    }
+
+    async matricularAluno(idTurma: number, idAluno: number) {
+        await this.getById(idTurma);
+
+        const alunoExists = await this.prisma.aluno.findUnique({
+            where: { idUsuario: idAluno },
+            include: { usuario: true }
+        });
+
+        if (!alunoExists) {
+            throw new NotFoundException('Aluno não encontrado. Verifique se o ID informado realmente pertence a um aluno.');
+        }
+
+        await this.prisma.aluno.update({
+            where: { idUsuario: idAluno },
+            data: { idTurma: idTurma }
+        });
+
+        return {
+            message: `Aluno(a) ${alunoExists.usuario.nome} matriculado(a) com sucesso na turma ${idTurma}!`,
+        };
     }
 }
