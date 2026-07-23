@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { UsuarioDto } from './dto/usuario.dto';
+import { CreateUsuarioDto } from './dto/create-usuario.dto';
+import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { PrismaService } from '../database/prisma.service';
 import * as bcrypt from 'bcrypt';
 
@@ -8,7 +9,7 @@ export class UsuarioService {
 
     constructor(private prisma: PrismaService) { }
 
-    async create(data: UsuarioDto) {
+    async create(data: CreateUsuarioDto) {
         const emailExist = await this.prisma.usuario.findFirst({
             where: { email: data.email }
         })
@@ -76,7 +77,7 @@ export class UsuarioService {
         });
     }
 
-    async update(idUsuario: number, data: UsuarioDto) {
+    async update(idUsuario: number, data: UpdateUsuarioDto) {
         const usuarioExists = await this.prisma.usuario.findUnique({
             where: {
                 idUsuario,
@@ -87,9 +88,6 @@ export class UsuarioService {
             throw new NotFoundException('Usuário não encontrado');
         }
 
-        const saltRounds = 12;
-        const senhaCriptografada = await bcrypt.hash(data.senha, saltRounds);
-
         const usuarioAtualizado = await this.prisma.usuario.update({
             where: {
                 idUsuario
@@ -97,7 +95,6 @@ export class UsuarioService {
             data: {
                 nome: data.nome,
                 email: data.email,
-                senha: senhaCriptografada,
                 telefone: data.telefone,
                 ativo: data.ativo,
             },

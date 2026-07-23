@@ -1,12 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
-import { TurmaDto } from './dto/turma.dto';
+import { CreateTurmaDto } from './dto/create-turma.dto';
+import { UpdateTurmaDto } from './dto/update-turma.dto';
 
 @Injectable()
 export class TurmaService {
     constructor(private prisma: PrismaService) {}
 
-    async create(data: TurmaDto) {
+    async create(data: CreateTurmaDto) {
         const professorExists = await this.prisma.professor.findUnique({
             where: { idUsuario: data.idProfessor }
         });
@@ -63,7 +64,7 @@ export class TurmaService {
         return turma;
     }
 
-    async update(idTurma: number, data: TurmaDto) {
+    async update(idTurma: number, data: UpdateTurmaDto) {
         await this.getById(idTurma);
 
         const professorExists = await this.prisma.professor.findUnique({

@@ -3,7 +3,7 @@ import { IsBoolean, IsDateString, IsEmail, IsEnum, IsInt, IsString, Length, Vali
 
 export type Papel = 'ALUNO' | 'GESTOR' | 'PROFESSOR';
 
-export class UsuarioDto {
+export class CreateUsuarioDto {
     @IsString({ message: 'O nome de ser uma string.' })
     @Length(3, 100, { message: 'O nome deve ter entre 3 e 100 caracteres.' })
     nome!: string;

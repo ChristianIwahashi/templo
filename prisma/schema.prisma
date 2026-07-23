@@ -38,8 +38,9 @@ model Gestor {
   idUsuario Int      @id
   usuario   Usuario  @relation(fields: [idUsuario], references: [idUsuario], onDelete: Cascade)
 
-  alunosMatriculados       Aluno[]     @relation("GestorParaAluno")
-  professoresMatriculados  Professor[] @relation("GestorParaProfessor")
+  alunosMatriculados       Aluno[]        @relation("GestorParaAluno")
+  professoresMatriculados  Professor[]    @relation("GestorParaProfessor")
+  mensalidades             Mensalidade[]  @relation("GestorParaMensalidade")
 
   @@map("gestores")
 }
@@ -54,6 +55,8 @@ model Aluno {
 
   idTurma        Int?
   turma          Turma?  @relation("TurmaParaAluno", fields: [idTurma], references: [idTurma])
+
+  mensalidades             Mensalidade[]  @relation("AlunoParaMensalidade")
 
   @@map("alunos")
 }
@@ -79,4 +82,20 @@ model Turma {
   alunos Aluno[] @relation("TurmaParaAluno")
 
   @@map("turmas")
+}
+
+model Mensalidade {
+  idMensalidade   Int      @id @default(autoincrement())
+  mes             String   @db.VarChar(20)
+  valor           Int
+  dataVencimento  DateTime @db.Date
+  statusPagamento String   @db.VarChar(50)
+
+  idGestor        Int
+  gestor          Gestor   @relation("GestorParaMensalidade", fields: [idGestor], references: [idUsuario])
+
+  idAluno        Int
+  aluno          Aluno   @relation("AlunoParaMensalidade", fields: [idAluno], references: [idUsuario])
+
+  @@map("mensalidades")
 }
