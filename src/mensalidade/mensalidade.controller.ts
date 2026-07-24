@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
 import { MensalidadeService } from './mensalidade.service';
 import { CreateMensalidadeDto } from './dto/create-mensalidade.dto';
 import { UpdateMensalidadeDto } from './dto/update-mensalidade.dto';
@@ -8,27 +8,27 @@ export class MensalidadeController {
   constructor(private readonly mensalidadeService: MensalidadeService) {}
 
   @Post()
-  create(@Body() createMensalidadeDto: CreateMensalidadeDto) {
-    return this.mensalidadeService.create(createMensalidadeDto);
+   async create(@Body() data: CreateMensalidadeDto) {
+    return this.mensalidadeService.create(data);
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.mensalidadeService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.mensalidadeService.findOne(+id);
+  @Get(":idMensalidade")
+  async getById(@Param("idMensalidade") idMensalidade: number, @Body() data: UpdateMensalidadeDto) {
+    return this.mensalidadeService.update(Number(idMensalidade), data);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMensalidadeDto: UpdateMensalidadeDto) {
-    return this.mensalidadeService.update(+id, updateMensalidadeDto);
+  @Put(":idMensalidade")
+  async update(@Param("idMensalidade") idMensalidade: number, @Body() data: UpdateMensalidadeDto) {
+    return this.mensalidadeService.update(Number(idMensalidade), data);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.mensalidadeService.remove(+id);
+  @Delete(":idMensalidade")
+  async delete(@Param(":idMensalidade") idMensalidade: number) {
+    return this.mensalidadeService.delete(Number(idMensalidade));
   }
 }

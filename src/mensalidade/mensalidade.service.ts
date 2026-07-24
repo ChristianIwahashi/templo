@@ -1,26 +1,73 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateMensalidadeDto } from './dto/create-mensalidade.dto';
 import { UpdateMensalidadeDto } from './dto/update-mensalidade.dto';
+import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
 export class MensalidadeService {
-  create(createMensalidadeDto: CreateMensalidadeDto) {
-    return 'This action adds a new mensalidade';
+  constructor(private prisma: PrismaService) {}
+
+  async create(data: CreateMensalidadeDto) {
+    const gestorExists = await this.prisma.gestor.findUnique({
+      where: { idUsuario: data.idGestor }
+    });
+    if (!gestorExists) throw new NotFoundException('Gestor não encontrado.');
+
+    const alunoExists = await this.prisma.aluno.findUnique({
+      where: { idUsuario: data.idAluno }
+    });
+    if (!alunoExists) throw new NotFoundException('Aluno não encontrado.');
+
+    return await this.prisma.mensalidade.create({
+      data: {
+        mes: data.mes,
+        valor: data.valor,
+        dataVencimento: new Date(data.dataVencimento),
+        statusPagamento: data.statusPagamento,
+        idGestor: data.idGestor,
+        idAluno: data.idAluno
+      }
+    });
   }
 
-  findAll() {
-    return `This action returns all mensalidade`;
+  async findAll() {
+    return await this.prisma.mensalidade.findMany({
+      include: {
+        aluno: { include: { usuario: { select: { nome: true } } } },
+        gestor: { include: { usuario: { select: { nome: true } } } }
+      }
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} mensalidade`;
+  async getById(idMensalidade: number) {
+    const mensalidade = await this.prisma.findUnique({
+      where: { idMensalidade },
+      include: {
+        aluno: { include: { usuario: { select: { nome: true, email: true } } } },
+        gestor: { include: { usuario: { select: { nome: true } } } }
+      }
+    });
+
+    if (!mensalidade) throw new NotFoundException('Mensalidade não encontrada');
+    return mensalidade;
   }
 
-  update(id: number, updateMensalidadeDto: UpdateMensalidadeDto) {
-    return `This action updates a #${id} mensalidade`;
+  async update(idMensalidade: number, data: UpdateMensalidadeDto) {
+    await this.getById(idMensalidade);
+    
+    return await this.prisma.mensalidade.update({
+      where: { idMensalidade },
+      data: {
+        mes: data.mes,
+        valor: data.valor,
+        dataVencimento: data.dataVencimento ? new Date(data.dataVencimento) : undefined,
+        statusPagamento: data.statusPagamento,
+      }
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} mensalidade`;
+  async delete(idMensalidade: number) {
+    await this.getById(idMensalidade);
+    return await this.prisma.mensalidade.delete({ where: { idMensalidade}});
   }
 }

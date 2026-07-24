@@ -57,6 +57,7 @@ model Aluno {
   turma          Turma?  @relation("TurmaParaAluno", fields: [idTurma], references: [idTurma])
 
   mensalidades             Mensalidade[]  @relation("AlunoParaMensalidade")
+  notas             Nota[]  @relation("AlunoParaNota")
 
   @@map("alunos")
 }
@@ -69,6 +70,7 @@ model Professor {
   gestor    Gestor   @relation("GestorParaProfessor", fields: [idGestor], references: [idUsuario])
 
   turmas Turma[] @relation("ProfessorParaTurma")
+  notas  Nota[]  @relation("ProfessorParaNota")
 
   @@map("professores")
 }
@@ -98,4 +100,19 @@ model Mensalidade {
   aluno          Aluno   @relation("AlunoParaMensalidade", fields: [idAluno], references: [idUsuario])
 
   @@map("mensalidades")
+}
+
+model Nota {
+  idNota        Int         @id @default(autoincrement())
+  valor         Float
+  tipo          String
+  data          DateTime    @db.Date
+
+  idProfessor   Int
+  professor     Professor   @relation("ProfessorParaNota", fields: [idProfessor], references: [idUsuario])
+
+  idAluno       Int
+  aluno         Aluno   @relation("AlunoParaNota", fields: [idAluno], references: [idUsuario])
+
+  @@map("notas")
 }

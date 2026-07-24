@@ -20,7 +20,7 @@ export class CreateMensalidadeDto {
     @IsIn(['PENDENTE', 'PAGO', 'ATRASADO', 'CANCELADO'], {
         message: 'O status deve ser: PENDENTE, PAGO, ATRASADO ou CANCELADO.'
     })
-    statusPagamento!: String;
+    statusPagamento!: string;
 
     @IsInt({ message: 'O ID do gestor deve ser um número inteiro. '})
     @IsNotEmpty()
