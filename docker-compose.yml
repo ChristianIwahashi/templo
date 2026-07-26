@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  # ----------------------------------------------------
+  # BANCO DE DADOS (MySQL)
+  # ----------------------------------------------------
+  db:
+    image: mysql:8.0
+    container_name: templo_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: templo
+    ports:
+      - '3307:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql # Salva os dados para não perder quando desligar o PC
+
+  # ----------------------------------------------------
+  # NOSSA APLICAÇÃO (NestJS)
+  # ----------------------------------------------------
+  app:
+    build: . # Constrói o nosso Dockerfile
+    container_name: templo_app
+    restart: always
+    ports:
+      - '3000:3000'
+    environment:
+      # O segredo aqui é o '@db:', pois o NestJS vai procurar o banco pelo nome do container!
+      DATABASE_URL: mysql://root:root@db:3306/templodb
+    depends_on:
+      - db
+    # Comando mágico: Roda as migrations antes de ligar a API
+    command: sh -c "npx prisma migrate deploy && npm run start:prod"
+
+# Declaração do volume do banco de dados
+volumes:
+  mysql_data:

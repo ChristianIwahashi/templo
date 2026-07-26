@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateMensalidadeDto } from './dto/create-mensalidade.dto';
 import { UpdateMensalidadeDto } from './dto/update-mensalidade.dto';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from '../database/prisma.service';
 
 @Injectable()
 export class MensalidadeService {

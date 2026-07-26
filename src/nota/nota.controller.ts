@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
 import { NotaService } from './nota.service';
 import { CreateNotaDto } from './dto/create-nota.dto';
 import { UpdateNotaDto } from './dto/update-nota.dto';
@@ -8,27 +8,27 @@ export class NotaController {
   constructor(private readonly notaService: NotaService) {}
 
   @Post()
-  create(@Body() createNotaDto: CreateNotaDto) {
-    return this.notaService.create(createNotaDto);
+  async create(@Body() data: CreateNotaDto) {
+    return this.notaService.create(data);
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.notaService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.notaService.findOne(+id);
+  @Get(":idNota")
+  async getById(@Param("idNota") idNota: number) {
+    return this.notaService.getById(Number(idNota));
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateNotaDto: UpdateNotaDto) {
-    return this.notaService.update(+id, updateNotaDto);
+  @Put(":idNota")
+  async update(@Param("idNota") idNota: number, @Body() data: UpdateNotaDto) {
+    return this.notaService.update(Number(idNota), data);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.notaService.remove(+id);
+  @Delete(":idNota")
+  async delete(@Param("idNota") idNota: number) {
+    return this.notaService.delete(Number(idNota));
   }
 }
