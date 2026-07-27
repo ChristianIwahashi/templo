@@ -17,12 +17,12 @@ export class CreateNotaDto {
     @IsNotEmpty()
     data!: string;
 
-    @IsInt()
+    @IsInt({ message: 'O ID do professor deve ser um número inteiro. '})
     @IsNotEmpty()
     @Type(() => Number)
     idProfessor!: number;
 
-    @IsInt()
+    @IsInt({ message: 'O ID do aluno deve ser um número inteiro. '})
     @IsNotEmpty()
     @Type(() => Number)
     idAluno!: number;

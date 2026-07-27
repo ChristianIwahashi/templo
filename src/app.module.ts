@@ -5,9 +5,10 @@ import { UsuarioModule } from './usuario/usuario.module';
 import { TurmaModule } from './turma/turma.module';
 import { MensalidadeModule } from './mensalidade/mensalidade.module';
 import { NotaModule } from './nota/nota.module';
+import { FrequenciaModule } from './frequencia/frequencia.module';
 
 @Module({
-  imports: [UsuarioModule, TurmaModule, MensalidadeModule, NotaModule],
+  imports: [UsuarioModule, TurmaModule, MensalidadeModule, NotaModule, FrequenciaModule],
   controllers: [AppController],
   providers: [AppService],
 })
