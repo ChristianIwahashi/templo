@@ -19,7 +19,7 @@ services:
   # ----------------------------------------------------
   api:
     build: . # Constrói o nosso Dockerfile
-    container_name: templo_app
+    container_name: templo_api
     restart: always
     ports:
       - '3000:3000'
