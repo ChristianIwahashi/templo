@@ -1,26 +1,71 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateFrequenciaDto } from './dto/create-frequencia.dto';
 import { UpdateFrequenciaDto } from './dto/update-frequencia.dto';
+import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
 export class FrequenciaService {
-  create(createFrequenciaDto: CreateFrequenciaDto) {
-    return 'This action adds a new frequencia';
+  constructor(private prisma: PrismaService) { }
+
+  async create(data: CreateFrequenciaDto) {
+    const professorExists = await this.prisma.professor.findUnique({
+      where: { idUsuario: data.idProfessor }
+    });
+    if (!professorExists) throw new NotFoundException('Professor não encontrado');
+
+    const alunoExists = await this.prisma.aluno.findUnique({
+      where: { idUsuario: data.idAluno }
+    });
+    if (!alunoExists) throw new NotFoundException('Aluno não encontrado');
+
+    return await this.prisma.frequencia.create({
+      data: {
+        dataAula: new Date(data.dataAula),
+        presenca: data.presenca,
+        idProfessor: data.idProfessor,
+        idAluno: data.idAluno
+      }
+    });
   }
 
-  findAll() {
-    return `This action returns all frequencia`;
+  async findAll() {
+    return await this.prisma.frequencia.findMany({
+      include: {
+        aluno: { include: { usuario: { select: { nome: true } } } },
+        professor: { include: { usuario: { select: { nome: true } } } }
+      },
+      orderBy: { dataAula: 'desc' }
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} frequencia`;
+  async getById(idFrequencia: number) {
+    const frequencia = await this.prisma.frequencia.findUnique({
+      where: { idFrequencia },
+      include: {
+        aluno: { include: { usuario: { select: { nome: true } } } },
+        professor: { include: { usuario: { select: { nome: true } } } }
+      }
+    });
+
+    if (!frequencia) throw new NotFoundException('Registro de frequência não encontrado');
+    return frequencia;
   }
 
-  update(id: number, updateFrequenciaDto: UpdateFrequenciaDto) {
-    return `This action updates a #${id} frequencia`;
+  async update(idFrequencia: number, data: UpdateFrequenciaDto) {
+    await this.getById(idFrequencia);
+
+    return await this.prisma.frequencia.update({
+      where: { idFrequencia },
+      data: {
+        dataAula: data.dataAula ? new Date(data.dataAula) : undefined,
+        presenca: data.presenca,
+      }
+    });
+
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} frequencia`;
+  async delete(idFrequencia: number) {
+    await this.getById(idFrequencia);
+    return await this.prisma.frequencia.delete({ where: { idFrequencia } });
   }
 }

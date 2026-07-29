@@ -8,27 +8,27 @@ export class FrequenciaController {
   constructor(private readonly frequenciaService: FrequenciaService) {}
 
   @Post()
-  create(@Body() createFrequenciaDto: CreateFrequenciaDto) {
-    return this.frequenciaService.create(createFrequenciaDto);
+  async create(@Body() data: CreateFrequenciaDto) {
+    return this.frequenciaService.create(data);
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.frequenciaService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.frequenciaService.findOne(+id);
+  @Get(":idFrequencia")
+  async getById(@Param("idFrequencia") idFrequencia: number) {
+    return this.frequenciaService.getById(Number(idFrequencia));
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFrequenciaDto: UpdateFrequenciaDto) {
-    return this.frequenciaService.update(+id, updateFrequenciaDto);
+  @Patch(":idFrequencia")
+  async update(@Param(":idFrequencia") idFrequencia: number, @Body() data: UpdateFrequenciaDto) {
+    return this.frequenciaService.update(Number(idFrequencia), data);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.frequenciaService.remove(+id);
+  @Delete(":idFrequencia")
+  remove(@Param(":idFrequencia") idFrequencia: number) {
+    return this.frequenciaService.delete(Number(idFrequencia));
   }
 }
