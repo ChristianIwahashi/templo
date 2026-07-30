@@ -73,6 +73,7 @@ model Professor {
   turmas      Turma[]       @relation("ProfessorParaTurma")
   notas       Nota[]        @relation("ProfessorParaNota")
   frequencias Frequencia[]  @relation("ProfessorParaFrequencia")
+  avisosAula  AvisoAula[]  @relation("ProfessorParaAvisoAula")
 
   @@map("professores")
 }
@@ -84,6 +85,7 @@ model Turma {
   professor    Professor   @relation("ProfessorParaTurma", fields: [idProfessor], references: [idUsuario])
 
   alunos Aluno[] @relation("TurmaParaAluno")
+  avisosAula  AvisoAula[]  @relation("TurmaParaAvisoAula")
 
   @@map("turmas")
 }
@@ -131,4 +133,19 @@ model Frequencia {
   aluno         Aluno   @relation("AlunoParaFrequencia", fields: [idAluno], references: [idUsuario])
 
   @@map("frequencias")
+}
+
+model AvisoAula {
+  idAvisoAula   Int       @id @default(autoincrement())
+  titulo        String    @db.VarChar(255)
+  dataPostagem  DateTime  @default(now())
+  imagemUrl     String?   @db.VarChar(255)
+
+  idProfessor   Int
+  professor     Professor @relation("ProfessorParaAvisoAula", fields: [idProfessor], references: [idUsuario])
+
+  idTurma       Int
+  turma         Turma @relation("TurmaParaAvisoAula", fields: [idTurma], references: [idTurma])
+
+  @@map("avisos_aulas")
 }

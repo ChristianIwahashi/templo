@@ -6,9 +6,10 @@ import { TurmaModule } from './turma/turma.module';
 import { MensalidadeModule } from './mensalidade/mensalidade.module';
 import { NotaModule } from './nota/nota.module';
 import { FrequenciaModule } from './frequencia/frequencia.module';
+import { AvisoAulaModule } from './aviso_aula/aviso_aula.module';
 
 @Module({
-  imports: [UsuarioModule, TurmaModule, MensalidadeModule, NotaModule, FrequenciaModule],
+  imports: [UsuarioModule, TurmaModule, MensalidadeModule, NotaModule, FrequenciaModule, AvisoAulaModule],
   controllers: [AppController],
   providers: [AppService],
 })
