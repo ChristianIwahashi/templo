@@ -9,7 +9,7 @@ export class CreateAvisoAulaDto {
 
     @IsString()
     @IsOptional()
-    imageUrl?: string;
+    imagemUrl?: string;
 
     @IsInt()
     @IsNotEmpty()

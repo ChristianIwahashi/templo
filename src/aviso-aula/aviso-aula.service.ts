@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateAvisoAulaDto } from './dto/create-aviso_aula.dto';
-import { UpdateAvisoAulaDto } from './dto/update-aviso_aula.dto';
+import { CreateAvisoAulaDto } from './dto/create-aviso-aula.dto';
+import { UpdateAvisoAulaDto } from './dto/update-aviso-aula.dto';
 import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
@@ -23,7 +23,7 @@ export class AvisoAulaService {
     return await this.prisma.avisoAula.create({
       data: {
         titulo: data.titulo,
-        imagemUrl: data.imageUrl,
+        imagemUrl: data.imagemUrl,
         idProfessor: data.idProfessor,
         idTurma: data.idTurma
       }
@@ -58,12 +58,12 @@ export class AvisoAulaService {
       where: { idAvisoAula },
       data: {
         titulo: data.titulo,
-        imagemUrl: data.imageUrl,
+        imagemUrl: data.imagemUrl,
       }
     });
   }
 
-  async remove(idAvisoAula: number) {
+  async delete(idAvisoAula: number) {
     await this.getById(idAvisoAula);
     return await this.prisma.avisoAula.delete({ where: { idAvisoAula } });
   }

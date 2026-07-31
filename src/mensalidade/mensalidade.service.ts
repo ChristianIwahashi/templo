@@ -40,7 +40,7 @@ export class MensalidadeService {
   }
 
   async getById(idMensalidade: number) {
-    const mensalidade = await this.prisma.findUnique({
+    const mensalidade = await this.prisma.mensalidade.findUnique({
       where: { idMensalidade },
       include: {
         aluno: { include: { usuario: { select: { nome: true, email: true } } } },

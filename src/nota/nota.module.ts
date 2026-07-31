@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { NotaService } from './nota.service';
 import { NotaController } from './nota.controller';
-import { PrismaService } from '../database/prisma.service';
+import { PrismaModule } from 'src/database/prisma.module';
 
 @Module({
-  providers: [NotaService, PrismaService],
-  controllers: [NotaController]
+  imports: [PrismaModule],
+    providers: [NotaService],
+    controllers: [NotaController],
 })
 export class NotaModule {}
