@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
 import { MaterialDidaticoService } from './material-didatico.service';
 import { CreateMaterialDidaticoDto } from './dto/create-material-didatico.dto';
 import { UpdateMaterialDidaticoDto } from './dto/update-material-didatico.dto';
@@ -8,27 +8,32 @@ export class MaterialDidaticoController {
   constructor(private readonly materialDidaticoService: MaterialDidaticoService) {}
 
   @Post()
-  create(@Body() createMaterialDidaticoDto: CreateMaterialDidaticoDto) {
-    return this.materialDidaticoService.create(createMaterialDidaticoDto);
+  async create(@Body() data: CreateMaterialDidaticoDto) {
+    return this.materialDidaticoService.create(data);
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.materialDidaticoService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.materialDidaticoService.findOne(+id);
+  @Get(":idMaterial")
+  async getById(@Param("idMaterial") idMaterial: number) {
+    return this.materialDidaticoService.getById(Number(idMaterial));
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMaterialDidaticoDto: UpdateMaterialDidaticoDto) {
-    return this.materialDidaticoService.update(+id, updateMaterialDidaticoDto);
+  @Get("meus-materiais/:idAluno")
+  async findForAluno(@Param("idAluno") idAluno: number) {
+    return this.materialDidaticoService.findForAluno(Number(idAluno));
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.materialDidaticoService.remove(+id);
+  @Put(":idMaterial")
+  async update(@Param("idMaterial") idMaterial: number, @Body() data: UpdateMaterialDidaticoDto) {
+    return this.materialDidaticoService.update(Number(idMaterial), data);
+  }
+
+  @Delete(":idMaterial")
+  async delete(@Param("idMaterial") idMaterial: number) {
+    return this.materialDidaticoService.delete(Number(idMaterial));
   }
 }

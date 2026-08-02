@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
 import { FrequenciaService } from './frequencia.service';
 import { CreateFrequenciaDto } from './dto/create-frequencia.dto';
 import { UpdateFrequenciaDto } from './dto/update-frequencia.dto';
@@ -22,13 +22,13 @@ export class FrequenciaController {
     return this.frequenciaService.getById(Number(idFrequencia));
   }
 
-  @Patch(":idFrequencia")
-  async update(@Param(":idFrequencia") idFrequencia: number, @Body() data: UpdateFrequenciaDto) {
+  @Put(":idFrequencia")
+  async update(@Param("idFrequencia") idFrequencia: number, @Body() data: UpdateFrequenciaDto) {
     return this.frequenciaService.update(Number(idFrequencia), data);
   }
 
   @Delete(":idFrequencia")
-  remove(@Param(":idFrequencia") idFrequencia: number) {
+  remove(@Param("idFrequencia") idFrequencia: number) {
     return this.frequenciaService.delete(Number(idFrequencia));
   }
 }

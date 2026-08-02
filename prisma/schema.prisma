@@ -38,9 +38,11 @@ model Gestor {
   idUsuario Int      @id
   usuario   Usuario  @relation(fields: [idUsuario], references: [idUsuario], onDelete: Cascade)
 
-  alunosMatriculados       Aluno[]        @relation("GestorParaAluno")
-  professoresMatriculados  Professor[]    @relation("GestorParaProfessor")
-  mensalidades             Mensalidade[]  @relation("GestorParaMensalidade")
+  alunosMatriculados       Aluno[]                @relation("GestorParaAluno")
+  professoresMatriculados  Professor[]            @relation("GestorParaProfessor")
+  mensalidades             Mensalidade[]          @relation("GestorParaMensalidade")
+  conteudosInformativos    ConteudoInformativo[]  @relation("GestorParaConteudo")
+  avisosEventos            AvisoEvento[]          @relation("GestorParaAvisoEvento")
 
   @@map("gestores")
 }
@@ -192,4 +194,31 @@ model AlunoMaterialDidatico {
 
   @@id([idAluno, idMaterial])
   @@map("aluno_material_didatico")
+}
+
+model ConteudoInformativo {
+  idConteudo  Int       @id @default(autoincrement())
+  categoria   String    @db.VarChar(50)
+  titulo      String    @db.VarChar(255)
+  texto       String    @db.Text
+  imagemUrl   String    @db.VarChar(255)
+
+  idGestor   Int
+  gestor     Gestor @relation("GestorParaConteudo", fields: [idGestor], references: [idUsuario])
+
+  @@map("conteudos_informativos")
+}
+
+model AvisoEvento {
+  idAvisoEvento Int       @id @default(autoincrement())
+  titulo        String    @db.VarChar(255)
+  descricao     String    @db.Text
+  dataPostagem  DateTime  @default(now())
+  imagemUrl     String?   @db.VarChar(255)
+  ativo         Boolean   @default(true)
+
+  idGestor   Int
+  gestor     Gestor @relation("GestorParaAvisoEvento", fields: [idGestor], references: [idUsuario])
+
+  @@map("avisos_eventos")
 }

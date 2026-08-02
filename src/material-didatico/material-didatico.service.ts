@@ -13,13 +13,8 @@ export class MaterialDidaticoService {
     });
     if (!professorExists) throw new NotFoundException('Professor não encontrado.');
 
-    const turmaExists = await this.prisma.turma.findUnique({
-      where: { idTurma: data.idTurma }
-    });
-    if (!turmaExists) throw new NotFoundException('Turma não encontrada.');
-
-    if (turmaExists.idProfessor !== data.idProfessor) {
-      throw new BadRequestException('Este professor não é o responsável por esta turma.');
+    if (!data.idTurma && (!data.idAluno || data.idAluno.length === 0)) {
+      throw new BadRequestException('O material deve ser vinculado a uma turma ou a pelo menos um aluno.');
     }
 
     return await this.prisma.materialDidatico.create({
@@ -28,26 +23,73 @@ export class MaterialDidaticoService {
         descricao: data.descricao,
         arquivoUrl: data.arquivoUrl,
         idProfessor: data.idProfessor,
-        turma: {
+
+        turmasVinculadas: data.idTurma ? {
           create: { idTurma: data.idTurma }
-        }
+        } : undefined,
+        
+        alunosVinculados: data.idAluno ? {
+          create: data.idAluno.map(id => ({ idAluno: id }))
+        } : undefined
       }
     });
   }
 
-  findAll() {
-    return `This action returns all materialDidatico`;
+  async findAll() {
+    return await this.prisma.materialDidatico.findMany({
+      include: {
+        professor: { include: { usuario: { select: { nome: true } } } },
+        turmasVinculadas: { include: { turma: true } }
+      }
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} materialDidatico`;
+  async getById(idMaterial: number) {
+    const material = await this.prisma.materialDidatico.findUnique({
+      where: { idMaterial },
+      include: {
+        professor: { include: { usuario: { select: { nome: true} } } },
+        turmasVinculadas: { include: { turma: true } },
+        alunosVinculados: { include: { aluno: { include: { usuario: { select: { nome: true } } } } } }
+      }
+    });
+
+    if (!material) throw new NotFoundException('Material não encontrado');
+    return material;
   }
 
-  update(id: number, updateMaterialDidaticoDto: UpdateMaterialDidaticoDto) {
-    return `This action updates a #${id} materialDidatico`;
+  async findForAluno(idAluno: number) {
+    const aluno = await this.prisma.aluno.findUnique({
+      where: { idUsuario: idAluno },
+      select: { idTurma: true }
+    });
+
+    return await this.prisma.materialDidatico.findMany({
+      where: {
+        OR: [
+          { turmasVinculadas: { some: { idTurma: aluno?.idTurma || -1 } } },
+          { alunosVinculados: { some: { idAluno: idAluno } } }
+        ]
+      },
+      include: { professor: { include: { usuario: { select: { nome: true } } } } }
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} materialDidatico`;
+  async update(idMaterial: number, data: UpdateMaterialDidaticoDto) {
+    await this.getById(idMaterial);
+    
+    return await this.prisma.materialDidatico.update({
+      where: { idMaterial },
+      data: {
+        titulo: data.titulo,
+        descricao: data.descricao,
+        arquivoUrl: data.arquivoUrl,
+      }
+    });
+  }
+
+  async delete(idMaterial: number) {
+    await this.getById(idMaterial);
+    return await this.prisma.materialDidatico.delete({ where: { idMaterial}});
   }
 }

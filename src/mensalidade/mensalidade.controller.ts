@@ -28,7 +28,7 @@ export class MensalidadeController {
   }
 
   @Delete(":idMensalidade")
-  async delete(@Param(":idMensalidade") idMensalidade: number) {
+  async delete(@Param("idMensalidade") idMensalidade: number) {
     return this.mensalidadeService.delete(Number(idMensalidade));
   }
 }
