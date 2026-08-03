@@ -13,7 +13,15 @@ export class ConteudoInformativoService {
     });
     if (!gestorExists) throw new NotFoundException('Gestor não encontrado.');
 
-    return await this.prisma.conteudoInformativo.create({ data });
+    return await this.prisma.conteudoInformativo.create({
+      data: {
+        categoria: data.categoria,
+        titulo: data.titulo,
+        texto: data.texto,
+        imagemUrl: data.imagemUrl,
+        idGestor: data.idGestor,
+      },
+    });
   }
 
   async findAll(categoria?: string) {
@@ -33,15 +41,22 @@ export class ConteudoInformativoService {
       }
     });
 
-    if(!conteudo) throw new NotFoundException('Conteúdo informativo não encontrado.');
+    if (!conteudo) throw new NotFoundException('Conteúdo informativo não encontrado.');
     return conteudo;
   }
 
   async update(idConteudo: number, data: UpdateConteudoInformativoDto) {
-      await this.getById(idConteudo);
-      return await this.prisma.conteudoInformativo.update({
-        where: { idConteudo }, data });
-    }
+    await this.getById(idConteudo);
+    return await this.prisma.conteudoInformativo.update({
+      where: { idConteudo },
+      data: {
+        categoria: data.categoria,
+        titulo: data.titulo,
+        texto: data.texto,
+        imagemUrl: data.imagemUrl,
+      },
+    });
+  }
 
   async delete(idConteudo: number) {
     await this.getById(idConteudo);

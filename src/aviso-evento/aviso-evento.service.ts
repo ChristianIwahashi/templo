@@ -13,7 +13,15 @@ export class AvisoEventoService {
     });
     if (!gestorExists) throw new NotFoundException('Gestor não encontrado.');
 
-    return await this.prisma.avisoEvento.create({ data });
+    return await this.prisma.avisoEvento.create({ 
+      data: {
+        titulo: data.titulo,
+        descricao: data.descricao,
+        imagemUrl: data.imagemUrl,
+        ativo: data.ativo ?? true,
+        idGestor: data.idGestor,
+      },
+    });
   }
 
   async findAll(apenasAtivos: boolean = false) {
@@ -38,7 +46,14 @@ export class AvisoEventoService {
   async update(idAvisoEvento: number, data: UpdateAvisoEventoDto) {
     await this.getById(idAvisoEvento);
     return await this.prisma.avisoEvento.update({
-      where: { idAvisoEvento }, data });
+      where: { idAvisoEvento }, 
+      data: {
+        titulo: data.titulo,
+        descricao: data.descricao,
+        imagemUrl: data.imagemUrl,
+        ativo: data.ativo,
+      }
+    });
   }
 
   async delete(idAvisoEvento: number) {
