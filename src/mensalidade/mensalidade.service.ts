@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateMensalidadeDto } from './dto/create-mensalidade.dto';
 import { UpdateMensalidadeDto } from './dto/update-mensalidade.dto';
 import { PrismaService } from '../database/prisma.service';
@@ -30,8 +30,12 @@ export class MensalidadeService {
     });
   }
 
-  async findAll() {
+  async findAll(usuarioLogado?: any) {
+    const filtro = (usuarioLogado && usuarioLogado.papel === 'ALUNO') 
+    ? { idAluno: usuarioLogado.idUsuario } : {};
+
     return await this.prisma.mensalidade.findMany({
+      where: filtro,
       include: {
         aluno: { include: { usuario: { select: { nome: true } } } },
         gestor: { include: { usuario: { select: { nome: true } } } }
@@ -39,7 +43,7 @@ export class MensalidadeService {
     });
   }
 
-  async getById(idMensalidade: number) {
+  async getById(idMensalidade: number, usuarioLogado?: any) {
     const mensalidade = await this.prisma.mensalidade.findUnique({
       where: { idMensalidade },
       include: {
@@ -49,6 +53,11 @@ export class MensalidadeService {
     });
 
     if (!mensalidade) throw new NotFoundException('Mensalidade não encontrada');
+
+    if (usuarioLogado && usuarioLogado.papel === 'ALUNO' && mensalidade.idAluno !== usuarioLogado.idUsuario) {
+      throw new ForbiddenException('Você não tem permissão para ver esta mensalidade.')
+    }
+
     return mensalidade;
   }
 
