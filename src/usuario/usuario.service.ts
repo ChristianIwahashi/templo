@@ -1,8 +1,9 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { PrismaService } from '../database/prisma.service';
 import * as bcrypt from 'bcrypt';
+import { UpdatePerfilDto } from './dto/update-perfil.dto';
 
 @Injectable()
 export class UsuarioService {
@@ -125,7 +126,11 @@ export class UsuarioService {
         return usuarioSemSenha;
     }
 
-    async getById(idUsuario: number) {
+    async getById(idUsuario: number, usuarioLogado?: any) {
+        if (usuarioLogado && usuarioLogado.papel !== 'GESTOR' && usuarioLogado.idUsuario !== idUsuario) {
+            throw new ForbiddenException('Acesso negado: Você só pode visualizar o seu próprio perfil.');
+        }
+
         const usuarioExists = await this.prisma.usuario.findUnique({
             where: {
                 idUsuario
@@ -142,6 +147,33 @@ export class UsuarioService {
         }
 
          const { senha, ...usuarioSemSenha } = usuarioExists;
+        return usuarioSemSenha;
+    }
+
+    async updatePerfil(idUsuario: number, data: UpdatePerfilDto) {
+        const usuarioExists = await this.prisma.usuario.findUnique({
+            where: { idUsuario }
+        });
+
+        if (!usuarioExists) throw new NotFoundException('Usuário não encontrado');
+
+        const dadosParaAtualizar: any = {};
+
+        if (data.telefone) {
+            dadosParaAtualizar.telefone = data.telefone;
+        }
+
+        if (data.senha) {
+            const saltRounds = 12;
+            dadosParaAtualizar.senha = await bcrypt.hash(data.senha, saltRounds);
+        }
+
+        const usuarioAtualizado = await this.prisma.usuario.update({
+            where: { idUsuario },
+            data: dadosParaAtualizar
+        });
+
+        const { senha, ...usuarioSemSenha } = usuarioAtualizado as any;
         return usuarioSemSenha;
     }
 } 
