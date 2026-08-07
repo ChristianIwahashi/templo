@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateNotaDto } from './dto/create-nota.dto';
 import { UpdateNotaDto } from './dto/update-nota.dto';
 import { PrismaService } from '../database/prisma.service';
@@ -7,7 +7,11 @@ import { PrismaService } from '../database/prisma.service';
 export class NotaService {
   constructor(private prisma: PrismaService) {}
 
-  async create(data: CreateNotaDto) {
+  async create(data: CreateNotaDto, usuarioLogado?: any) {
+    if (usuarioLogado && usuarioLogado.papel === 'PROFESSOR' && data.idProfessor !== usuarioLogado.idUsuario) {
+      throw new ForbiddenException('Você só pode lançar notas no seu próprio nome.');
+    }
+
     const professorExists = await this.prisma.professor.findUnique({
       where: { idUsuario: data.idProfessor }
     });
@@ -29,16 +33,28 @@ export class NotaService {
     });
   }
 
-  async findAll() {
+  async findAll(usuarioLogado?: any) {
+    let filtro = {};
+
+    if (usuarioLogado) {
+      if (usuarioLogado.papel === 'ALUNO') {
+        filtro = { idALuno: usuarioLogado.idUsuario };
+      } else if (usuarioLogado.papel === 'PROFESSOR') {
+        filtro = { idProfessor: usuarioLogado.idUsuario};
+      }
+    }
+
     return await this.prisma.nota.findMany({
+      where: filtro,
       include: {
         aluno: { include: { usuario: { select: { nome: true } } } },
         professor: { include: { usuario: { select: { nome: true } } } }
-      }
+      },
+      orderBy: { data: 'desc' }
     });
   }
 
-  async getById(idNota: number) {
+  async getById(idNota: number, usuarioLogado?: any) {
     const nota = await this.prisma.nota.findUnique({
       where: { idNota },
       include: {
@@ -48,11 +64,22 @@ export class NotaService {
     });
 
     if (!nota) throw new NotFoundException('Nota não encontrada');
+
+    if (usuarioLogado) {
+            if (usuarioLogado.papel === 'PROFESSOR' && nota.idProfessor !== usuarioLogado.idUsuario) {
+                throw new ForbiddenException('Acesso negado: Esta nota foi lançada por outro professor.');
+            }
+
+            if (usuarioLogado.papel === 'ALUNO' && nota.idALuno !== usuarioLogado.idUsuario) {
+                throw new ForbiddenException('Acesso negado: Esta nota pertence a outro aluno.');
+            }
+        }
+        
     return nota;
   }
 
-  async update(idNota: number, data: UpdateNotaDto) {
-    await this.getById(idNota);
+  async update(idNota: number, data: UpdateNotaDto, usuarioLogado?: any) {
+    await this.getById(idNota, usuarioLogado);
 
     return await this.prisma.nota.update({
       where: { idNota },
@@ -64,8 +91,8 @@ export class NotaService {
     });
   }
 
-  async delete(idNota: number) {
-    await this.getById(idNota);
+  async delete(idNota: number, usuarioLogado?: any) {
+    await this.getById(idNota, usuarioLogado);
     return await this.prisma.nota.delete({ where: { idNota} });
   }
 }

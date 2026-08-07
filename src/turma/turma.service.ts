@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 import { CreateTurmaDto } from './dto/create-turma.dto';
 import { UpdateTurmaDto } from './dto/update-turma.dto';
@@ -23,8 +23,19 @@ export class TurmaService {
         });
     }
 
-    async findAll() {
+    async findAll(usuarioLogado?: any) {
+        let filtro = {}
+
+        if (usuarioLogado) {
+            if (usuarioLogado.papel === 'PROFESSOR') {
+                filtro = { idProfessor: usuarioLogado.idUsuario };
+            } else if (usuarioLogado.papel === 'ALUNO') {
+                filtro = { alunos: { some: { idUsuario: usuarioLogado.idUsuario } } };
+            }
+        }
+
         return await this.prisma.turma.findMany({
+            where: filtro,
             include: {
                 professor: {
                     include: {
@@ -44,7 +55,7 @@ export class TurmaService {
         });
     }
 
-    async getById(idTurma: number) {
+    async getById(idTurma: number, usuarioLogado?: any) {
         const turma = await this.prisma.turma.findUnique({
             where: { idTurma },
             include: {
@@ -59,6 +70,20 @@ export class TurmaService {
 
         if (!turma) {
             throw new NotFoundException('Turma não encontrada');
+        }
+
+        if (usuarioLogado) {
+            if (usuarioLogado.papel === 'PROFESSOR' && turma.idProfessor !== usuarioLogado.idUsuario) {
+                throw new ForbiddenException('Acesso negado: Você não é o professor responsável por esta turma.');
+            }
+
+            if (usuarioLogado.papel === 'ALUNO') {
+                const pertenceTurma = turma.alunos.some(aluno => aluno.idUsuario === usuarioLogado.idUsuario);
+
+                if (!pertenceTurma) {
+                    throw new ForbiddenException('Acesso negado: Você não está matriculado nesta turma.');
+                }
+            }
         }
 
         return turma;
