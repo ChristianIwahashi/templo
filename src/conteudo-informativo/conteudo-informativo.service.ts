@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateConteudoInformativoDto } from './dto/create-conteudo-informativo.dto';
 import { UpdateConteudoInformativoDto } from './dto/update-conteudo-informativo.dto';
 import { PrismaService } from 'src/database/prisma.service';
@@ -7,7 +7,12 @@ import { PrismaService } from 'src/database/prisma.service';
 export class ConteudoInformativoService {
   constructor(private prisma: PrismaService) { }
 
-  async create(data: CreateConteudoInformativoDto) {
+  async create(data: CreateConteudoInformativoDto,
+    usuarioLogado?: any) {
+    if (usuarioLogado && data.idGestor !== usuarioLogado.idUsuario) {
+      throw new ForbiddenException('Você só pode criar conteúdos no seu próprio nome.');
+    }
+
     const gestorExists = await this.prisma.gestor.findUnique({
       where: { idUsuario: data.idGestor }
     });
@@ -29,7 +34,8 @@ export class ConteudoInformativoService {
       where: categoria ? { categoria } : {},
       include: {
         gestor: { include: { usuario: { select: { nome: true } } } }
-      }
+      },
+      orderBy: { idConteudo: 'desc' }
     });
   }
 
@@ -45,8 +51,10 @@ export class ConteudoInformativoService {
     return conteudo;
   }
 
-  async update(idConteudo: number, data: UpdateConteudoInformativoDto) {
+  async update(idConteudo: number,
+    data: UpdateConteudoInformativoDto, usuarioLogado?: any) {
     await this.getById(idConteudo);
+
     return await this.prisma.conteudoInformativo.update({
       where: { idConteudo },
       data: {
@@ -58,7 +66,7 @@ export class ConteudoInformativoService {
     });
   }
 
-  async delete(idConteudo: number) {
+  async delete(idConteudo: number, usuarioLogado?: any) {
     await this.getById(idConteudo);
     return await this.prisma.conteudoInformativo.delete({ where: { idConteudo } });
   }

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAvisoEventoDto } from './dto/create-aviso-evento.dto';
 import { UpdateAvisoEventoDto } from './dto/update-aviso-evento.dto';
 import { PrismaService } from 'src/database/prisma.service';
@@ -7,7 +7,11 @@ import { PrismaService } from 'src/database/prisma.service';
 export class AvisoEventoService {
   constructor(private prisma: PrismaService) { }
 
-  async create(data: CreateAvisoEventoDto) {
+  async create(data: CreateAvisoEventoDto, usuarioLogado?: any) {
+    if (usuarioLogado && data.idGestor !== usuarioLogado.idUsuario) {
+      throw new ForbiddenException('Você só pode criar eventos no seu próprio nome.')
+    }
+
     const gestorExists = await this.prisma.gestor.findUnique({
       where: { idUsuario: data.idGestor }
     });
@@ -43,8 +47,10 @@ export class AvisoEventoService {
     return aviso;
   }
 
-  async update(idAvisoEvento: number, data: UpdateAvisoEventoDto) {
+  async update(idAvisoEvento: number,
+    data: UpdateAvisoEventoDto, usuarioLogado?: any) {
     await this.getById(idAvisoEvento);
+
     return await this.prisma.avisoEvento.update({
       where: { idAvisoEvento }, 
       data: {
@@ -56,7 +62,7 @@ export class AvisoEventoService {
     });
   }
 
-  async delete(idAvisoEvento: number) {
+  async delete(idAvisoEvento: number, usuarioLogado?: any) {
     await this.getById(idAvisoEvento);
     return await this.prisma.avisoEvento.delete({ where: { idAvisoEvento } });
   }

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAvisoAulaDto } from './dto/create-aviso-aula.dto';
 import { UpdateAvisoAulaDto } from './dto/update-aviso-aula.dto';
 import { PrismaService } from 'src/database/prisma.service';
@@ -7,7 +7,11 @@ import { PrismaService } from 'src/database/prisma.service';
 export class AvisoAulaService {
   constructor(private prisma: PrismaService) {}
 
-  async create(data: CreateAvisoAulaDto) {
+  async create(data: CreateAvisoAulaDto, usuarioLogado?: any) {
+    if (usuarioLogado && usuarioLogado.papel === 'PROFESSOR' && data.idProfessor !== usuarioLogado.idUsuario) {
+      throw new ForbiddenException('Você só pode postar avisos no seu próprio nome.');
+    }
+
     const professorExists = await this.prisma.professor.findUnique({
       where: { idUsuario: data.idProfessor }
     });
@@ -16,8 +20,10 @@ export class AvisoAulaService {
     const turmaExists = await this.prisma.turma.findUnique({
       where: { idTurma: data.idTurma }
     });
+    if (!turmaExists) throw new NotFoundException('Turma não encontrada.');
+
     if (turmaExists.idProfessor !== data.idProfessor) {
-      throw new BadRequestException('Este professor não é o responsável por esta turma.');
+      throw new BadRequestException('Acesso negado: Você não é o professor responsável por esta turma.');
     }
 
     return await this.prisma.avisoAula.create({
@@ -30,8 +36,25 @@ export class AvisoAulaService {
     });
   }
 
-  async findAll() {
+  async findAll(usuarioLogado?: any) {
+    let filtro: any = {};
+
+    if (usuarioLogado) {
+      if (usuarioLogado.papel === 'PROFESSOR') {
+        filtro = { idProfessor: usuarioLogado.idUsuario };
+      } else if (usuarioLogado.papel === 'ALUNO') {
+        const aluno = await this.prisma.aluno.findUnique({ where: { idUsuario: usuarioLogado.idUsuario } });
+
+        if (!aluno || !aluno.idTurma) {
+          return [];
+        }
+
+        filtro = { idTurma: aluno.idTurma};
+      }
+    }
+
     return await this.prisma.avisoAula.findMany({
+      where: filtro,
       include: {
         professor: { include: { usuario: { select: { nome: true } } } },
         turma: true
@@ -40,7 +63,7 @@ export class AvisoAulaService {
     });
   }
 
-  async getById(idAvisoAula: number) {
+  async getById(idAvisoAula: number, usuarioLogado?: any) {
     const aviso = await this.prisma.avisoAula.findUnique({
       where: { idAvisoAula },
       include: {
@@ -50,10 +73,32 @@ export class AvisoAulaService {
     });
 
     if(!aviso) throw new NotFoundException('Aviso não encontrado.');
+
+    if (usuarioLogado) {
+      if (usuarioLogado.papel === 'PROFESSOR' && aviso.idProfessor !== usuarioLogado.idUsuario) {
+        throw new ForbiddenException('Acesso negado: Este aviso foi postado por outro professor.');
+      }
+
+      if (usuarioLogado.papel === 'ALUNO') {
+        const aluno = await this.prisma.aluno.findUnique({ where: { idUsuario: usuarioLogado.idUsuario } });
+
+        if (usuarioLogado.papel === 'ALUNO') {
+          const aluno = await this.prisma.findUnique({ where: { idUsuario: usuarioLogado.idUsuario } });
+
+          if (aviso.idTurma !== aluno?.idTurma) {
+            throw new ForbiddenException('Acesso negado: Este aviso pertence a outra turma.');
+          }
+        }
+      }
+    }
+
     return aviso;
   }
 
-  async update(idAvisoAula: number, data: UpdateAvisoAulaDto) {
+  async update(idAvisoAula: number,
+    data: UpdateAvisoAulaDto, usuarioLogado?: any) {
+    await this.getById(idAvisoAula, usuarioLogado);
+      
     return await this.prisma.avisoAula.update({
       where: { idAvisoAula },
       data: {
@@ -63,8 +108,8 @@ export class AvisoAulaService {
     });
   }
 
-  async delete(idAvisoAula: number) {
-    await this.getById(idAvisoAula);
+  async delete(idAvisoAula: number, usuarioLogado?: any) {
+    await this.getById(idAvisoAula, usuarioLogado);
     return await this.prisma.avisoAula.delete({ where: { idAvisoAula } });
   }
 }
