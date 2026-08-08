@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateMaterialDidaticoDto } from './dto/create-material-didatico.dto';
 import { UpdateMaterialDidaticoDto } from './dto/update-material-didatico.dto';
 import { PrismaService } from 'src/database/prisma.service';
@@ -7,7 +7,12 @@ import { PrismaService } from 'src/database/prisma.service';
 export class MaterialDidaticoService {
   constructor(private prisma: PrismaService) { }
 
-  async create(data: CreateMaterialDidaticoDto) {
+  async create(data: CreateMaterialDidaticoDto,
+    usuarioLogado?: any) {
+    if (usuarioLogado && usuarioLogado.papel === 'PROFESSOR' && data.idProfessor !== usuarioLogado.idUsuario) {
+      throw new ForbiddenException('Você só pode enviar materiais no seu próprio nome.');
+    }
+
     const professorExists = await this.prisma.professor.findUnique({
       where: { idUsuario: data.idProfessor }
     });
@@ -27,7 +32,7 @@ export class MaterialDidaticoService {
         turmasVinculadas: data.idTurma ? {
           create: { idTurma: data.idTurma }
         } : undefined,
-        
+
         alunosVinculados: data.idAluno ? {
           create: data.idAluno.map(id => ({ idAluno: id }))
         } : undefined
@@ -35,26 +40,53 @@ export class MaterialDidaticoService {
     });
   }
 
-  async findAll() {
+  async findAll(usuarioLogado?: any) {
+    let filtro: any = {};
+
+    if (usuarioLogado && usuarioLogado.papel === 'PROFESSOR') {
+      filtro = { idProfessor: usuarioLogado.idUsuario };
+    }
+
     return await this.prisma.materialDidatico.findMany({
+      where: filtro,
       include: {
         professor: { include: { usuario: { select: { nome: true } } } },
         turmasVinculadas: { include: { turma: true } }
-      }
+      },
+      orderBy: { idMaterial: 'desc' }
     });
   }
 
-  async getById(idMaterial: number) {
+  async getById(idMaterial: number, usuarioLogado?: any) {
     const material = await this.prisma.materialDidatico.findUnique({
       where: { idMaterial },
       include: {
-        professor: { include: { usuario: { select: { nome: true} } } },
+        professor: { include: { usuario: { select: { nome: true } } } },
         turmasVinculadas: { include: { turma: true } },
         alunosVinculados: { include: { aluno: { include: { usuario: { select: { nome: true } } } } } }
       }
     });
 
     if (!material) throw new NotFoundException('Material não encontrado');
+
+    if (usuarioLogado) {
+      if (usuarioLogado.papel === 'PROFESSOR' && material.idProfessor !== usuarioLogado.idUsuario) {
+        throw new ForbiddenException('Acesso negado: Este material pertence a outro professor.')
+      }
+
+      if (usuarioLogado.papel === 'ALUNO') {
+        const aluno = await this.prisma.aluno.findUnique({ where: { idUsuario: usuarioLogado.idUsuario } });
+
+        const materialDaTurma = material.turmasVinculadas.some(t => t.idTurma === aluno?.idTurma);
+
+        const materialExclusivo = material.alunosVinculados.some(a => a.idAluno === usuarioLogado.idUsuario);
+
+        if (!materialDaTurma && !materialExclusivo) {
+          throw new ForbiddenException('Acesso negado: Este material não foi disponibilizado para você.');
+        }
+      }
+    }
+
     return material;
   }
 
@@ -71,13 +103,14 @@ export class MaterialDidaticoService {
           { alunosVinculados: { some: { idAluno: idAluno } } }
         ]
       },
-      include: { professor: { include: { usuario: { select: { nome: true } } } } }
+      include: { professor: { include: { usuario: { select: { nome: true } } } } },
+      orderBy: { idMaterial: 'desc' }
     });
   }
 
-  async update(idMaterial: number, data: UpdateMaterialDidaticoDto) {
-    await this.getById(idMaterial);
-    
+  async update(idMaterial: number, data: UpdateMaterialDidaticoDto, usuarioLogado?: any) {
+    await this.getById(idMaterial, usuarioLogado);
+
     return await this.prisma.materialDidatico.update({
       where: { idMaterial },
       data: {
@@ -88,8 +121,8 @@ export class MaterialDidaticoService {
     });
   }
 
-  async delete(idMaterial: number) {
-    await this.getById(idMaterial);
-    return await this.prisma.materialDidatico.delete({ where: { idMaterial}});
+  async delete(idMaterial: number, usuarioLogado?: any) {
+    await this.getById(idMaterial, usuarioLogado);
+    return await this.prisma.materialDidatico.delete({ where: { idMaterial } });
   }
 }
