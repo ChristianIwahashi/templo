@@ -83,7 +83,7 @@ export class AvisoAulaService {
         const aluno = await this.prisma.aluno.findUnique({ where: { idUsuario: usuarioLogado.idUsuario } });
 
         if (usuarioLogado.papel === 'ALUNO') {
-          const aluno = await this.prisma.findUnique({ where: { idUsuario: usuarioLogado.idUsuario } });
+          const aluno = await this.prisma.aluno.findUnique({ where: { idUsuario: usuarioLogado.idUsuario } });
 
           if (aviso.idTurma !== aluno?.idTurma) {
             throw new ForbiddenException('Acesso negado: Este aviso pertence a outra turma.');

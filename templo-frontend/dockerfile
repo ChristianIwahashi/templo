@@ -1,0 +1,20 @@
+# 1. Usa a imagem oficial do Node.js (versão 20, super leve - alpine)
+FROM node:20-alpine
+
+# 2. Define a pasta de trabalho dentro do container
+WORKDIR /usr/src/app
+
+# 3. Copia apenas os arquivos de dependências primeiro (otimiza o cache do Docker)
+COPY package*.json ./
+
+# 4. Instala as dependências do projeto
+RUN npm install --legacy-peer-deps
+
+# 5. Copia o restante do código do projeto para o container
+COPY . .
+
+# 6. Expõe a porta 5173 para fora do container
+EXPOSE 5173
+
+# 7. Comando que será executado quando o container ligar
+CMD [ "npm", "run", "dev", "--", "--host" ]

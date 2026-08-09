@@ -70,7 +70,7 @@ export class NotaService {
                 throw new ForbiddenException('Acesso negado: Esta nota foi lançada por outro professor.');
             }
 
-            if (usuarioLogado.papel === 'ALUNO' && nota.idALuno !== usuarioLogado.idUsuario) {
+            if (usuarioLogado.papel === 'ALUNO' && nota.idAluno !== usuarioLogado.idUsuario) {
                 throw new ForbiddenException('Acesso negado: Esta nota pertence a outro aluno.');
             }
         }

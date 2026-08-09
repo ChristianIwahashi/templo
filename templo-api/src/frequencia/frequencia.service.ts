@@ -64,7 +64,7 @@ export class FrequenciaService {
     if (!frequencia) throw new NotFoundException('Registro de frequência não encontrado');
 
     if (usuarioLogado) {
-      if (usuarioLogado.papel === 'ALUNO' && frequencia.idALuno !== usuarioLogado.idUsuario) {
+      if (usuarioLogado.papel === 'ALUNO' && frequencia.idAluno !== usuarioLogado.idUsuario) {
         throw new ForbiddenException('Acesso negado: Este registro pertence a outro aluno.');
       }
       if (usuarioLogado.papel === 'PROFESSOR' && frequencia.idProfessor !== usuarioLogado.idUsuario) {
