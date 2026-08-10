@@ -33,6 +33,7 @@ services:
     volumes:
       - ./templo-api:/usr/src/app
       - /usr/src/app/node_modules
+      - /usr/src/app/dist
     # Comando mágico: Roda as migrations antes de ligar a API
     command: sh -c "npx prisma migrate dev && npm run start:dev"
 
