@@ -1,1 +1,17 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@theme {
+    --color-templo-blue: #00060ba;
+    --color-sys-blue: #5CB0FF;
+    --color-sys-blue-hover: #4990d6;
+    --color-surface: #f9fafb;
+    --color-surface-dark: #1f2937;
+
+    --font-sans: 'Inter', sans-serif;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar { background: #cbd5e1; border-radius: 10px; }
+::-webkit-scrollbar { background: #94a3b8; }
