@@ -3,6 +3,7 @@ import { useAuth } from "../hooks/UseAuth";
 import { Login } from "../pages/public/Login";
 import { PrivateRoute } from "./PrivateRoute";
 import { Dashboard } from "../pages/private/Dashboard";
+import { PrivateLayout } from "../components/PrivateLayout";
 
 export function AppRoutes() {
     const { isAuthenticated } = useAuth();
@@ -16,8 +17,9 @@ export function AppRoutes() {
                 />
 
                 <Route element={<PrivateRoute />}>
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/turmas" element={<h1>Página de Turmas (Privada)</h1>} />
+                    <Route element={<PrivateLayout/>}>
+                        <Route path="/dashboard" element={<Dashboard />} />
+                    </Route>
                 </Route>
 
                 <Route path="*" element={<Navigate to="/login" replace />} />
