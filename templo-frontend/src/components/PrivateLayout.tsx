@@ -29,6 +29,8 @@ const menuConfig = {
         { path: '/gerenciar-avisos', label: 'Gerenciar Avisos', icon: Megaphone },
         { path: '/gerenciar-informatico', label: 'Gerenciar Website', icon: Globe },
         { path: '/gerenciar-materiais', label: 'Gerenciar Materiais', icon: FolderOpen },
+        { path: '/gerenciar-chamada', label: 'Gerenciar Chamada', icon: Users },
+        { path: '/gerenciar-notas', label: 'Gerenciar Notas', icon: Star },
         { path: '/gerenciar-mensalidade', label: 'Gerenciar Mensalidade', icon: DollarSign },
         { path: '/relatorios', label: 'Relatórios', icon: PieChart }
     ],
@@ -38,8 +40,8 @@ export function PrivateLayout() {
     const { user, signOut } = useAuth();
     const location = useLocation();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+    const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
     const papel = user?.papel || 'ALUNO';
     const menuItens = menuConfig[papel];
@@ -142,7 +144,7 @@ export function PrivateLayout() {
                 {/*Sair*/}
                 <div className="p-4 border-t border-gray-100">
                     <button
-                        onClick={signOut}
+                        onClick={() => setIsLogoutModalOpen(true)}
                         title={isSidebarCollapsed ? "Sair do Sistema" : undefined}
                         className={`w-full flex items-center gap-3 py-2 text-red-500 hover:bg-red-50 rounded-lg transition font-medium cursor-pointer
                             ${isSidebarCollapsed ? 'justify-center px-0' : 'px-4'}`}>
@@ -179,6 +181,31 @@ export function PrivateLayout() {
                     <Outlet />
                 </div>
             </main>
+
+            {/*Alerta de Saída*/}
+            {isLogoutModalOpen && (
+                <div className="fixed inset-0 bg-black/60 z-250 flex items-center justify-center p-4 backdrop-blur-xs transition-opacity">
+                    <div className="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden-p6 text-center border border-gray-100 animate-modal-enter">
+                        <div className="w-12 h-12 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <LogOut className="w-6 h-6" />
+                        </div>
+                        <h3 className="text-xl font-bold text-gray-800 mb-2">Encerrar Sessão</h3>
+                        <p className="text-sm text-gray-500 mb-6">
+                            Você tem certeza de que deseja sair do sistema?
+                        </p>
+                        <div className="flex gap-3">
+                            <button onClick={() => setIsLogoutModalOpen(false)}
+                                className="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition cursor-pointer">
+                                Cancelar
+                            </button>
+                            <button onClick={() => { setIsLogoutModalOpen(false); signOut(); }}
+                                className="flex-1 py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-xl text-sm font-bold transition cursor-pointer">
+                                Sair
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 };
