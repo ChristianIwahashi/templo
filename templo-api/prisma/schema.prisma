@@ -160,6 +160,7 @@ model MaterialDidatico {
   titulo      String  @db.VarChar(255)
   descricao   String  @db.Text
   arquivoUrl  String  @db.VarChar(255)
+  dataPostagem DateTime @default(now())
 
   idProfessor   Int
   professor     Professor @relation("ProfessorParaMaterial", fields: [idProfessor], references: [idUsuario])

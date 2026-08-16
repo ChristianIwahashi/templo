@@ -11,6 +11,7 @@ interface User {
 interface AuthContextData {
     user: User | null;
     isAuthenticated: boolean;
+    loading: boolean;
     signIn: (email: string, senha: string) => Promise<void>;
     signOut: () => void;
 }
@@ -19,6 +20,7 @@ export const AuthContext = createContext<AuthContextData>({} as AuthContextData)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const storagedUser = localStorage.getItem('@Templo:user');
@@ -27,6 +29,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (storagedToken && storagedUser) {
             setUser(JSON.parse(storagedUser));
         }
+
+        setLoading(false);
     }, []);
 
     async function signIn(email: string, senha: string) {
@@ -52,7 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     return (
-        <AuthContext.Provider value={{ user, isAuthenticated: !!user, signIn, signOut }}>
+        <AuthContext.Provider value={{ user, isAuthenticated: !!user, loading, signIn, signOut }}>
             {children}
         </AuthContext.Provider>
     );

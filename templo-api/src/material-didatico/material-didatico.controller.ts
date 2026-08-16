@@ -19,6 +19,12 @@ export class MaterialDidaticoController {
     return this.materialDidaticoService.create(data, usuarioLogado);
   }
 
+  @Roles('ALUNO')
+  @Get("meus-materiais")
+  async findForAluno(@CurrentUser() usuarioLogado: any) {
+    return this.materialDidaticoService.findForAluno(usuarioLogado.idUsuario);
+  }
+
   @Roles('GESTOR', 'PROFESSOR', 'ALUNO')
   @Get()
   async findAll(@CurrentUser() usuarioLogado: any) {
@@ -30,12 +36,6 @@ export class MaterialDidaticoController {
   async getById(@Param("idMaterial") idMaterial: number,
   @CurrentUser() usuarioLogado: any) {
     return this.materialDidaticoService.getById(Number(idMaterial), usuarioLogado);
-  }
-
-  @Roles('ALUNO')
-  @Get("meus-materiais")
-  async findForAluno(@CurrentUser() usuarioLogado: any) {
-    return this.materialDidaticoService.findForAluno(usuarioLogado.idUsuario);
   }
 
   @Roles('GESTOR', 'PROFESSOR')

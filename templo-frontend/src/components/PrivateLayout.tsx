@@ -7,7 +7,7 @@ import { useState } from "react";
 const menuConfig = {
     ALUNO: [
         { path: '/dashboard', label: 'Início', icon: Home },
-        { path: '/avisos', label: 'Avisos', icon: Megaphone },
+        { path: '/avisos', label: 'Avisos de Aula', icon: Megaphone },
         { path: '/materiais', label: 'Material Didático', icon: FileText },
         { path: '/historico', label: 'Histórico Acadêmico', icon: GraduationCap },
         { path: '/mensalidade', label: 'Mensalidade', icon: DollarSign },

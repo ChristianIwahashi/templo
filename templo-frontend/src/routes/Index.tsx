@@ -4,21 +4,43 @@ import { Login } from "../pages/public/Login";
 import { PrivateRoute } from "./PrivateRoute";
 import { Dashboard } from "../pages/private/Dashboard";
 import { PrivateLayout } from "../components/PrivateLayout";
+import { Historico } from '../pages/private/Historico';
+import { Mensalidade } from "../pages/private/Mensalidade";
+import { Avisos } from "../pages/private/Avisos";
+import { Materiais } from "../pages/private/Materiais";
 
 export function AppRoutes() {
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, loading, user } = useAuth();
+
+    if (loading) {
+        return (
+            <div className="h-screen flex items-center justify-center bg-gray-50">
+                <p className="text-gray-500 font-semibold animate-pulse">Carregando...</p>
+            </div>
+        );
+    }
 
     return (
         <BrowserRouter>
             <Routes>
-                <Route 
+                <Route
                     path="/login"
                     element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />}
                 />
 
                 <Route element={<PrivateRoute />}>
-                    <Route element={<PrivateLayout/>}>
+                    <Route element={<PrivateLayout />}>
                         <Route path="/dashboard" element={<Dashboard />} />
+
+
+                        {user?.papel === 'ALUNO' && (
+                            <>
+                                <Route path="/historico" element={<Historico />} />
+                                <Route path="/mensalidade" element={<Mensalidade />} />
+                                <Route path="/avisos" element={<Avisos />} />
+                                <Route path="/materiais" element={<Materiais />} />
+                            </>
+                        )}
                     </Route>
                 </Route>
 

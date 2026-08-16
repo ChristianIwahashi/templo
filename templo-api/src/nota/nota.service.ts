@@ -38,7 +38,7 @@ export class NotaService {
 
     if (usuarioLogado) {
       if (usuarioLogado.papel === 'ALUNO') {
-        filtro = { idALuno: usuarioLogado.idUsuario };
+        filtro = { idAluno: usuarioLogado.idUsuario };
       } else if (usuarioLogado.papel === 'PROFESSOR') {
         filtro = { idProfessor: usuarioLogado.idUsuario};
       }
