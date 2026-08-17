@@ -1,5 +1,5 @@
 import { Bell, ChevronLeft, ChevronRight, DollarSign, FileText, FolderOpen, Globe, GraduationCap, Home, LogOut, Megaphone, Menu, PieChart, Shield, Star, User, UserCheck, Users, X } from "lucide-react";
-import { useAuth } from "../hooks/UseAuth";
+import { UseAuth } from "../hooks/UseAuth";
 import LogoTemplo from "../assets/images/Hongwanji.png";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useState } from "react";
@@ -37,7 +37,7 @@ const menuConfig = {
 };
 
 export function PrivateLayout() {
-    const { user, signOut } = useAuth();
+    const { user, signOut } = UseAuth();
     const location = useLocation();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);

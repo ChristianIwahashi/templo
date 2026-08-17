@@ -1,11 +1,11 @@
 import { useState, type FormEvent } from "react";
-import { useAuth } from "../../hooks/UseAuth";
+import { UseAuth } from "../../hooks/UseAuth";
 import { AxiosError } from "axios";
 import { Mail, Lock, ArrowRight, EyeOff, Eye } from "lucide-react";
 import LogoTemplo from "../../assets/images/Hongwanji.png";
 
 export function Login() {
-  const { signIn } = useAuth();
+  const { signIn } = UseAuth();
 
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');

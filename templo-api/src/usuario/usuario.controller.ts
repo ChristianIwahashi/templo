@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put, UseGuards } from '@nestjs/common';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
+import { UpdatePerfilDto } from './dto/update-perfil.dto';
 import { UsuarioService } from './usuario.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
@@ -51,7 +52,7 @@ export class UsuarioController {
     @Patch('meu-perfil')
     async updatePerfil(
         @CurrentUser() usuarioLogado: any,
-        @Body() data: UpdateUsuarioDto
+        @Body() data: UpdatePerfilDto
     ) {
         return this.usuarioService.updatePerfil(usuarioLogado.idUsuario, data);
     }

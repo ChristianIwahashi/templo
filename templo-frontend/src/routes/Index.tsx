@@ -1,5 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { useAuth } from "../hooks/UseAuth";
+import { UseAuth } from "../hooks/UseAuth";
 import { Login } from "../pages/public/Login";
 import { PrivateRoute } from "./PrivateRoute";
 import { Dashboard } from "../pages/private/Dashboard";
@@ -8,9 +8,10 @@ import { Historico } from '../pages/private/Historico';
 import { Mensalidade } from "../pages/private/Mensalidade";
 import { Avisos } from "../pages/private/Avisos";
 import { Materiais } from "../pages/private/Materiais";
+import { Perfil } from "../pages/private/Perfil";
 
 export function AppRoutes() {
-    const { isAuthenticated, loading, user } = useAuth();
+    const { isAuthenticated, loading, user } = UseAuth();
 
     if (loading) {
         return (
@@ -39,6 +40,7 @@ export function AppRoutes() {
                                 <Route path="/mensalidade" element={<Mensalidade />} />
                                 <Route path="/avisos" element={<Avisos />} />
                                 <Route path="/materiais" element={<Materiais />} />
+                                <Route path="/perfil" element={<Perfil />} />
                             </>
                         )}
                     </Route>

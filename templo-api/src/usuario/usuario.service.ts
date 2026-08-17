@@ -157,6 +157,11 @@ export class UsuarioService {
 
         if (!usuarioExists) throw new NotFoundException('Usuário não encontrado');
 
+        const senhaValida = await bcrypt.compare(data.senhaAntiga, usuarioExists.senha);
+        if (!senhaValida) {
+            throw new BadRequestException('A senha atual informada está incorreta.');
+        }
+
         const dadosParaAtualizar: any = {};
 
         if (data.telefone) {
@@ -166,6 +171,10 @@ export class UsuarioService {
         if (data.senha) {
             const saltRounds = 12;
             dadosParaAtualizar.senha = await bcrypt.hash(data.senha, saltRounds);
+        }
+
+        if (Object.keys(dadosParaAtualizar).length === 0) {
+            throw new BadRequestException('Nenhum dado válido para atualizar.');
         }
 
         const usuarioAtualizado = await this.prisma.usuario.update({
