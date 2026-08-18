@@ -4,6 +4,24 @@ import { Api } from "../../api/Api";
 import { User, Eye, EyeOff, CheckCircle2, AlertCircle, FileEdit } from "lucide-react";
 import { AxiosError } from "axios";
 
+const padraoTelefone = (value: string) => {
+    const apenasNumeros = value.replace(/\D/g, "");
+    const numeroLimitado = apenasNumeros.slice(0, 11);
+
+    if (numeroLimitado.length <= 2) {
+        return numeroLimitado.replace(/^(\d{0,2})/, "($1");
+    }
+    if (numeroLimitado.length <= 6) {
+        return numeroLimitado.replace(/^(\d{2})(\d{0,4})/, "($1) $2");
+    }
+    if (numeroLimitado.length <= 10) {
+        return numeroLimitado.replace(/^(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
+    }
+    return numeroLimitado.replace(/^(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+};
+
+const regexTextoSeguro = /^(?=.*[a-zA-Z0-9À-ÿ])[a-zA-Z0-9À-ÿ\s.!?,;\-_@()]+$/;
+
 interface PerfilData {
     idUsuario: number;
     nome: string;
@@ -38,7 +56,7 @@ export function Perfil() {
                 setLoading(true);
                 const response = await Api.get(`/usuario/${user.idUsuario}`);
                 setPerfil(response.data);
-                setTelefone(response.data.telefone);
+                setTelefone(padraoTelefone(response.data.telefone));
             } catch (error) {
                 console.error(error);
                 setErro('Não foi possível carregar as informações do seu perfil.');
@@ -60,14 +78,28 @@ export function Perfil() {
             return;
         }
 
-        if (novaSenha && novaSenha.length < 6) {
-            setErro('A nova senha deve ter pelo menos 6 caracteres.');
+        const digitosTelefone = telefone.replace(/\D/g, "").length;
+
+        if (digitosTelefone > 0 && digitosTelefone < 10) {
+            setErro('O telefone informado está incompleto. Digite o DDD + 8 ou 9 números.');
             return;
         }
 
-        if (novaSenha !== confirmarSenha) {
-            setErro('A nova senha e a confirmação não coincidem.');
-            return;
+        if (novaSenha) {
+            if (novaSenha.length < 6) {
+                setErro('A nova senha deve ter pelo menos 6 caracteres.');
+                return;
+            }
+
+            if (!regexTextoSeguro.test(novaSenha)) {
+                setErro('A nova senha contém caracteres inválidos. Use apenas letras, números e caracteres especiais (!, ., #, @, etc.)');
+                return;
+            }
+
+            if (novaSenha !== confirmarSenha) {
+                setErro('A nova senha e a confirmação não coincidem.');
+                return;
+            }
         }
 
         setIsConfirmModalOpen(true);
@@ -195,7 +227,7 @@ export function Perfil() {
                                 id="telefone"
                                 type="text"
                                 value={telefone}
-                                onChange={e => setTelefone(e.target.value)}
+                                onChange={e => setTelefone(padraoTelefone(e.target.value))}
                                 disabled={salvando}
                                 className="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50 text-sm transition-all"
                                 placeholder="(00) 00000-0000"
@@ -319,7 +351,7 @@ export function Perfil() {
                                 onClick={executarSalvarPerfil}
                                 className="flex-1 py-2.5 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl text-sm font-bold transition cursor-pointer"
                             >
-                                Confirmar Salvar
+                                Salvar
                             </button>
                         </div>
                     </div>
