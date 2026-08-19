@@ -3,24 +3,8 @@ import { UseAuth } from "../../hooks/UseAuth";
 import { Api } from "../../api/Api";
 import { User, Eye, EyeOff, CheckCircle2, AlertCircle, FileEdit } from "lucide-react";
 import { AxiosError } from "axios";
-
-const padraoTelefone = (value: string) => {
-    const apenasNumeros = value.replace(/\D/g, "");
-    const numeroLimitado = apenasNumeros.slice(0, 11);
-
-    if (numeroLimitado.length <= 2) {
-        return numeroLimitado.replace(/^(\d{0,2})/, "($1");
-    }
-    if (numeroLimitado.length <= 6) {
-        return numeroLimitado.replace(/^(\d{2})(\d{0,4})/, "($1) $2");
-    }
-    if (numeroLimitado.length <= 10) {
-        return numeroLimitado.replace(/^(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
-    }
-    return numeroLimitado.replace(/^(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
-};
-
-const regexTextoSeguro = /^(?=.*[a-zA-Z0-9À-ÿ])[a-zA-Z0-9À-ÿ\s.!?,;\-_@()]+$/;
+import { padraoTelefone } from "../../utils/telefone";
+import { regexTextoSeguro } from "../../utils/validator";
 
 interface PerfilData {
     idUsuario: number;

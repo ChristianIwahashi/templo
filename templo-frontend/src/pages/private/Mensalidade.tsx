@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Api } from "../../api/Api";
 import { DollarSign} from "lucide-react";
+import { formatarData, formatarDinheiro } from '../../utils/formatters';
 
 interface Mensalidade {
     idMensalidade: number;
@@ -44,7 +45,7 @@ export function Mensalidade() {
 
     const mensalidadesFiltradas = mensalidades.filter((m) => {
         const matchesStatus = filtroStatus === 'todos' ? true : m.statusPagamento === filtroStatus;
-        const matchesAno = filtroAno === 'todos' ? true : new Date(m.statusPagamento).getUTCFullYear().toString() === filtroAno;
+        const matchesAno = filtroAno === 'todos' ? true : new Date(m.dataVencimento).getUTCFullYear().toString() === filtroAno;
         return matchesStatus && matchesAno;
     })
     .sort((a, b) => {
@@ -52,14 +53,6 @@ export function Mensalidade() {
         const dataB = new Date(b.dataVencimento).getTime();
         return filtroOrdem === 'desc' ? dataB - dataA : dataA - dataB;
     });
-
-    function formatarDinheiro(centavos: number) {
-        return (centavos /100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    }
-
-    function formatarData(dataStr: string) {
-        return new Date(dataStr).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
-    }
 
     if (loading) {
     return (

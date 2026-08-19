@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Api } from "../../api/Api";
 import { GraduationCap, CheckCircle, BookOpen, ChevronUp, ChevronDown, Calendar, XCircle } from "lucide-react";
+import { formatarData } from '../../utils/formatters';
+import { calcularMediaGeral, calcularPercentualFrequencia } from '../../utils/calculations';
 
 interface Nota {
     idNota: number;
@@ -61,19 +63,10 @@ export function Historico() {
         new Date(f.dataAula).getUTCFullYear().toString() === filtroAno
     );
 
-    // Média das Notas
-    const somaNotas = notasFiltradas.reduce((acc, nota) => acc + nota.valor, 0);
-    const mediaGeral = notasFiltradas.length > 0 ? somaNotas / notasFiltradas.length : 0;
-
-    // Percentual de Frequência
+    const mediaGeral = calcularMediaGeral(notasFiltradas);
+    const percentualFrequencia = calcularPercentualFrequencia(frequenciasFiltradas);
     const totalAulas = frequenciasFiltradas.length;
     const presencas = frequenciasFiltradas.filter(f => f.presenca).length;
-    const percentualFrequencia = totalAulas > 0 ? Math.round((presencas / totalAulas) * 100) : 0;
-
-    // Formatar Datas
-    function formatarData(dataStr: string) {
-        return new Date(dataStr).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
-    }
 
     if (loading) {
         return (
