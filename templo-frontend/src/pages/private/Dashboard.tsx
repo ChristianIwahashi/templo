@@ -46,8 +46,8 @@ export function Dashboard() {
         setTemPendente(pendente);
 
         //Turma
-        if (perfilRes.data?.aluno?.turma) {
-          setNomeTurma(perfilRes.data.aluno.turma.idTurma);
+        if (perfilRes.data?.aluno?.idTurma) {
+          setNomeTurma(perfilRes.data.aluno.idTurma.toString());
         }
 
         //Avisos
