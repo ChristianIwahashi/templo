@@ -15,6 +15,6 @@ export function calcularMediaGeral(notas: NotaSimplificada[]): number {
 export function calcularPercentualFrequencia(frequencias: FrequenciaSimplificada[]): number {
   if (frequencias.length === 0) return 0;
   const total = frequencias.length;
-  const presencas = frequencias.filter(f => f.presenca || f.presenca).length;
+  const presencas = frequencias.filter(f => f.presenca).length;
   return Math.round((presencas / total) * 100);
 }

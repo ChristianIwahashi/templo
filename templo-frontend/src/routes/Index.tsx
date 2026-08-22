@@ -9,6 +9,7 @@ import { Mensalidade } from "../pages/private/Mensalidade";
 import { Avisos } from "../pages/private/Avisos";
 import { Materiais } from "../pages/private/Materiais";
 import { Perfil } from "../pages/private/Perfil";
+import { GerenciarChamada } from "../pages/private/GerenciarChamada";
 
 export function AppRoutes() {
     const { isAuthenticated, loading, user } = UseAuth();
@@ -33,7 +34,6 @@ export function AppRoutes() {
                     <Route element={<PrivateLayout />}>
                         <Route path="/dashboard" element={<Dashboard />} />
 
-
                         {user?.papel === 'ALUNO' && (
                             <>
                                 <Route path="/historico" element={<Historico />} />
@@ -41,6 +41,12 @@ export function AppRoutes() {
                                 <Route path="/avisos" element={<Avisos />} />
                                 <Route path="/materiais" element={<Materiais />} />
                                 <Route path="/perfil" element={<Perfil />} />
+                            </>
+                        )}
+
+                        {user?.papel === 'PROFESSOR' && (
+                            <>
+                                <Route path="/gerenciar-chamada" element={<GerenciarChamada />} />
                             </>
                         )}
                     </Route>
