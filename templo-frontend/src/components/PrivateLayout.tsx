@@ -15,10 +15,10 @@ const menuConfig = {
     ],
     PROFESSOR: [
         { path: '/dashboard', label: 'Início', icon: Home },
-        { path: '/gerenciar-avisos', label: 'Gerenciar Avisos', icon: Megaphone },
+        { path: '/gerenciar-aviso', label: 'Gerenciar Avisos', icon: Megaphone },
         { path: '/gerenciar-materiais', label: 'Gerenciar Materiais', icon: FolderOpen },
         { path: '/gerenciar-chamada', label: 'Gerenciar Chamada', icon: Users },
-        { path: '/gerenciar-notas', label: 'Gerenciar Notas', icon: Star },
+        { path: '/gerenciar-nota', label: 'Gerenciar Notas', icon: Star },
         { path: '/relatorios', label: 'Relatórios', icon: PieChart }
     ],
     GESTOR: [
@@ -30,7 +30,7 @@ const menuConfig = {
         { path: '/gerenciar-informatico', label: 'Gerenciar Website', icon: Globe },
         { path: '/gerenciar-materiais', label: 'Gerenciar Materiais', icon: FolderOpen },
         { path: '/gerenciar-chamada', label: 'Gerenciar Chamada', icon: Users },
-        { path: '/gerenciar-notas', label: 'Gerenciar Notas', icon: Star },
+        { path: '/gerenciar-nota', label: 'Gerenciar Notas', icon: Star },
         { path: '/gerenciar-mensalidade', label: 'Gerenciar Mensalidade', icon: DollarSign },
         { path: '/relatorios', label: 'Relatórios', icon: PieChart }
     ],

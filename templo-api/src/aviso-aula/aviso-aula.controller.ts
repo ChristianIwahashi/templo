@@ -42,7 +42,7 @@ export class AvisoAulaController {
 
   @Roles('GESTOR', 'PROFESSOR')
   @Delete(":idAvisoAula")
-  async delete(@Param(":idAvisoAula") idAvisoAula: number,
+  async delete(@Param("idAvisoAula") idAvisoAula: number,
   @CurrentUser() usuarioLogado: any) {
     return this.avisoAulaService.delete(Number(idAvisoAula), usuarioLogado);
   }

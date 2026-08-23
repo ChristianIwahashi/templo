@@ -1,142 +1,32 @@
-import { useEffect, useState } from "react";
-import { Api } from "../../api/Api";
-import { UseAuth } from "../../hooks/UseAuth";
-import { Users, Check, Info, AlertCircle, CheckSquare, Square } from "lucide-react";
-import { AxiosError } from "axios";
-
-interface Turma {
-    idTurma: number;
-    alunos?: {
-        idUsuario: number;
-        usuario: { nome: string };
-    }[];
-}
-
-interface AlunoChamada {
-    idUsuario: number;
-    nome: string;
-    presente: boolean;
-}
+import { UseGerenciarChamada } from "../../hooks/UseGerenciarChamada";
+import type { Turma, AlunoChamada } from "../../hooks/UseGerenciarChamada"; 
+import { Users, Check, Info, AlertCircle, CheckSquare, Square, AlertTriangle } from "lucide-react";
 
 export function GerenciarChamada() {
-    const { user } = UseAuth();
-    const [turmas, setTurmas] = useState<Turma[]>([]);
-    const [alunos, setAlunos] = useState<AlunoChamada[]>([]);
-    const [turmaSelecionada, setTurmaSelecionada] = useState<string>('');
-    const [dataAula, setDataAula] = useState<string>(
-        new Date().toISOString().split('T')[0]
-    );
-    const [loadingTurmas, setLoadingTurmas] = useState(true);
-    const [loadingAlunos, setLoadingAlunos] = useState(false);
-    const [salvando, setSalvando] = useState(false);
-    const [erro, setErro] = useState('');
-    const [sucesso, setSucesso] = useState('');
-
-    useEffect(() => {
-        async function carregarTurmas() {
-            try {
-                setLoadingTurmas(true);
-                const response = await Api.get('/turma');
-                setTurmas(response.data);
-            } catch (error) {
-                console.error(error);
-                setErro('Não foi possível carregar suas turmas.');
-            } finally {
-                setLoadingTurmas(false);
-            }
-        }
-        carregarTurmas();
-    }, []);
-
-    useEffect(() => {
-        if (!turmaSelecionada) {
-            setAlunos([]);
-            return;
-        }
-
-        async function carregarAlunosDaTurma() {
-            try {
-                setLoadingAlunos(true);
-                setErro('');
-                setSucesso('');
-
-                const response = await Api.get(`/turma/${turmaSelecionada}`);
-                const turmaCompleta: Turma = response.data;
-
-                if (turmaCompleta.alunos) {
-                    const listaInicial = turmaCompleta.alunos.map(aluno => ({
-                        idUsuario: aluno.idUsuario,
-                        nome: aluno.usuario.nome,
-                        presente: true
-                    }));
-                    setAlunos(listaInicial);
-                }
-            } catch (error) {
-                console.error(error);
-                setErro('Erro ao carregar a lista de alunos desta turma.');
-            } finally {
-                setLoadingAlunos(false);
-            }
-        }
-
-        carregarAlunosDaTurma();
-    }, [turmaSelecionada]);
-
-    //Alternar presença
-    function handleAlternarPresenca(idUsuario: number) {
-        setAlunos(prevAlunos =>
-            prevAlunos.map(aluno =>
-                aluno.idUsuario === idUsuario
-                    ? { ...aluno, presente: !aluno.presente }
-                    : aluno
-            )
-        );
-    }
-
-    //Presença
-    function handleMarcarTodos() {
-        setAlunos(prevAlunos => prevAlunos.map(a => ({ ...a, presente: true })));
-    }
-
-    //Falta
-    function handleDesmarcarTodos() {
-        setAlunos(prevAlunos => prevAlunos.map(a => ({ ...a, presente: false })));
-    }
-
-    //Salvar
-    async function handleSalvarChamada() {
-        if (!turmaSelecionada || !dataAula) {
-            setErro('Selecione a turma e a data da aula.');
-            return;
-        }
-
-        setSalvando(true);
-        setErro('');
-        setSucesso('');
-
-        try {
-            await Promise.all(
-                alunos.map(aluno =>
-                    Api.post('/frequencia', {
-                        dataAula: dataAula,
-                        presenca: aluno.presente,
-                        idProfessor: user?.idUsuario,
-                        idAluno: aluno.idUsuario
-                    })
-                )
-            );
-
-            setSucesso('Registro de chamada salvo com sucesso!');
-        } catch (error) {
-            if (error instanceof AxiosError) {
-                setErro(error.response?.data?.message || 'Erro ao salvar chamada.');
-            } else {
-                setErro('Erro inesperado ao salvar.');
-            }
-        } finally {
-            setSalvando(false);
-        }
-    }
+    const {
+        turmas,
+        alunos,
+        turmaSelecionada,
+        setTurmaSelecionada,
+        dataAula,
+        setDataAula,
+        loadingTurmas,
+        loadingAlunos,
+        salvando,
+        erro,
+        sucesso,
+        isConfirmSalvarOpen,
+        setIsConfirmSalvarOpen,
+        isConfirmDeletarOpen,
+        setIsConfirmDeletarOpen,
+        temChamadaSalvaNoDia,
+        handleAlternarPresenca,
+        handleMarcarTodos,
+        handleDesmarcarTodos,
+        handleSalvarChamada,
+        executarSalvarChamada,
+        executarDeletarChamada
+    } = UseGerenciarChamada();
 
     if (loadingTurmas) {
         return (
@@ -166,7 +56,7 @@ export function GerenciarChamada() {
                         className="w-full p-2.5 text-sm border border-gray-200 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50 cursor-pointer font-medium"
                     >
                         <option value="">Selecione uma turma</option>
-                        {turmas.map(t => (
+                        {turmas.map((t: Turma) => (
                             <option key={t.idTurma} value={t.idTurma}>Turma {t.idTurma}</option>
                         ))}
                     </select>
@@ -246,7 +136,7 @@ export function GerenciarChamada() {
                                         </tr>
                                     </thead>
                                     <tbody className="text-sm">
-                                        {alunos.map((aluno) => (
+                                        {alunos.map((aluno: AlunoChamada) => (
                                             <tr
                                                 key={aluno.idUsuario}
                                                 onClick={() => handleAlternarPresenca(aluno.idUsuario)}
@@ -264,7 +154,6 @@ export function GerenciarChamada() {
                                                 </td>
                                                 <td className="p-4">
                                                     <span className="font-semibold text-gray-800 block">{aluno.nome}</span>
-                                                    <span className="text-xs text-gray-400 font-medium mt-1 block">ID do Estudante: {aluno.idUsuario}</span>
                                                 </td>
                                             </tr>
                                         ))}
@@ -273,18 +162,90 @@ export function GerenciarChamada() {
                             </div>
 
                             {/*Salvar Chamada*/}
-                            <div className="p-4 bg-gray-50/50 border-t border-gray-100 flex justify-end">
+                            <div className="p-4 bg-gray-50/50 border-t border-gray-100 flex justify-between items-center flex-wrap gap-4">
+
+                                {/*Botão*/}
+                                {temChamadaSalvaNoDia ? (
+                                    <button
+                                        onClick={() => setIsConfirmDeletarOpen(true)}
+                                        disabled={salvando}
+                                        className="bg-sys-blue hover:bg-sys-blue-hover text-white text-sm font-bold px-6 py-3 rounded-xl transition-all shadow-md shadow-blue-100 cursor-pointer"
+                                    >
+                                        Apagar Chamada deste Dia
+                                    </button>
+                                ) : (
+                                    <div className="hidden sm:block"></div>
+                                )}
+
                                 <button
                                     onClick={handleSalvarChamada}
                                     disabled={salvando}
-                                    className="bg-sys-blue hover:bg-sys-blue-hover text-white text-sm font-bold px-6 py-3 rounded-xl transition-all shadow-md shadow-blue-100 cursor-pointer disabled:opacity-50"
+                                    className="flex-1 py-2.5 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl text-sm font-bold transition cursor-pointer"
                                 >
-                                    {salvando ? 'Salvando Chamada...' : 'Confirmar e Salvar Chamada'}
+                                    Confirmar
                                 </button>
                             </div>
                         </>
                     )}
 
+                </div>
+            )}
+
+            {/*Confirmar Salvar*/}
+            {isConfirmSalvarOpen && (
+                <div className="fixed inset-0 bg-black/60 z-250 flex items-center justify-center p-4 backdrop-blur-xs transition-opacity">
+                    <div className="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden p-6 text-center border border-gray-100 animate-modal-enter">
+                        <div className="w-12 h-12 bg-blue-50 text-sys-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                            <Check className="w-6 h-6" />
+                        </div>
+                        <h3 className="text-xl font-bold text-gray-800 mb-2">Salvar Diário de Classe</h3>
+                        <p className="text-sm text-gray-500 mb-6">
+                            Deseja realmente salvar a chamada da turma selecionada para o dia {new Date(dataAula + 'T00:00:00').toLocaleDateString('pt-BR')}?
+                        </p>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setIsConfirmSalvarOpen(false)}
+                                className="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition cursor-pointer"
+                            >
+                                Voltar
+                            </button>
+                            <button
+                                onClick={executarSalvarChamada}
+                                className="flex-1 py-2.5 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl text-sm font-bold transition cursor-pointer"
+                            >
+                                Confirmar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/*Confirmar Exclusão*/}
+            {isConfirmDeletarOpen && (
+                <div className="fixed inset-0 bg-black/60 z-250 flex items-center justify-center p-4 backdrop-blur-xs transition-opacity">
+                    <div className="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden p-6 text-center border border-gray-150 animate-modal-enter">
+                        <div className="w-12 h-12 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <AlertTriangle className="w-6 h-6" />
+                        </div>
+                        <h3 className="text-xl font-bold text-red-600 mb-2">Apagar Chamada</h3>
+                        <p className="text-sm text-gray-500 mb-6">
+                            Você tem certeza de que deseja apagar TODA a presença/falta registrada no dia {new Date(dataAula + 'T00:00:00').toLocaleDateString('pt-BR')}? Esta ação não pode ser desfeita.
+                        </p>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setIsConfirmDeletarOpen(false)}
+                                className="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition cursor-pointer"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={executarDeletarChamada}
+                                className="flex-1 py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-xl text-sm font-bold transition cursor-pointer"
+                            >
+                                Sim, Apagar
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
 

@@ -10,6 +10,9 @@ import { Avisos } from "../pages/private/Avisos";
 import { Materiais } from "../pages/private/Materiais";
 import { Perfil } from "../pages/private/Perfil";
 import { GerenciarChamada } from "../pages/private/GerenciarChamada";
+import { GerenciarNota } from "../pages/private/GerenciarNota";
+import { GerenciarAviso } from "../pages/private/GerenciarAviso";
+import { GerenciarMateriais } from "../pages/private/GerenciarMateriais";
 
 export function AppRoutes() {
     const { isAuthenticated, loading, user } = UseAuth();
@@ -47,6 +50,10 @@ export function AppRoutes() {
                         {user?.papel === 'PROFESSOR' && (
                             <>
                                 <Route path="/gerenciar-chamada" element={<GerenciarChamada />} />
+                                <Route path="/gerenciar-nota" element={<GerenciarNota />} />
+                                <Route path="/gerenciar-aviso" element={<GerenciarAviso />} />
+                                <Route path="/gerenciar-materiais" element={<GerenciarMateriais />} />
+                                <Route path="/relatorio" element={<Relatorio />} />
                             </>
                         )}
                     </Route>

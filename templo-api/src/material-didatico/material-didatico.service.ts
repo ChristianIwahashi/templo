@@ -51,7 +51,16 @@ export class MaterialDidaticoService {
       where: filtro,
       include: {
         professor: { include: { usuario: { select: { nome: true } } } },
-        turmasVinculadas: { include: { turma: true } }
+        turmasVinculadas: { include: { turma: true } },
+        alunosVinculados: {
+          include: {
+            aluno: {
+              include: {
+                usuario: { select: { nome: true } }
+              }
+            }
+          }
+        }
       },
       orderBy: { idMaterial: 'desc' }
     });

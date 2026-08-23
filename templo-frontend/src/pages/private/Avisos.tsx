@@ -91,7 +91,7 @@ export function Avisos() {
     }
 
     return (
-        <div className="p-6 max-w-3xl mx-auto space-y-6 animate-fade-in-up relative">
+        <div className="p-6 max-w-4xl mx-auto space-y-6 animate-fade-in-up relative">
             <div className="flex items-center gap-2">
                 <BookOpen className="w-6 h-6 text-sys-blue" />
                 <h2 className="text-2xl font-bold text-gray-800">Avisos de Aula</h2>
@@ -171,7 +171,7 @@ export function Avisos() {
                                         <img
                                             src={aviso.imagemUrl}
                                             alt="Anexo do aviso"
-                                            className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-[1.02]"
+                                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
                                         />
 
                                         <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
