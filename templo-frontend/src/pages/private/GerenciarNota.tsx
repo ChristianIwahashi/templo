@@ -163,7 +163,7 @@ export function GerenciarNota() {
                           <tr key={nota.idNota} className="border-b border-gray-100 hover:bg-gray-50/20 transition-colors">
                             <td className="p-3 font-semibold text-gray-800">{nota.tipo}</td>
                             <td className="p-3 text-gray-600">{formatarData(nota.data)}</td>
-                            <td className={`p-3 font-bold text-base ${nota.valor >= 7.0 ? 'text-sys-blue' : 'text-red-500'}`}>
+                            <td className={`p-3 font-bold text-base ${nota.valor >= 6.0 ? 'text-sys-blue' : 'text-red-500'}`}>
                               {nota.valor.toFixed(1)}
                             </td>
                             <td className="p-3 text-right space-x-1 whitespace-nowrap">

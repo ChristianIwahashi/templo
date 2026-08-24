@@ -19,20 +19,20 @@ const menuConfig = {
         { path: '/gerenciar-materiais', label: 'Gerenciar Materiais', icon: FolderOpen },
         { path: '/gerenciar-chamada', label: 'Gerenciar Chamada', icon: Users },
         { path: '/gerenciar-nota', label: 'Gerenciar Notas', icon: Star },
-        { path: '/relatorios', label: 'Relatórios', icon: PieChart }
+        { path: '/relatorio', label: 'Relatórios', icon: PieChart }
     ],
     GESTOR: [
         { path: '/dashboard', label: 'Início', icon: Home },
         { path: '/gerenciar-alunos', label: 'Gerenciar Alunos', icon: Users },
         { path: '/gerenciar-professores', label: 'Gerenciar Professores', icon: UserCheck },
         { path: '/gerenciar-gestores', label: 'Gerenciar Gestores', icon: Shield },
-        { path: '/gerenciar-avisos', label: 'Gerenciar Avisos', icon: Megaphone },
+        { path: '/gerenciar-aviso', label: 'Gerenciar Avisos', icon: Megaphone },
         { path: '/gerenciar-informatico', label: 'Gerenciar Website', icon: Globe },
         { path: '/gerenciar-materiais', label: 'Gerenciar Materiais', icon: FolderOpen },
         { path: '/gerenciar-chamada', label: 'Gerenciar Chamada', icon: Users },
         { path: '/gerenciar-nota', label: 'Gerenciar Notas', icon: Star },
         { path: '/gerenciar-mensalidade', label: 'Gerenciar Mensalidade', icon: DollarSign },
-        { path: '/relatorios', label: 'Relatórios', icon: PieChart }
+        { path: '/relatorio', label: 'Relatórios', icon: PieChart }
     ],
 };
 
