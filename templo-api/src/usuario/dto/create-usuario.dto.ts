@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsBoolean, IsDateString, IsEmail, IsEnum, IsInt, IsString, Length, ValidateIf } from "class-validator";
+import { IsBoolean, IsDateString, IsEmail, IsEnum, IsInt, IsOptional, IsString, Length, ValidateIf } from "class-validator";
 
 export type Papel = 'ALUNO' | 'GESTOR' | 'PROFESSOR';
 
@@ -12,7 +12,7 @@ export class CreateUsuarioDto {
     email!: string;
 
     @IsString()
-    @Length(6, 20, { message: 'A senha deve ter entre 6 e 20 caracteres.' })
+    @Length(6, 100, { message: 'A senha deve ter pelo menos 6 caracteres.' })
     senha!: string;
 
     @IsString()
@@ -35,4 +35,9 @@ export class CreateUsuarioDto {
     @IsInt({ message: 'O ID do gestor responsável é obrigatório para alunos e professores.' })
     @Type(() => Number)
     idGestor?: number;
+
+    @IsOptional()
+    @IsInt({ message: 'O ID da turma deve ser um número inteiro.' })
+    @Type(() => Number)
+    idTurma?: number;
 }

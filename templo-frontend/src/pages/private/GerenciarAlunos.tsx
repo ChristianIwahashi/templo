@@ -1,6 +1,7 @@
 import { UseGerenciarAlunos } from "../../hooks/UseGerenciarAlunos";
-import { Users, UserPlus, Edit, Power, Info, AlertCircle, Check, Search } from "lucide-react";
+import { Users, UserPlus, Edit, Power, Info, AlertCircle, Check, Search, EyeOff, Eye } from "lucide-react";
 import { padraoTelefone } from "../../utils/telefone";
+import { useState } from "react";
 
 export function GerenciarAlunos() {
   const {
@@ -33,8 +34,12 @@ export function GerenciarAlunos() {
     abrirModalEditar,
     executarMatricula,
     executarEditarAluno,
-    alternarStatusAtivo
+    alternarStatusAtivo,
+    ocultarInativos,
+    setOcultarInativos
   } = UseGerenciarAlunos();
+
+  const [showSenhaAdd, setShowSenhaAdd] = useState(false);
 
   if (loading) {
     return (
@@ -46,14 +51,14 @@ export function GerenciarAlunos() {
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6 animate-fade-in-up relative">
-      
+
       {/*Título*/}
       <div className="flex items-center justify-between pb-4">
         <div className="flex items-center gap-2">
           <Users className="w-6 h-6 text-sys-blue" />
           <h2 className="text-2xl font-bold text-gray-800">Gerenciar Alunos</h2>
         </div>
-        
+
         <button
           onClick={abrirModalMatricular}
           className="bg-sys-blue hover:bg-sys-blue-hover text-white text-sm font-bold px-4 py-2.5 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-sm shadow-blue-100"
@@ -84,7 +89,7 @@ export function GerenciarAlunos() {
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Search className="w-4 h-4 text-gray-400" />
             </div>
-            <input 
+            <input
               id="busca-aluno"
               type="text"
               value={pesquisa}
@@ -93,6 +98,19 @@ export function GerenciarAlunos() {
               className="w-full pl-9 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50"
             />
           </div>
+        </div>
+
+        <div className="flex items-center gap-2 pb-3 shrink-0 cursor-pointer select-none">
+          <input
+            type="checkbox"
+            id="ocultar-inativos"
+            checked={ocultarInativos}
+            onChange={e => setOcultarInativos(e.target.checked)}
+            className="w-4 h-4 rounded text-sys-blue focus:ring-sys-blue cursor-pointer"
+          />
+          <label htmlFor="ocultar-inativos" className="text-sm font-semibold text-gray-600 cursor-pointer">
+            Ocultar Inativos
+          </label>
         </div>
       </div>
 
@@ -129,8 +147,8 @@ export function GerenciarAlunos() {
                     </td>
                     <td className="p-4 text-center">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-bold border
-                        ${aluno.ativo 
-                          ? 'bg-green-50 text-green-700 border-green-200' 
+                        ${aluno.ativo
+                          ? 'bg-green-50 text-green-700 border-green-200'
                           : 'bg-gray-50 text-gray-600 border-gray-200'
                         }
                       `}>
@@ -138,18 +156,18 @@ export function GerenciarAlunos() {
                       </span>
                     </td>
                     <td className="p-4 text-right space-x-1 whitespace-nowrap">
-                      <button 
+                      <button
                         onClick={() => abrirModalEditar(aluno)}
-                        className="text-blue-500 hover:bg-blue-50 p-1.5 rounded cursor-pointer transition-colors" 
+                        className="text-blue-500 hover:bg-blue-50 p-1.5 rounded cursor-pointer transition-colors"
                         title="Editar Informações"
                       >
                         <Edit className="w-4 h-4" />
                       </button>
-                      <button 
+                      <button
                         onClick={() => alternarStatusAtivo(aluno)}
                         className={`p-1.5 rounded cursor-pointer transition-colors
-                          ${aluno.ativo 
-                            ? 'text-yellow-600 hover:bg-yellow-50' 
+                          ${aluno.ativo
+                            ? 'text-yellow-600 hover:bg-yellow-50'
                             : 'text-green-600 hover:bg-green-50'
                           }
                         `}
@@ -184,9 +202,9 @@ export function GerenciarAlunos() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="col-span-1 md:col-span-2">
                   <label htmlFor="nome-add" className="block text-xs font-semibold text-gray-500 uppercase mb-1">Nome Completo *</label>
-                  <input 
+                  <input
                     id="nome-add"
-                    type="text" 
+                    type="text"
                     value={nome}
                     onChange={e => setNome(e.target.value)}
                     placeholder="Nome completo do aluno"
@@ -197,9 +215,9 @@ export function GerenciarAlunos() {
 
                 <div>
                   <label htmlFor="email-add" className="block text-xs font-semibold text-gray-500 uppercase mb-1">E-mail *</label>
-                  <input 
+                  <input
                     id="email-add"
-                    type="email" 
+                    type="email"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     placeholder="aluno@email.com"
@@ -210,9 +228,9 @@ export function GerenciarAlunos() {
 
                 <div>
                   <label htmlFor="telefone-add" className="block text-xs font-semibold text-gray-500 uppercase mb-1">Telefone/Celular *</label>
-                  <input 
+                  <input
                     id="telefone-add"
-                    type="text" 
+                    type="text"
                     value={telefone}
                     onChange={e => setTelefone(padraoTelefone(e.target.value))}
                     placeholder="(00) 00000-0000"
@@ -223,9 +241,9 @@ export function GerenciarAlunos() {
 
                 <div>
                   <label htmlFor="nascimento-add" className="block text-xs font-semibold text-gray-500 uppercase mb-1">Nascimento *</label>
-                  <input 
+                  <input
                     id="nascimento-add"
-                    type="date" 
+                    type="date"
                     value={dataNascimento}
                     onChange={e => setDataNascimento(e.target.value)}
                     className="w-full p-2.5 border border-gray-200 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50 font-medium"
@@ -235,7 +253,7 @@ export function GerenciarAlunos() {
 
                 <div>
                   <label htmlFor="turma-add" className="block text-xs font-semibold text-gray-500 uppercase mb-1">Vincular Turma</label>
-                  <select 
+                  <select
                     id="turma-add"
                     value={turmaSelecionada}
                     onChange={e => setTurmaSelecionada(e.target.value)}
@@ -252,23 +270,33 @@ export function GerenciarAlunos() {
                   <label htmlFor="senha-add" className="block text-xs font-semibold text-gray-500 uppercase mb-1 items-center gap-1">
                     Criar Senha Inicial *
                   </label>
-                  <input 
-                    id="senha-add"
-                    type="password" 
-                    value={senha}
-                    onChange={e => setSenha(e.target.value)}
-                    placeholder="Mínimo 6 dígitos"
-                    className="w-full p-2.5 border border-gray-200 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50"
-                    required
-                  />
+                  <div className="relative">
+                    <input
+                      id="senha-add"
+                      type={showSenhaAdd ? "text" : "password"}
+                      value={senha}
+                      onChange={e => setSenha(e.target.value)}
+                      placeholder="Mínimo 6 dígitos"
+                      className="w-full pl-4 pr-10 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowSenhaAdd(!showSenhaAdd)}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-sys-blue cursor-pointer"
+                      title={showSenhaAdd ? "Ocultar senha" : "Mostrar senha"}
+                    >
+                      {showSenhaAdd ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              <div className="flex justify-end gap-2 pt-4 border-t border-gray-100">
-                <button type="button" onClick={() => setIsAddModalOpen(false)} className="px-4 py-2 border rounded-xl text-gray-600 hover:bg-gray-50 cursor-pointer">Cancelar</button>
-                <button type="submit" disabled={salvando} className="px-4 py-2 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl font-bold cursor-pointer">
-                  {salvando ? 'Matriculando...' : 'Concluir Matrícula'}
-                </button>
+                <div className="flex justify-end gap-2 pt-4 border-t border-gray-100">
+                  <button type="button" onClick={() => setIsAddModalOpen(false)} className="px-4 py-2 border rounded-xl text-gray-600 hover:bg-gray-50 cursor-pointer">Cancelar</button>
+                  <button type="submit" disabled={salvando} className="px-4 py-2 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl font-bold cursor-pointer">
+                    {salvando ? 'Matriculando...' : 'Concluir Matrícula'}
+                  </button>
+                </div>
               </div>
             </form>
           </div>
@@ -292,9 +320,9 @@ export function GerenciarAlunos() {
             <form onSubmit={e => { e.preventDefault(); executarEditarAluno(); }} className="space-y-4">
               <div>
                 <label htmlFor="nome-edit" className="block text-xs font-semibold text-gray-500 uppercase mb-1">Nome Completo *</label>
-                <input 
+                <input
                   id="nome-edit"
-                  type="text" 
+                  type="text"
                   value={nome}
                   onChange={e => setNome(e.target.value)}
                   className="w-full p-2.5 border border-gray-200 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50"
@@ -304,9 +332,9 @@ export function GerenciarAlunos() {
 
               <div>
                 <label htmlFor="email-edit" className="block text-xs font-semibold text-gray-500 uppercase mb-1">E-mail *</label>
-                <input 
+                <input
                   id="email-edit"
-                  type="email" 
+                  type="email"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   className="w-full p-2.5 border border-gray-200 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50"
@@ -316,14 +344,29 @@ export function GerenciarAlunos() {
 
               <div>
                 <label htmlFor="tel-edit" className="block text-xs font-semibold text-gray-500 uppercase mb-1">Telefone/Celular *</label>
-                <input 
+                <input
                   id="tel-edit"
-                  type="text" 
+                  type="text"
                   value={telefone}
                   onChange={e => setTelefone(padraoTelefone(e.target.value))}
                   className="w-full p-2.5 border border-gray-200 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50"
                   required
                 />
+              </div>
+
+              <div>
+                <label htmlFor="turma-edit" className="block text-xs font-semibold text-gray-500 uppercase mb-1">Alterar Turma</label>
+                <select
+                  id="turma-edit"
+                  value={turmaSelecionada}
+                  onChange={e => setTurmaSelecionada(e.target.value)}
+                  className="w-full p-2.5 border border-gray-200 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50 cursor-pointer font-medium"
+                >
+                  <option value="">Nenhuma turma (Desvincular)</option>
+                  {turmas.map(t => (
+                    <option key={t.idTurma} value={t.idTurma}>Turma {t.idTurma}</option>
+                  ))}
+                </select>
               </div>
 
               <div className="flex justify-end gap-2 pt-4 border-t border-gray-100">

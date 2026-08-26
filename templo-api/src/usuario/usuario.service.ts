@@ -40,6 +40,7 @@ export class UsuarioService {
                         idUsuario: NovoUsuario.idUsuario,
                         dataNascimento: new Date(data.dataNascimento),
                         idGestor: data.idGestor,
+                        idTurma: data.idTurma ? Number(data.idTurma) : null,
                     },
                 });
             } else if (data.papel === 'PROFESSOR') {
@@ -89,20 +90,21 @@ export class UsuarioService {
             throw new NotFoundException('Usuário não encontrado');
         }
 
-        const usuarioAtualizado = await this.prisma.usuario.update({
-            where: {
-                idUsuario
-            },
+        return await this.prisma.usuario.update({
+            where: { idUsuario },
             data: {
                 nome: data.nome,
                 email: data.email,
                 telefone: data.telefone,
                 ativo: data.ativo,
+
+                aluno: usuarioExists.papel === 'ALUNO' ? {
+                    update: {
+                        idTurma: data.idTurma ? Number(data.idTurma) : null
+                    }
+                } : undefined
             },
         });
-
-        const { senha, ...usuarioSemSenha } = usuarioAtualizado;
-        return usuarioSemSenha;
     }
 
     async delete(idUsuario: number) {
@@ -146,7 +148,7 @@ export class UsuarioService {
             throw new NotFoundException('Usuário não encontrado');
         }
 
-         const { senha, ...usuarioSemSenha } = usuarioExists;
+        const { senha, ...usuarioSemSenha } = usuarioExists;
         return usuarioSemSenha;
     }
 

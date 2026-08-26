@@ -3,6 +3,7 @@ import { UseAuth } from "./UseAuth";
 import { Api } from "../api/Api";
 import { AxiosError } from "axios";
 import { padraoTelefone } from "../utils/telefone";
+export const regexTextoSeguro = /^(?=.*[a-zA-Z0-9À-ÿ])[a-zA-Z0-9À-ÿ\s.!?,;\-_@()]+$/;
 
 export interface Turma {
   idTurma: number;
@@ -38,6 +39,8 @@ export function UseGerenciarAlunos() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [alunoSelecionado, setAlunoSelecionado] = useState<AlunoCompleto | null>(null);
+  const [ocultarInativos, setOcultarInativos] = useState(true);
+  const [alunoExpandidoId, setAlunoExpandidoId] = useState<number | null>(null);
 
   useEffect(() => {
     async function carregarDadosSecretaria() {
@@ -89,6 +92,7 @@ export function UseGerenciarAlunos() {
     setNome(aluno.nome);
     setEmail(aluno.email);
     setTelefone(padraoTelefone(aluno.telefone));
+    setTurmaSelecionada(aluno.aluno?.idTurma ? aluno.aluno.idTurma.toString() : '');
     setDataNascimento(aluno.aluno?.dataNascimento ? new Date(aluno.aluno.dataNascimento).toISOString().split('T')[0] : '');
     setErro('');
     setSucesso('');
@@ -101,6 +105,15 @@ export function UseGerenciarAlunos() {
 
     if (!nome.trim() || !email.trim() || !senha.trim() || !telefone.trim() || !dataNascimento.trim()) {
       setErro('Preencha todos os campos obrigatórios.');
+      return;
+    }
+
+    if (senha.length < 6) {
+      setErro('A senha inicial deve ter pelo menos 6 caracteres.');
+      return;
+    }
+    if (!regexTextoSeguro.test(senha)) {
+      setErro('A senha contém caracteres inválidos. Use apenas letras, números e caracteres especiais.');
       return;
     }
 
@@ -146,7 +159,8 @@ export function UseGerenciarAlunos() {
         nome,
         email,
         telefone,
-        ativo: alunoSelecionado.ativo
+        ativo: alunoSelecionado.ativo,
+        idTurma: turmaSelecionada ? Number(turmaSelecionada) : null
       });
 
       setSucesso('Cadastro do aluno atualizado com sucesso!');
@@ -168,7 +182,7 @@ export function UseGerenciarAlunos() {
     try {
       setErro('');
       setSucesso('');
-      
+
       await Api.put(`/usuario/${aluno.idUsuario}`, {
         nome: aluno.nome,
         email: aluno.email,
@@ -185,16 +199,20 @@ export function UseGerenciarAlunos() {
   }
 
   function showToastSuccess(msg: string) {
-      setSucesso(msg);
-      setTimeout(() => setSucesso(''), 3000);
+    setSucesso(msg);
+    setTimeout(() => setSucesso(''), 3000);
   }
 
   //Filtragem na tabela
-  const alunosFiltrados = alunos.filter(a => 
-    a.nome.toLowerCase().includes(pesquisa.toLowerCase()) ||
-    a.email.toLowerCase().includes(pesquisa.toLowerCase()) ||
-    a.idUsuario.toString().includes(pesquisa)
-  );
+  const alunosFiltrados = alunos.filter(a => {
+    const bateBusca = a.nome.toLowerCase().includes(pesquisa.toLowerCase()) ||
+      a.email.toLowerCase().includes(pesquisa.toLowerCase()) ||
+      a.idUsuario.toString().includes(pesquisa);
+
+    const bateAtivo = ocultarInativos ? a.ativo === true : true;
+
+    return bateBusca && bateAtivo;
+  });
 
   return {
     alunosFiltrados,
@@ -226,6 +244,10 @@ export function UseGerenciarAlunos() {
     abrirModalEditar,
     executarMatricula,
     executarEditarAluno,
-    alternarStatusAtivo
+    alternarStatusAtivo,
+    ocultarInativos,
+    setOcultarInativos,
+    alunoExpandidoId,
+    setAlunoExpandidoId
   };
 }

@@ -44,6 +44,7 @@ export class FrequenciaService {
     }
     
     return await this.prisma.frequencia.findMany({
+      where: filtro,
       include: {
         aluno: { include: { usuario: { select: { nome: true } } } },
         professor: { include: { usuario: { select: { nome: true } } } }
