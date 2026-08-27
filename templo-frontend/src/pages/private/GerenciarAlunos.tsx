@@ -34,9 +34,18 @@ export function GerenciarAlunos() {
     abrirModalEditar,
     executarMatricula,
     executarEditarAluno,
-    alternarStatusAtivo,
     ocultarInativos,
-    setOcultarInativos
+    setOcultarInativos,
+    setIsConfirmAddOpen,
+    isConfirmAddOpen,
+    setIsConfirmEditOpen,
+    isConfirmEditOpen,
+    setIsConfirmStatusOpen,
+    isConfirmStatusOpen,
+    prepararMatricula,
+    prepararEditarAluno,
+    prepararAlternarStatus,
+    executarAlternarStatusAtivo
   } = UseGerenciarAlunos();
 
   const [showSenhaAdd, setShowSenhaAdd] = useState(false);
@@ -164,7 +173,7 @@ export function GerenciarAlunos() {
                         <Edit className="w-4 h-4" />
                       </button>
                       <button
-                        onClick={() => alternarStatusAtivo(aluno)}
+                        onClick={() => prepararAlternarStatus(aluno)}
                         className={`p-1.5 rounded cursor-pointer transition-colors
                           ${aluno.ativo
                             ? 'text-yellow-600 hover:bg-yellow-50'
@@ -198,7 +207,7 @@ export function GerenciarAlunos() {
               </div>
             )}
 
-            <form onSubmit={e => { e.preventDefault(); executarMatricula(); }} className="space-y-4">
+            <form onSubmit={e => { e.preventDefault(); prepararMatricula(); }} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="col-span-1 md:col-span-2">
                   <label htmlFor="nome-add" className="block text-xs font-semibold text-gray-500 uppercase mb-1">Nome Completo *</label>
@@ -294,7 +303,7 @@ export function GerenciarAlunos() {
                 <div className="flex justify-end gap-2 pt-4 border-t border-gray-100">
                   <button type="button" onClick={() => setIsAddModalOpen(false)} className="px-4 py-2 border rounded-xl text-gray-600 hover:bg-gray-50 cursor-pointer">Cancelar</button>
                   <button type="submit" disabled={salvando} className="px-4 py-2 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl font-bold cursor-pointer">
-                    {salvando ? 'Matriculando...' : 'Concluir Matrícula'}
+                    {salvando ? 'Matriculando...' : 'Matrícular'}
                   </button>
                 </div>
               </div>
@@ -317,7 +326,7 @@ export function GerenciarAlunos() {
               </div>
             )}
 
-            <form onSubmit={e => { e.preventDefault(); executarEditarAluno(); }} className="space-y-4">
+            <form onSubmit={e => { e.preventDefault(); prepararEditarAluno(); }} className="space-y-4">
               <div>
                 <label htmlFor="nome-edit" className="block text-xs font-semibold text-gray-500 uppercase mb-1">Nome Completo *</label>
                 <input
@@ -376,6 +385,63 @@ export function GerenciarAlunos() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/*Confirmar POST*/}
+      {isConfirmAddOpen && (
+        <div className="fixed inset-0 bg-black/60 z-300 flex items-center justify-center p-4 backdrop-blur-xs">
+          <div className="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center border border-gray-100 animate-modal-enter text-sm">
+            <div className="w-12 h-12 bg-blue-50 text-sys-blue rounded-full flex items-center justify-center mx-auto mb-4">
+              <UserPlus className="w-6 h-6" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-800 mb-2">Confirmar Matrícula</h3>
+            <p className="text-sm text-gray-500 mb-6">
+              Deseja confirmar a matrícula do aluno {nome} no sistema?
+            </p>
+            <div className="flex gap-3">
+              <button type="button" onClick={() => setIsConfirmAddOpen(false)} className="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition cursor-pointer">Cancelar</button>
+              <button type="button" onClick={executarMatricula} className="flex-1 py-2.5 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl text-sm font-bold transition cursor-pointer">Confirmar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/*Confirmar PUT*/}
+      {isConfirmEditOpen && (
+        <div className="fixed inset-0 bg-black/60 z-300 flex items-center justify-center p-4 backdrop-blur-xs">
+          <div className="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center border border-gray-100 animate-modal-enter text-sm">
+            <div className="w-12 h-12 bg-blue-50 text-sys-blue rounded-full flex items-center justify-center mx-auto mb-4">
+              <Edit className="w-6 h-6" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-800 mb-2">Salvar Alterações</h3>
+            <p className="text-sm text-gray-500 mb-6">
+              Deseja confirmar as alterações de cadastro realizadas no aluno {alunoSelecionado?.nome}?
+            </p>
+            <div className="flex gap-3">
+              <button type="button" onClick={() => setIsConfirmEditOpen(false)} className="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition cursor-pointer">Cancelar</button>
+              <button type="button" onClick={executarEditarAluno} className="flex-1 py-2.5 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl text-sm font-bold transition cursor-pointer">Salvar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/*Confirmar Status*/}
+      {isConfirmStatusOpen && (
+        <div className="fixed inset-0 bg-black/60 z-300 flex items-center justify-center p-4 backdrop-blur-xs">
+          <div className="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center border border-gray-150 animate-modal-enter text-sm">
+            <div className="w-12 h-12 bg-yellow-50 text-yellow-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Power className="w-6 h-6" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-800 mb-2">Alterar Status</h3>
+            <p className="text-sm text-gray-500 mb-6">
+              Deseja alterar o status do aluno {alunoSelecionado?.nome} para {alunoSelecionado?.ativo ? 'INATIVO' : 'ATIVO'}?
+            </p>
+            <div className="flex gap-3">
+              <button type="button" onClick={() => setIsConfirmStatusOpen(false)} className="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition cursor-pointer">Cancelar</button>
+              <button type="button" onClick={executarAlternarStatusAtivo} className="flex-1 py-2.5 bg-yellow-500 hover:bg-yellow-600 text-white rounded-xl text-sm font-bold transition cursor-pointer">Confirmar</button>
+            </div>
           </div>
         </div>
       )}

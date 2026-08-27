@@ -41,6 +41,9 @@ export function UseGerenciarAlunos() {
   const [alunoSelecionado, setAlunoSelecionado] = useState<AlunoCompleto | null>(null);
   const [ocultarInativos, setOcultarInativos] = useState(true);
   const [alunoExpandidoId, setAlunoExpandidoId] = useState<number | null>(null);
+  const [isConfirmAddOpen, setIsConfirmAddOpen] = useState(false);
+  const [isConfirmEditOpen, setIsConfirmEditOpen] = useState(false);
+  const [isConfirmStatusOpen, setIsConfirmStatusOpen] = useState(false);
 
   useEffect(() => {
     async function carregarDadosSecretaria() {
@@ -99,24 +102,29 @@ export function UseGerenciarAlunos() {
     setIsEditModalOpen(true);
   }
 
-  //POST Aluno
-  async function executarMatricula() {
-    if (!user) return;
-
+  function prepararMatricula() {
     if (!nome.trim() || !email.trim() || !senha.trim() || !telefone.trim() || !dataNascimento.trim()) {
       setErro('Preencha todos os campos obrigatórios.');
       return;
     }
 
     if (senha.length < 6) {
-      setErro('A senha inicial deve ter pelo menos 6 caracteres.');
-      return;
+        setErro('A senha inicial deve ter pelo menos 6 caracteres.');
+        return;
     }
     if (!regexTextoSeguro.test(senha)) {
-      setErro('A senha contém caracteres inválidos. Use apenas letras, números e caracteres especiais.');
-      return;
+        setErro('A senha contém caracteres inválidos. Use apenas letras, números e caracteres especiais.');
+        return;
     }
 
+    setErro('');
+    setIsConfirmAddOpen(true);
+  }
+
+  //POST Aluno
+  async function executarMatricula() {
+    if (!user) return;
+    setIsConfirmAddOpen(false);
     setSalvando(true);
     setErro('');
 
@@ -147,10 +155,19 @@ export function UseGerenciarAlunos() {
     }
   }
 
+  function prepararEditarAluno() {
+    if (!nome.trim() || !email.trim() || !telefone.trim()) {
+      setErro('Preencha os campos obrigatórios.');
+      return;
+    }
+    setErro('');
+    setIsConfirmEditOpen(true);
+  }
+
   //PUT Aluno
   async function executarEditarAluno() {
     if (!alunoSelecionado) return;
-
+    setIsConfirmEditOpen(false);
     setSalvando(true);
     setErro('');
 
@@ -177,20 +194,29 @@ export function UseGerenciarAlunos() {
     }
   }
 
-  //Status Aluno
-  async function alternarStatusAtivo(aluno: AlunoCompleto) {
-    try {
-      setErro('');
-      setSucesso('');
+  function prepararAlternarStatus(aluno: AlunoCompleto) {
+    setAlunoSelecionado(aluno);
+    setErro('');
+    setSucesso('');
+    setIsConfirmStatusOpen(true);
+  }
 
-      await Api.put(`/usuario/${aluno.idUsuario}`, {
-        nome: aluno.nome,
-        email: aluno.email,
-        telefone: aluno.telefone,
-        ativo: !aluno.ativo
+  //Status Aluno
+  async function executarAlternarStatusAtivo() {
+    if (!alunoSelecionado) return;
+    setIsConfirmStatusOpen(false);
+    setErro('');
+    setSucesso('');
+
+    try {
+      await Api.put(`/usuario/${alunoSelecionado.idUsuario}`, {
+        nome: alunoSelecionado.nome,
+        email: alunoSelecionado.email,
+        telefone: alunoSelecionado.telefone,
+        ativo: !alunoSelecionado.ativo
       });
 
-      showToastSuccess(`Status do aluno alterado para ${!aluno.ativo ? 'ATIVO' : 'INATIVO'}`);
+      showToastSuccess(`Status do aluno alterado para ${!alunoSelecionado.ativo ? 'ATIVO' : 'INATIVO'}`);
       await atualizarListaAlunos();
     } catch (error) {
       console.error(error);
@@ -244,10 +270,19 @@ export function UseGerenciarAlunos() {
     abrirModalEditar,
     executarMatricula,
     executarEditarAluno,
-    alternarStatusAtivo,
     ocultarInativos,
     setOcultarInativos,
     alunoExpandidoId,
-    setAlunoExpandidoId
+    setAlunoExpandidoId,
+    setIsConfirmAddOpen,
+    isConfirmAddOpen,
+    setIsConfirmEditOpen,
+    isConfirmEditOpen,
+    setIsConfirmStatusOpen,
+    isConfirmStatusOpen,
+    prepararMatricula,
+    prepararEditarAluno,
+    prepararAlternarStatus,
+    executarAlternarStatusAtivo
   };
 }
