@@ -15,6 +15,7 @@ import { GerenciarAviso } from "../pages/private/GerenciarAviso";
 import { GerenciarMateriais } from "../pages/private/GerenciarMateriais";
 import { Relatorio } from "../pages/private/Relatorio";
 import { GerenciarAlunos } from "../pages/private/GerenciarAlunos";
+import { GerenciarProfessores } from "../pages/private/GerenciarProfessores";
 
 export function AppRoutes() {
     const { isAuthenticated, loading, user } = UseAuth();
@@ -62,6 +63,7 @@ export function AppRoutes() {
                         {user?.papel === 'GESTOR' && (
                             <>
                                 <Route path="/gerenciar-alunos" element={<GerenciarAlunos />} />
+                                <Route path="/gerenciar-professores" element={<GerenciarProfessores />} />
                             </>
                         )}
                     </Route>

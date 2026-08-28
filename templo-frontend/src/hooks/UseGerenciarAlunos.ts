@@ -44,6 +44,7 @@ export function UseGerenciarAlunos() {
   const [isConfirmAddOpen, setIsConfirmAddOpen] = useState(false);
   const [isConfirmEditOpen, setIsConfirmEditOpen] = useState(false);
   const [isConfirmStatusOpen, setIsConfirmStatusOpen] = useState(false);
+  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false)
 
   useEffect(() => {
     async function carregarDadosSecretaria() {
@@ -100,6 +101,12 @@ export function UseGerenciarAlunos() {
     setErro('');
     setSucesso('');
     setIsEditModalOpen(true);
+  }
+  function prepararDeletarAluno(aluno: AlunoCompleto) {
+    setAlunoSelecionado(aluno);
+    setErro('');
+    setSucesso('');
+    setIsConfirmDeleteOpen(true);
   }
 
   function prepararMatricula() {
@@ -224,6 +231,27 @@ export function UseGerenciarAlunos() {
     }
   }
 
+  async function executarDeletarAluno() {
+    if (!alunoSelecionado) return;
+    setIsConfirmDeleteOpen(false);
+    setSalvando(true);
+    setErro('');
+
+    try {
+      await Api.delete(`/usuario/${alunoSelecionado.idUsuario}`);
+      setSucesso('Matrícula do aluno excluída permanentemente!');
+      await atualizarListaAlunos();
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        setErro(error.response?.data?.message || 'Erro ao excluir matrícula.');
+      } else {
+        setErro('Erro inesperado.');
+      }
+    } finally {
+      setSalvando(false);
+    }
+  }
+
   function showToastSuccess(msg: string) {
     setSucesso(msg);
     setTimeout(() => setSucesso(''), 3000);
@@ -280,9 +308,13 @@ export function UseGerenciarAlunos() {
     isConfirmEditOpen,
     setIsConfirmStatusOpen,
     isConfirmStatusOpen,
+    isConfirmDeleteOpen,
+    setIsConfirmDeleteOpen,
     prepararMatricula,
     prepararEditarAluno,
+    prepararDeletarAluno,
     prepararAlternarStatus,
-    executarAlternarStatusAtivo
+    executarAlternarStatusAtivo,
+    executarDeletarAluno
   };
 }

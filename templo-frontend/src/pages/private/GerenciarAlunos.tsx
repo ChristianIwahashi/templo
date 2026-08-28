@@ -1,7 +1,9 @@
 import { UseGerenciarAlunos } from "../../hooks/UseGerenciarAlunos";
-import { Users, UserPlus, Edit, Power, Info, AlertCircle, Check, Search, EyeOff, Eye } from "lucide-react";
+import { Users, UserPlus, Edit, Power, Info, AlertCircle, Check, Search, EyeOff, Eye, Trash2 } from "lucide-react";
 import { padraoTelefone } from "../../utils/telefone";
 import { useState } from "react";
+import { ConfirmModal } from "../../components/ConfirmModal";
+import { formatarData } from "../../utils/formatters";
 
 export function GerenciarAlunos() {
   const {
@@ -36,16 +38,22 @@ export function GerenciarAlunos() {
     executarEditarAluno,
     ocultarInativos,
     setOcultarInativos,
+    alunoExpandidoId,
+    setAlunoExpandidoId,
     setIsConfirmAddOpen,
     isConfirmAddOpen,
     setIsConfirmEditOpen,
     isConfirmEditOpen,
-    setIsConfirmStatusOpen,
-    isConfirmStatusOpen,
+    isConfirmDeleteOpen,
+    setIsConfirmDeleteOpen,
     prepararMatricula,
     prepararEditarAluno,
     prepararAlternarStatus,
-    executarAlternarStatusAtivo
+    setIsConfirmStatusOpen,
+    isConfirmStatusOpen,
+    executarAlternarStatusAtivo,
+    prepararDeletarAluno,
+    executarDeletarAluno
   } = UseGerenciarAlunos();
 
   const [showSenhaAdd, setShowSenhaAdd] = useState(false);
@@ -92,7 +100,7 @@ export function GerenciarAlunos() {
       <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex gap-4 items-end">
         <div className="w-full relative">
           <label htmlFor="busca-aluno" className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5 items-center gap-1.5">
-            Buscar Aluno por Nome ou ID
+            Buscar Aluno
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -144,49 +152,84 @@ export function GerenciarAlunos() {
                 </tr>
               </thead>
               <tbody className="text-sm">
-                {alunosFiltrados.map(aluno => (
-                  <tr key={aluno.idUsuario} className="border-b border-gray-100 hover:bg-gray-50/20 transition-colors">
-                    <td className="p-4">
-                      <span className="font-semibold text-gray-800 block leading-tight">{aluno.nome}</span>
-                      <span className="text-xs text-gray-400 mt-1 block">{aluno.email}</span>
-                    </td>
-                    <td className="p-4 text-gray-600 font-medium">#{aluno.idUsuario}</td>
-                    <td className="p-4 text-gray-600 font-medium">
-                      {aluno.aluno?.idTurma ? `Turma ${aluno.aluno.idTurma}` : '-'}
-                    </td>
-                    <td className="p-4 text-center">
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-bold border
-                        ${aluno.ativo
-                          ? 'bg-green-50 text-green-700 border-green-200'
-                          : 'bg-gray-50 text-gray-600 border-gray-200'
-                        }
-                      `}>
-                        {aluno.ativo ? 'Ativo' : 'Inativo'}
-                      </span>
-                    </td>
-                    <td className="p-4 text-right space-x-1 whitespace-nowrap">
-                      <button
-                        onClick={() => abrirModalEditar(aluno)}
-                        className="text-blue-500 hover:bg-blue-50 p-1.5 rounded cursor-pointer transition-colors"
-                        title="Editar Informações"
+                {alunosFiltrados.map(aluno => {
+                  const isExpanded = alunoExpandidoId === aluno.idUsuario;
+                  return (
+                    <>
+                      <tr 
+                        key={aluno.idUsuario} 
+                        onClick={() => setAlunoExpandidoId(isExpanded ? null : aluno.idUsuario)}
+                        className="border-b border-gray-100 hover:bg-gray-50/30 transition-colors cursor-pointer"
                       >
-                        <Edit className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => prepararAlternarStatus(aluno)}
-                        className={`p-1.5 rounded cursor-pointer transition-colors
-                          ${aluno.ativo
-                            ? 'text-yellow-600 hover:bg-yellow-50'
-                            : 'text-green-600 hover:bg-green-50'
-                          }
-                        `}
-                        title={aluno.ativo ? "Inativar Aluno" : "Ativar Aluno"}
-                      >
-                        <Power className="w-4 h-4" />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                        <td className="p-4">
+                          <span className="font-semibold text-gray-800 block leading-tight">{aluno.nome}</span>
+                          <span className="text-xs text-gray-400 mt-1 block">{aluno.email}</span>
+                        </td>
+                        <td className="p-4 text-gray-600 font-medium">#{aluno.idUsuario}</td>
+                        <td className="p-4 text-gray-600 font-medium">
+                          {aluno.aluno?.idTurma ? `Turma ${aluno.aluno.idTurma}` : '-'}
+                        </td>
+                        <td className="p-4 text-center">
+                          <span className={`px-2.5 py-1 rounded-full text-xs font-bold border
+                            ${aluno.ativo
+                              ? 'bg-green-50 text-green-700 border-green-200'
+                              : 'bg-gray-50 text-gray-600 border-gray-200'
+                            }
+                          `}>
+                            {aluno.ativo ? 'Ativo' : 'Inativo'}
+                          </span>
+                        </td>
+                        <td className="p-4 text-right space-x-1 whitespace-nowrap" onClick={e => e.stopPropagation()}>
+                          <button
+                            onClick={() => abrirModalEditar(aluno)}
+                            className="text-blue-500 hover:bg-blue-50 p-1.5 rounded cursor-pointer transition-colors"
+                            title="Editar Informações"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => prepararAlternarStatus(aluno)}
+                            className={`p-1.5 rounded cursor-pointer transition-colors
+                              ${aluno.ativo
+                                ? 'text-yellow-600 hover:bg-yellow-50'
+                                : 'text-green-600 hover:bg-green-50'
+                              }
+                            `}
+                            title={aluno.ativo ? "Inativar Aluno" : "Ativar Aluno"}
+                          >
+                            <Power className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => prepararDeletarAluno(aluno)}
+                            className="text-red-500 hover:bg-red-50 p-1.5 rounded cursor-pointer transition-colors"
+                            title="Excluir Matrícula"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </td>
+                      </tr>
+
+                      {isExpanded && (
+                        <tr className="bg-slate-50/50">
+                          <td colSpan={5} className="p-4 border-b border-gray-100">
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-xs">
+                              <div>
+                                <p className="text-gray-400 font-bold uppercase">Data de Nascimento</p>
+                                <p className="font-semibold text-gray-700 mt-1">
+                                  {aluno.aluno?.dataNascimento ? formatarData(aluno.aluno.dataNascimento) : '-'}
+                                </p>
+                              </div>
+                              <div>
+                                <p className="text-gray-400 font-bold uppercase">Telefone Cadastrado</p>
+                                <p className="font-semibold text-gray-700 mt-1">{padraoTelefone(aluno.telefone)}</p>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -390,61 +433,48 @@ export function GerenciarAlunos() {
       )}
 
       {/*Confirmar POST*/}
-      {isConfirmAddOpen && (
-        <div className="fixed inset-0 bg-black/60 z-300 flex items-center justify-center p-4 backdrop-blur-xs">
-          <div className="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center border border-gray-100 animate-modal-enter text-sm">
-            <div className="w-12 h-12 bg-blue-50 text-sys-blue rounded-full flex items-center justify-center mx-auto mb-4">
-              <UserPlus className="w-6 h-6" />
-            </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">Confirmar Matrícula</h3>
-            <p className="text-sm text-gray-500 mb-6">
-              Deseja confirmar a matrícula do aluno {nome} no sistema?
-            </p>
-            <div className="flex gap-3">
-              <button type="button" onClick={() => setIsConfirmAddOpen(false)} className="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition cursor-pointer">Cancelar</button>
-              <button type="button" onClick={executarMatricula} className="flex-1 py-2.5 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl text-sm font-bold transition cursor-pointer">Confirmar</button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmModal
+        isOpen={isConfirmAddOpen}
+        onClose={() => setIsConfirmAddOpen(false)}
+        onConfirm={executarMatricula}
+        title="Confirmar Matrícula"
+        description={`Deseja confirmar a matrícula do aluno ${nome} no sistema? Uma conta associada será criada de forma automática.`}
+        type="info"
+        isLoading={salvando}
+      />
 
       {/*Confirmar PUT*/}
-      {isConfirmEditOpen && (
-        <div className="fixed inset-0 bg-black/60 z-300 flex items-center justify-center p-4 backdrop-blur-xs">
-          <div className="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center border border-gray-100 animate-modal-enter text-sm">
-            <div className="w-12 h-12 bg-blue-50 text-sys-blue rounded-full flex items-center justify-center mx-auto mb-4">
-              <Edit className="w-6 h-6" />
-            </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">Salvar Alterações</h3>
-            <p className="text-sm text-gray-500 mb-6">
-              Deseja confirmar as alterações de cadastro realizadas no aluno {alunoSelecionado?.nome}?
-            </p>
-            <div className="flex gap-3">
-              <button type="button" onClick={() => setIsConfirmEditOpen(false)} className="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition cursor-pointer">Cancelar</button>
-              <button type="button" onClick={executarEditarAluno} className="flex-1 py-2.5 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl text-sm font-bold transition cursor-pointer">Salvar</button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmModal
+        isOpen={isConfirmEditOpen}
+        onClose={() => setIsConfirmEditOpen(false)}
+        onConfirm={executarEditarAluno}
+        title="Salvar Alterações"
+        description={`Deseja confirmar as alterações de cadastro realizadas no aluno ${alunoSelecionado?.nome}?`}
+        type="info"
+        isLoading={salvando}
+      />
 
       {/*Confirmar Status*/}
-      {isConfirmStatusOpen && (
-        <div className="fixed inset-0 bg-black/60 z-300 flex items-center justify-center p-4 backdrop-blur-xs">
-          <div className="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center border border-gray-150 animate-modal-enter text-sm">
-            <div className="w-12 h-12 bg-yellow-50 text-yellow-600 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Power className="w-6 h-6" />
-            </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">Alterar Status</h3>
-            <p className="text-sm text-gray-500 mb-6">
-              Deseja alterar o status do aluno {alunoSelecionado?.nome} para {alunoSelecionado?.ativo ? 'INATIVO' : 'ATIVO'}?
-            </p>
-            <div className="flex gap-3">
-              <button type="button" onClick={() => setIsConfirmStatusOpen(false)} className="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition cursor-pointer">Cancelar</button>
-              <button type="button" onClick={executarAlternarStatusAtivo} className="flex-1 py-2.5 bg-yellow-500 hover:bg-yellow-600 text-white rounded-xl text-sm font-bold transition cursor-pointer">Confirmar</button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmModal
+        isOpen={isConfirmStatusOpen}
+        onClose={() => setIsConfirmStatusOpen(false)}
+        onConfirm={executarAlternarStatusAtivo}
+        title="Alterar Status"
+        description={`Deseja alterar o status de acesso do aluno ${alunoSelecionado?.nome} para ${alunoSelecionado?.ativo ? 'INATIVO' : 'ATIVO'}?`}
+        type="warning"
+        isLoading={salvando}
+      />
+
+      {/*Confirmar DELETE*/}
+      <ConfirmModal
+        isOpen={isConfirmDeleteOpen}
+        onClose={() => setIsConfirmDeleteOpen(false)}
+        onConfirm={executarDeletarAluno}
+        title="Excluir Aluno"
+        description={`Deseja realmente excluir permanentemente a matrícula do aluno ${alunoSelecionado?.nome}? Todos os registros de notas e frequências associados a ele serão apagados do sistema.`}
+        type="danger"
+        isLoading={salvando}
+      />
     </div>
   );
 }
