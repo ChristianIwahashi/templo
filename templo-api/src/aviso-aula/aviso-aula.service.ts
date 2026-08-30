@@ -31,7 +31,8 @@ export class AvisoAulaService {
         titulo: data.titulo,
         imagemUrl: data.imagemUrl,
         idProfessor: data.idProfessor,
-        idTurma: data.idTurma
+        idTurma: data.idTurma,
+        criadoPorId: usuarioLogado?.idUsuario || null,
       }
     });
   }
@@ -57,6 +58,8 @@ export class AvisoAulaService {
       where: filtro,
       include: {
         professor: { include: { usuario: { select: { nome: true } } } },
+        criadoPor: { select: { idUsuario: true, nome: true, papel: true } },
+        atualizadoPor: { select: { idUsuario: true, nome: true, papel: true } },
         turma: true
       },
       orderBy: { dataPostagem: 'desc' }
@@ -68,6 +71,8 @@ export class AvisoAulaService {
       where: { idAvisoAula },
       include: {
         professor: { include: { usuario: { select: { nome: true } } } },
+        criadoPor: { select: { idUsuario: true, nome: true, papel: true } },
+        atualizadoPor: { select: { idUsuario: true, nome: true, papel: true } },
         turma: true
       }
     });
@@ -104,6 +109,7 @@ export class AvisoAulaService {
       data: {
         titulo: data.titulo,
         imagemUrl: data.imagemUrl,
+        atualizadoPorId: usuarioLogado?.idUsuario || null,
       }
     });
   }

@@ -1,4 +1,4 @@
-import { Bell, ChevronLeft, ChevronRight, DollarSign, FileText, FolderOpen, Globe, GraduationCap, Home, LogOut, Megaphone, Menu, PieChart, Shield, Star, User, UserCheck, Users, X } from "lucide-react";
+import { Bell, BookOpen, ChevronLeft, ChevronRight, DollarSign, FileText, FolderOpen, Globe, GraduationCap, Home, LogOut, Megaphone, Menu, PieChart, Shield, Star, User, UserCheck, Users, X } from "lucide-react";
 import { UseAuth } from "../hooks/UseAuth";
 import LogoTemplo from "../assets/images/Hongwanji.png";
 import { Link, Outlet, useLocation } from "react-router-dom";
@@ -25,13 +25,14 @@ const menuConfig = {
         { path: '/dashboard', label: 'Início', icon: Home },
         { path: '/gerenciar-alunos', label: 'Gerenciar Alunos', icon: Users },
         { path: '/gerenciar-professores', label: 'Gerenciar Professores', icon: UserCheck },
+        { path: '/gerenciar-turmas', label: 'Gerenciar Turmas', icon: BookOpen },
         { path: '/gerenciar-gestores', label: 'Gerenciar Gestores', icon: Shield },
-        { path: '/gerenciar-aviso', label: 'Gerenciar Avisos', icon: Megaphone },
+        { path: '/gerenciar-mensalidade', label: 'Gerenciar Mensalidade', icon: DollarSign },
         { path: '/gerenciar-informatico', label: 'Gerenciar Website', icon: Globe },
+        { path: '/gerenciar-aviso', label: 'Gerenciar Avisos', icon: Megaphone },
         { path: '/gerenciar-materiais', label: 'Gerenciar Materiais', icon: FolderOpen },
         { path: '/gerenciar-chamada', label: 'Gerenciar Chamada', icon: Users },
         { path: '/gerenciar-nota', label: 'Gerenciar Notas', icon: Star },
-        { path: '/gerenciar-mensalidade', label: 'Gerenciar Mensalidade', icon: DollarSign },
         { path: '/relatorio', label: 'Relatórios', icon: PieChart }
     ],
 };

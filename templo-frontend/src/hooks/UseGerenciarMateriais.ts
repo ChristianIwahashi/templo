@@ -2,13 +2,16 @@ import { useEffect, useState } from "react";
 import { UseAuth } from "./UseAuth";
 import { Api } from "../api/Api";
 import { AxiosError } from "axios";
+import type { AutorAuditoria } from "../components/InfoAuditoria";
 
 export interface Aluno {
   idUsuario: number;
+  idProfessor: number;
   usuario: { nome: string };
 }
 export interface Turma {
   idTurma: number;
+  idProfessor: number;
   alunos?: Aluno[];
 }
 export interface Material {
@@ -18,6 +21,10 @@ export interface Material {
   arquivoUrl: string;
   idProfessor: number;
   dataPostagem: string;
+  criadoEm?: string;
+  atualizadoEm?: string;
+  criadoPor?: AutorAuditoria | null;
+  atualizadoPor?: AutorAuditoria | null;
   turmasVinculadas?: { idTurma: number }[];
 
   alunosVinculados?: {
@@ -149,12 +156,10 @@ export function UseGerenciarMateriais() {
       setErro('Preencha todos os campos obrigatórios.');
       return;
     }
-
     if (!turmaSelecionada) {
       setErro('Selecione uma turma de destino.');
       return;
     }
-
     if (isExclusivo && alunosSelecionados.length === 0) {
       setErro('Selecione ao menos um aluno exclusivo para este material.');
       return;
@@ -163,12 +168,15 @@ export function UseGerenciarMateriais() {
     setSalvando(true);
     setErro('');
 
+    const turmaAtual = turmas.find(t => t.idTurma.toString() === turmaSelecionada);
+    const professorId = (user?.papel === 'GESTOR' ? turmaAtual?.idProfessor : user?.idUsuario) || turmaAtual?.idProfessor;
+
     try {
       await Api.post('/material-didatico', {
         titulo,
         descricao,
         arquivoUrl,
-        idProfessor: user.idUsuario,
+        idProfessor: professorId,
         idTurma: isExclusivo ? undefined : Number(turmaSelecionada),
         idAluno: isExclusivo ? alunosSelecionados : undefined
       });

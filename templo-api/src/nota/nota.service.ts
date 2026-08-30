@@ -28,7 +28,8 @@ export class NotaService {
         tipo: data.tipo,
         data: new Date(data.data),
         idProfessor: data.idProfessor,
-        idAluno: data.idAluno
+        idAluno: data.idAluno,
+        criadoPorId: usuarioLogado?.idUsuario || null
       }
     });
   }
@@ -48,7 +49,9 @@ export class NotaService {
       where: filtro,
       include: {
         aluno: { include: { usuario: { select: { nome: true } } } },
-        professor: { include: { usuario: { select: { nome: true } } } }
+        professor: { include: { usuario: { select: { nome: true } } } },
+        criadoPor: { select: { idUsuario: true, nome: true, papel: true } },
+        atualizadoPor: { select: { idUsuario: true, nome: true, papel: true } }
       },
       orderBy: { data: 'desc' }
     });
@@ -87,6 +90,7 @@ export class NotaService {
         valor: data.valor,
         tipo: data.tipo,
         data: data.data ? new Date(data.data) : undefined,
+        atualizadoPorId: usuarioLogado?.idUsuario || null
       }
     });
   }

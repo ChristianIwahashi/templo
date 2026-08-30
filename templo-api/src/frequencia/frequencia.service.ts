@@ -21,13 +21,14 @@ export class FrequenciaService {
       where: { idUsuario: data.idAluno }
     });
     if (!alunoExists) throw new NotFoundException('Aluno não encontrado');
-
+    console.log("QUEM ESTÁ SALVANDO:", usuarioLogado);
     return await this.prisma.frequencia.create({
       data: {
         dataAula: new Date(data.dataAula),
         presenca: data.presenca,
         idProfessor: data.idProfessor,
-        idAluno: data.idAluno
+        idAluno: data.idAluno,
+        criadoPorId: usuarioLogado?.idUsuario || null
       }
     });
   }
@@ -47,7 +48,9 @@ export class FrequenciaService {
       where: filtro,
       include: {
         aluno: { include: { usuario: { select: { nome: true } } } },
-        professor: { include: { usuario: { select: { nome: true } } } }
+        professor: { include: { usuario: { select: { nome: true } } } },
+        criadoPor: { select: { idUsuario: true, nome: true, papel: true } },
+        atualizadoPor: { select: { idUsuario: true, nome: true, papel: true } }
       },
       orderBy: { dataAula: 'desc' }
     });
@@ -58,7 +61,9 @@ export class FrequenciaService {
       where: { idFrequencia },
       include: {
         aluno: { include: { usuario: { select: { nome: true } } } },
-        professor: { include: { usuario: { select: { nome: true } } } }
+        professor: { include: { usuario: { select: { nome: true } } } },
+        criadoPor: { select: { idUsuario: true, nome: true, papel: true } },
+        atualizadoPor: { select: { idUsuario: true, nome: true, papel: true } }
       }
     });
 
@@ -78,15 +83,15 @@ export class FrequenciaService {
 
   async update(idFrequencia: number, data: UpdateFrequenciaDto, usuarioLogado?: any) {
     await this.getById(idFrequencia, usuarioLogado);
-
+    console.log("QUEM ESTÁ SALVANDO:", usuarioLogado);
     return await this.prisma.frequencia.update({
       where: { idFrequencia },
       data: {
         dataAula: data.dataAula ? new Date(data.dataAula) : undefined,
         presenca: data.presenca,
+        atualizadoPorId: usuarioLogado?.idUsuario || null
       }
     });
-
   }
 
   async delete(idFrequencia: number, usuarioLogado?: any) {

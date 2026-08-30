@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { UseAuth } from "./UseAuth";
 import { Api } from "../api/Api";
 import { AxiosError } from "axios";
+import type { AutorAuditoria } from "../components/InfoAuditoria";
 
 export interface Turma {
     idTurma: number;
+    idProfessor: number;
 }
-
 export interface AvisoAula {
     idAvisoAula: number;
     titulo: string;
@@ -14,6 +15,10 @@ export interface AvisoAula {
     imagemUrl?: string;
     idProfessor: number;
     idTurma: number;
+    criadoEm?: string;
+    atualizadoEm?: string;
+    criadoPor?: AutorAuditoria | null;
+    atualizadoPor?: AutorAuditoria | null;
 }
 
 export function UseGerenciarAviso() {
@@ -94,7 +99,6 @@ export function UseGerenciarAviso() {
             setErro('O conteúdo do aviso é obrigatório.');
             return;
         }
-
         if (!turmaSelecionada) {
             setErro('Selecione uma turma para este aviso.');
             return;
@@ -103,11 +107,14 @@ export function UseGerenciarAviso() {
         setSalvando(true);
         setErro('');
 
+        const turmaAtual = turmas.find(t => t.idTurma.toString() === turmaSelecionada);
+        const professorId = (user?.papel === 'GESTOR' ? turmaAtual?.idProfessor : user?.idUsuario) || turmaAtual?.idProfessor;
+        
         try {
             await Api.post('/aviso-aula', {
                 titulo: titulo,
                 imagemUrl: imagemUrl || undefined,
-                idProfessor: user.idUsuario,
+                idProfessor: professorId,
                 idTurma: Number(turmaSelecionada)
             });
 

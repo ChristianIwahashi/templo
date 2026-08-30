@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Api } from "../../api/Api";
 import { FileText, Download, FolderOpen, Info } from "lucide-react";
+import { InfoAuditoria, type AutorAuditoria } from "../../components/InfoAuditoria";
 
 interface Material {
     idMaterial: number;
@@ -9,6 +10,10 @@ interface Material {
     arquivoUrl: string;
     dataPostagem: string;
     professor: { usuario: { nome: string } };
+    criadoEm?: string;
+    atualizadoEm?: string;
+    criadoPor?: AutorAuditoria | null;
+    atualizadoPor?: AutorAuditoria | null;
 }
 
 const MESES = [
@@ -157,9 +162,15 @@ export function Materiais() {
                                 materiaisFiltrados.map((m) => (
                                     <tr key={m.idMaterial} className="border-b border-gray-100 hover:bg-gray-50/50 transition-colors">
 
-                                        <td className="p-4 flex items-center gap-3">
-                                            <FileText className="text-red-500 w-6 h-6 shrink-0" />
-                                            <span className="font-semibold text-gray-800 block leading-tight">{m.titulo}</span>
+                                        <td className="p-4 flex items-center justify-between gap-3">
+                                            <div className="flex items-center gap-3">
+                                                <FileText className="text-red-500 w-6 h-6 shrink-0" />
+                                                <span className="font-semibold text-gray-800 block leading-tight">{m.titulo}</span>
+                                            </div>
+                                            <InfoAuditoria
+                                                criadoPor={m.criadoPor}
+                                                atualizadoPor={m.atualizadoPor}
+                                            />
                                         </td>
                                         <td className="p-4 text-gray-600 max-w-xs" title={m.descricao}>
                                             <p className="line-clamp-2 text-xs leading-relaxed">

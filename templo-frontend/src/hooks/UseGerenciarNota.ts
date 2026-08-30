@@ -2,15 +2,16 @@ import { useEffect, useState } from "react";
 import { UseAuth } from "./UseAuth";
 import { Api } from "../api/Api";
 import { AxiosError } from "axios";
+import type { AutorAuditoria } from "../components/InfoAuditoria";
 
 export interface Turma {
     idTurma: number;
+    idProfessor: number;
     alunos?: {
         idUsuario: number;
         usuario: { nome: string };
     }[];
 }
-
 export interface Nota {
     idNota: number;
     valor: number;
@@ -18,6 +19,10 @@ export interface Nota {
     data: string;
     idAluno: number;
     idProfessor: number;
+    criadoEm?: string;
+    atualizadoEm?: string;
+    criadoPor?: AutorAuditoria | null;
+    atualizadoPor?: AutorAuditoria | null;
 }
 
 export interface AlunoSelecao {
@@ -146,7 +151,6 @@ export function UseGerenciarNota() {
             setErro('A nota deve ser um número entre 0 e 10.');
             return;
         }
-
         if (!tipo.trim()) {
             setErro('O tipo de avaliação é obrigatório.');
             return;
@@ -155,12 +159,14 @@ export function UseGerenciarNota() {
         setSalvando(true);
         setErro('');
 
+        const turmaAtual = turmas.find(t => t.idTurma.toString() === turmaSelecionada);
+        const professorId = (user?.papel === 'GESTOR' ? turmaAtual?.idProfessor : user?.idUsuario) || turmaAtual?.idProfessor;''
         try {
             await Api.post('/nota', {
                 valor: notaNum,
                 tipo: tipo,
                 data: dataNota,
-                idProfessor: user.idUsuario,
+                idProfessor: professorId,
                 idAluno: alunoSelecionado.idUsuario
             });
 

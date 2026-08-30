@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Api } from "../../api/Api";
-import { Clock, User, Info, BookOpen, X, ZoomIn } from "lucide-react";
+import { Clock, Info, BookOpen, X, ZoomIn } from "lucide-react";
+import { InfoAuditoria, type AutorAuditoria } from "../../components/InfoAuditoria";
 
 interface AvisoAula {
     idAvisoAula: number;
@@ -8,6 +9,10 @@ interface AvisoAula {
     dataPostagem: string;
     imagemUrl?: string;
     professor: { usuario: { nome: string } };
+    criadoEm?: string;
+    atualizadoEm?: string;
+    criadoPor?: AutorAuditoria | null;
+    atualizadoPor?: AutorAuditoria | null;
 }
 
 const MESES = [
@@ -148,14 +153,20 @@ export function Avisos() {
                         <div key={aviso.idAvisoAula} className="bg-white rounded-2xl border border-gray-100 shadow-xs hover:shadow-md transition overflow-hidden">
                             <div className="p-6 space-y-4">
 
-                                {/*Cabeçalho*/}
+                                {/* Cabeçalho */}
                                 <div className="flex flex-wrap justify-between items-start gap-2 border-b border-gray-100 pb-3">
                                     <div>
                                         <h4 className="font-bold text-gray-800 text-lg leading-tight">{aviso.titulo}</h4>
-                                        <p className="text-xs text-sys-blue font-semibold flex items-center gap-1 mt-1.5">
-                                            <User className="w-3.5 h-3.5" /> Prof: {aviso.professor.usuario.nome}
-                                        </p>
+
+                                        <div className="flex items-center gap-2 text-xs text-sys-blue font-semibold mt-1.5">
+                                            <span>Prof: {aviso.professor.usuario.nome}</span>
+                                            <InfoAuditoria
+                                                criadoPor={aviso.criadoPor}
+                                                atualizadoPor={aviso.atualizadoPor}
+                                            />
+                                        </div>
                                     </div>
+
                                     <span className="text-xs text-gray-400 font-medium flex items-center gap-1">
                                         <Clock className="w-3.5 h-3.5" /> {formatarData(aviso.dataPostagem)}
                                     </span>

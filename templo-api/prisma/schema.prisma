@@ -31,6 +31,16 @@ model Usuario {
   aluno     Aluno?
   professor Professor?
 
+  notasCriadas            Nota[]        @relation("NotaCriadaPor")
+  notasAtualizadas        Nota[]        @relation("NotaAtualizadaPor")
+  frequenciasCriadas      Frequencia[]  @relation("FrequenciaCriadaPor")
+  frequenciasAtualizadas  Frequencia[]  @relation("FrequenciaAtualizadaPor")
+  avisoAulasCriados     AvisoAula[] @relation("AvisoAulaCriadaPor")
+  avisoAulasAtualizados AvisoAula[] @relation("AvisoAulaAtualizadaPor")
+  materialDidaticosCriados     MaterialDidatico[] @relation("MaterialDidaticoCriadaPor")
+  materialDidaticosAtualizados MaterialDidatico[] @relation("MaterialDidaticoAtualizadaPor")
+
+
   @@map("usuarios")
 }
 
@@ -123,6 +133,12 @@ model Nota {
   idAluno       Int
   aluno         Aluno   @relation("AlunoParaNota", fields: [idAluno], references: [idUsuario])
 
+  criadoPorId     Int?
+  criadoPor       Usuario?  @relation("NotaCriadaPor", fields: [criadoPorId], references: [idUsuario], onDelete: SetNull, map: "fk_nota_criado_por")
+
+  atualizadoPorId Int?
+  atualizadoPor   Usuario?  @relation("NotaAtualizadaPor", fields: [atualizadoPorId], references: [idUsuario], onDelete: SetNull, map: "fk_nota_atualizado_por")
+
   @@map("notas")
 }
 
@@ -136,6 +152,12 @@ model Frequencia {
 
   idAluno       Int
   aluno         Aluno   @relation("AlunoParaFrequencia", fields: [idAluno], references: [idUsuario])
+
+  criadoPorId     Int?
+  criadoPor       Usuario?  @relation("FrequenciaCriadaPor", fields: [criadoPorId], references: [idUsuario], onDelete: SetNull, map: "fk_frequencia_criado_por")
+
+  atualizadoPorId Int?
+  atualizadoPor   Usuario?  @relation("FrequenciaAtualizadaPor", fields: [atualizadoPorId], references: [idUsuario], onDelete: SetNull, map: "fk_frequencia_atualizado_por")
 
   @@map("frequencias")
 }
@@ -151,6 +173,13 @@ model AvisoAula {
 
   idTurma       Int
   turma         Turma @relation("TurmaParaAvisoAula", fields: [idTurma], references: [idTurma])
+
+  criadoPorId     Int?
+  criadoPor       Usuario?  @relation("AvisoAulaCriadaPor", fields: [criadoPorId], references: [idUsuario], onDelete: SetNull, map: "fk_aviso_aula_criado_por")
+
+  atualizadoPorId Int?
+  atualizadoPor   Usuario?  @relation("AvisoAulaAtualizadaPor", fields: [atualizadoPorId], references: [idUsuario], onDelete: SetNull, map: "fk_aviso_aula_atualizado_por")
+
 
   @@map("avisos_aulas")
 }
@@ -168,6 +197,12 @@ model MaterialDidatico {
   turmasVinculadas  TurmaMaterialDidatico[]
   alunosVinculados  AlunoMaterialDidatico[]
   
+  criadoPorId     Int?
+  criadoPor       Usuario?  @relation("MaterialDidaticoCriadaPor", fields: [criadoPorId], references: [idUsuario], onDelete: SetNull, map: "fk_material_didatico_criado_por")
+
+  atualizadoPorId Int?
+  atualizadoPor   Usuario?  @relation("MaterialDidaticoAtualizadaPor", fields: [atualizadoPorId], references: [idUsuario], onDelete: SetNull, map: "fk_material_didatico_atualizado_por")
+
   @@map("materiais_didaticos")
 }
 

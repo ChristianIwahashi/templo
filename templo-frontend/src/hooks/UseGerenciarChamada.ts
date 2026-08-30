@@ -2,15 +2,20 @@ import { useEffect, useState } from "react";
 import { UseAuth } from "./UseAuth";
 import { Api } from "../api/Api";
 import { AxiosError } from "axios";
+import type { AutorAuditoria } from "../components/InfoAuditoria";
 
 export interface Turma {
     idTurma: number;
+    idProfessor: number;
     alunos?: {
         idUsuario: number;
         usuario: { nome: string };
     }[];
+    criadoEm?: string;
+    atualizadoEm?: string;
+    criadoPor?: AutorAuditoria | null;
+    atualizadoPor?: AutorAuditoria | null;
 }
-
 export interface AlunoChamada {
     idUsuario: number;
     nome: string;
@@ -135,6 +140,9 @@ export function UseGerenciarChamada() {
         setErro('');
         setSucesso('');
 
+        const turmaAtual = turmas.find(t => t.idTurma.toString() === turmaSelecionada);
+        const professorId = (user?.papel === 'GESTOR' ? turmaAtual?.idProfessor : user?.idUsuario) || turmaAtual?.idProfessor;
+
         try {
             await Promise.all(
                 alunos.map(aluno => {
@@ -147,7 +155,7 @@ export function UseGerenciarChamada() {
                         return Api.post('/frequencia', {
                             dataAula: dataAula,
                             presenca: aluno.presente,
-                            idProfessor: user?.idUsuario,
+                            idProfessor: professorId,
                             idAluno: aluno.idUsuario
                         });
                     }

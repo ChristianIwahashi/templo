@@ -35,8 +35,10 @@ export class MaterialDidaticoService {
 
         alunosVinculados: data.idAluno ? {
           create: data.idAluno.map(id => ({ idAluno: id }))
-        } : undefined
-      }
+        } : undefined,
+        
+        criadoPorId: usuarioLogado?.idUsuario || null
+      },
     });
   }
 
@@ -51,6 +53,8 @@ export class MaterialDidaticoService {
       where: filtro,
       include: {
         professor: { include: { usuario: { select: { nome: true } } } },
+        criadoPor: { select: { idUsuario: true, nome: true, papel: true } },
+        atualizadoPor: { select: { idUsuario: true, nome: true, papel: true } },
         turmasVinculadas: { include: { turma: true } },
         alunosVinculados: {
           include: {
@@ -112,7 +116,11 @@ export class MaterialDidaticoService {
           { alunosVinculados: { some: { idAluno: idAluno } } }
         ]
       },
-      include: { professor: { include: { usuario: { select: { nome: true } } } } },
+      include: { 
+        professor: { include: { usuario: { select: { nome: true } } } },
+        criadoPor: { select: { idUsuario: true, nome: true, papel: true } },
+        atualizadoPor: { select: { idUsuario: true, nome: true, papel: true } }
+      },
       orderBy: { idMaterial: 'desc' }
     });
   }
@@ -126,6 +134,7 @@ export class MaterialDidaticoService {
         titulo: data.titulo,
         descricao: data.descricao,
         arquivoUrl: data.arquivoUrl,
+        atualizadoPorId: usuarioLogado?.idUsuario || null
       }
     });
   }

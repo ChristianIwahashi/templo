@@ -3,6 +3,7 @@ import { Api } from "../../api/Api";
 import { GraduationCap, CheckCircle, BookOpen, ChevronUp, ChevronDown, Calendar, XCircle } from "lucide-react";
 import { formatarData } from '../../utils/formatters';
 import { calcularMediaGeral, calcularPercentualFrequencia } from '../../utils/calculations';
+import { InfoAuditoria, type AutorAuditoria } from "../../components/InfoAuditoria";
 
 interface Nota {
     idNota: number;
@@ -10,13 +11,20 @@ interface Nota {
     tipo: string;
     data: string;
     professor: { usuario: { nome: string } };
+    criadoEm?: string;
+    atualizadoEm?: string;
+    criadoPor?: AutorAuditoria | null;
+    atualizadoPor?: AutorAuditoria | null;
 }
-
 interface Frequencia {
     idFrequencia: number;
     dataAula: string;
     presenca: boolean;
     professor: { usuario: { nome: string } };
+    criadoEm?: string;
+    atualizadoEm?: string;
+    criadoPor?: AutorAuditoria | null;
+    atualizadoPor?: AutorAuditoria | null;
 }
 
 export function Historico() {
@@ -126,8 +134,8 @@ export function Historico() {
                             </div>
                         </div>
                         <div className={`text-4xl font-extrabold ${percentualFrequencia === null
-                                ? 'text-gray-400'
-                                : percentualFrequencia >= 75 ? 'text-green-500' : 'text-red-500'
+                            ? 'text-gray-400'
+                            : percentualFrequencia >= 75 ? 'text-green-500' : 'text-red-500'
                             }`}>
                             {percentualFrequencia === null ? '-' : `${percentualFrequencia}%`}
                         </div>
@@ -164,22 +172,23 @@ export function Historico() {
                         </div>
                     </div>
                     <div className={`text-4xl font-extrabold ${mediaGeral === null
-                            ? 'text-gray-400'
-                            : mediaGeral >= 6.0 ? 'text-sys-blue' : 'text-red-500'
+                        ? 'text-gray-400'
+                        : mediaGeral >= 6.0 ? 'text-sys-blue' : 'text-red-500'
                         }`}>
                         {mediaGeral === null ? '-' : mediaGeral.toFixed(1)}
                     </div>
                 </div>
             </div>
 
-            {/*Frequência Detalhada*/}
+            {/* Frequência Detalhada */}
             {showFrequenciaDetalhes && (
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 
-                overflow-hidden animate-fade-in-up">
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden animate-fade-in-up">
+                    
                     <div className="p-5 border-b border-gray-100 bg-gray-50/50 flex items-center gap-2">
                         <Calendar className="w-5 h-5 text-green-600" />
                         <h4 className="font-bold text-gray-700">Histórico de Presenças</h4>
                     </div>
+
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
@@ -190,32 +199,48 @@ export function Historico() {
                                 </tr>
                             </thead>
                             <tbody className="text-sm">
-                                {frequenciasFiltradas.map((freq) => (
-                                    <tr key={freq.idFrequencia} className="border-b border-gray-100 
-                                    hover:bg-gray-50/50 transition-colors">
-                                        <td className="p-4 font-semibold text-gray-800">{formatarData(freq.dataAula)}</td>
-                                        <td className="p-4 text-gray-600">{freq.professor.usuario.nome}</td>
-                                        <td className="p-4 text-center">
-                                            <span className={`inline-flex items-center gap-1.5 px-3 py-1 
-                                            rounded-full text-xs font-bold
-                                                ${freq.presenca
-                                                    ? 'bg-green-100 text-green-700'
-                                                    : 'bg-red-100 text-red-700'
-                                                }
-                                            `}>
-                                                {freq.presenca ? (
-                                                    <>
-                                                        <CheckCircle className="w-3.5 h-3.5" /> Presente
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <XCircle className="w-3.5 h-3.5" /> Falta
-                                                    </>
-                                                )}
-                                            </span>
+                                {frequenciasFiltradas.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={3} className="p-8 text-center text-gray-500 font-medium">
+                                            Nenhum registro de frequência encontrado para o período selecionado.
                                         </td>
                                     </tr>
-                                ))}
+                                ) : (
+                                    frequenciasFiltradas.map((freq) => (
+                                        <tr key={freq.idFrequencia} className="border-b border-gray-100 hover:bg-gray-50/50 transition-colors">
+                                            <td className="p-4 font-semibold text-gray-800 flex items-center justify-between gap-2">
+                                                <span>{formatarData(freq.dataAula)}</span>
+                                                <InfoAuditoria
+                                                    criadoPor={freq.criadoPor}
+                                                    atualizadoPor={freq.atualizadoPor}
+                                                />
+                                            </td>
+
+                                            <td className="p-4 text-gray-600">
+                                                {freq.professor.usuario.nome}
+                                            </td>
+
+                                            <td className="p-4 text-center">
+                                                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border
+                                                    ${freq.presenca
+                                                        ? 'bg-green-100 text-green-700 border-green-200'
+                                                        : 'bg-red-100 text-red-700 border-red-200'
+                                                    }
+                                                `}>
+                                                    {freq.presenca ? (
+                                                        <>
+                                                            <CheckCircle className="w-3.5 h-3.5" /> Presente
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <XCircle className="w-3.5 h-3.5" /> Falta
+                                                        </>
+                                                    )}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
                             </tbody>
                         </table>
                     </div>
@@ -250,7 +275,13 @@ export function Historico() {
                                 notasFiltradas.map((nota) => (
                                     <tr key={nota.idNota} className="border-b border-gray-100 
                                     hover:bg-gray-50/50 transition-colors">
-                                        <td className="p-4 font-semibold text-gray-800">{nota.tipo}</td>
+                                        <td className="p-4 font-semibold text-gray-800 flex items-center justify-between gap-2">
+                                            <span>{nota.tipo}</span>
+                                            <InfoAuditoria
+                                                criadoPor={nota.criadoPor}
+                                                atualizadoPor={nota.atualizadoPor}
+                                            />
+                                        </td>
                                         <td className="p-4 text-gray-600">{nota.professor.usuario.nome}</td>
                                         <td className="p-4 text-gray-600">{formatarData(nota.data)}</td>
                                         <td className={`p-4 font-bold text-lg ${nota.valor >= 7.0 ?
@@ -264,7 +295,6 @@ export function Historico() {
                     </table>
                 </div>
             </div>
-
         </div >
     );
 }

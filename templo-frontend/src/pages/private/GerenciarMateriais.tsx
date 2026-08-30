@@ -1,6 +1,7 @@
 import { UseGerenciarMateriais } from "../../hooks/UseGerenciarMateriais";
 import { FolderOpen, Plus, Edit, Trash2, Info, AlertCircle, Check, CheckSquare, Square, FileText } from "lucide-react";
 import { formatarData } from "../../utils/formatters";
+import { InfoAuditoria } from "../../components/InfoAuditoria";
 
 export function GerenciarMateriais() {
     const {
@@ -106,6 +107,10 @@ export function GerenciarMateriais() {
                                             <div>
                                                 <span className="font-semibold text-gray-800 block leading-tight">{material.titulo}</span>
                                             </div>
+                                            <InfoAuditoria
+                                                criadoPor={material.criadoPor}
+                                                atualizadoPor={material.atualizadoPor}
+                                            />
                                         </td>
 
                                         {/*Identifica o destino*/}

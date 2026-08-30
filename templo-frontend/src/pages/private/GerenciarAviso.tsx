@@ -1,6 +1,7 @@
 import { UseGerenciarAviso } from "../../hooks/UseGerenciarAviso";
 import { formatarData } from "../../utils/formatters";
 import { Megaphone, Plus, Edit, Trash2, Info, AlertCircle, Check, ZoomIn, X } from "lucide-react";
+import { InfoAuditoria } from "../../components/InfoAuditoria";
 
 export function GerenciarAviso() {
   const {
@@ -106,9 +107,16 @@ export function GerenciarAviso() {
                 <div className="flex flex-wrap justify-between items-start gap-2 pb-3 pr-20">
                   <div>
                     <h4 className="font-bold text-gray-800 text-lg leading-tight">{aviso.titulo}</h4>
-                    <p className="text-xs text-sys-blue font-semibold mt-1.5 flex items-center gap-1">
-                      Enviado para a Turma {aviso.idTurma}
-                    </p>
+                    <div className="flex items-center gap-2 mt-1.5">
+                      <p className="text-xs text-sys-blue font-semibold">
+                        Enviado para a Turma {aviso.idTurma}
+                      </p>
+                      
+                      <InfoAuditoria
+                        criadoPor={aviso.criadoPor}
+                        atualizadoPor={aviso.atualizadoPor}
+                      />
+                    </div>
                   </div>
                   <span className="text-xs text-gray-400 font-medium">
                     {formatarData(aviso.dataPostagem)}
