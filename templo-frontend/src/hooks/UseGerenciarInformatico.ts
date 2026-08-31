@@ -23,60 +23,43 @@ export interface EventoItem {
 
 export function UseGerenciarInformatico() {
   const { user } = UseAuth();
-
-  // Controle de Abas no CMS
   const [abaAtiva, setAbaAtiva] = useState<'conteudos' | 'eventos'>('conteudos');
-
-  // Estados de dados
   const [conteudos, setConteudos] = useState<ConteudoItem[]>([]);
   const [eventos, setEventos] = useState<EventoItem[]>([]);
-
-  // Estados do formulário de CONTEÚDO
   const [categoria, setCategoria] = useState('HISTORIA');
   const [tituloConteudo, setTituloConteudo] = useState('');
   const [textoConteudo, setTextoConteudo] = useState('');
   const [imagemUrlConteudo, setImagemUrlConteudo] = useState('');
   const [conteudoSelecionado, setConteudoSelecionado] = useState<ConteudoItem | null>(null);
-
-  // Estados do formulário de EVENTO
   const [tituloEvento, setTituloEvento] = useState('');
   const [descricaoEvento, setDescricaoEvento] = useState('');
   const [imagemUrlEvento, setImagemUrlEvento] = useState('');
   const [ativoEvento, setAtivoEvento] = useState(true);
   const [eventoSelecionado, setEventoSelecionado] = useState<EventoItem | null>(null);
-
-  // Estados de controle de UI
   const [loading, setLoading] = useState(true);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState('');
   const [sucesso, setSucesso] = useState('');
-
-  // Modais de Formulário
   const [isAddConteudoOpen, setIsAddConteudoOpen] = useState(false);
   const [isEditConteudoOpen, setIsEditConteudoOpen] = useState(false);
   const [isAddEventoOpen, setIsAddEventoOpen] = useState(false);
   const [isEditEventoOpen, setIsEditEventoOpen] = useState(false);
-
-  // Modais de Confirmação (ConfirmModal)
   const [isConfirmAddConteudo, setIsConfirmAddConteudo] = useState(false);
   const [isConfirmEditConteudo, setIsConfirmEditConteudo] = useState(false);
   const [isConfirmDeleteConteudo, setIsConfirmDeleteConteudo] = useState(false);
-  
   const [isConfirmAddEvento, setIsConfirmAddEvento] = useState(false);
   const [isConfirmEditEvento, setIsConfirmEditEvento] = useState(false);
   const [isConfirmDeleteEvento, setIsConfirmDeleteEvento] = useState(false);
   const [isConfirmStatusEvento, setIsConfirmStatusEvento] = useState(false);
 
-  // 1. Carrega conteúdos e eventos em paralelo
   useEffect(() => {
     async function carregarDadosWebsite() {
       try {
         setLoading(true);
         const [conteudosRes, eventosRes] = await Promise.all([
           Api.get('/conteudo-informativo'),
-          Api.get('/aviso-evento') // Puxa todos para o gestor poder ativar/inativar
+          Api.get('/aviso-evento')
         ]);
-
         setConteudos(conteudosRes.data);
         setEventos(eventosRes.data);
       } catch (error) {
@@ -86,7 +69,6 @@ export function UseGerenciarInformatico() {
         setLoading(false);
       }
     }
-
     carregarDadosWebsite();
   }, []);
 
@@ -108,8 +90,7 @@ export function UseGerenciarInformatico() {
     }
   }
 
-  // --- Handlers Conteúdos ---
-
+  //Modais de Conteudo
   function abrirModalCriarConteudo() {
     setCategoria('HISTORIA');
     setTituloConteudo('');
@@ -119,7 +100,6 @@ export function UseGerenciarInformatico() {
     setSucesso('');
     setIsAddConteudoOpen(true);
   }
-
   function abrirModalEditarConteudo(item: ConteudoItem) {
     setConteudoSelecionado(item);
     setCategoria(item.categoria);
@@ -130,14 +110,12 @@ export function UseGerenciarInformatico() {
     setSucesso('');
     setIsEditConteudoOpen(true);
   }
-
   function prepararDeletarConteudo(item: ConteudoItem) {
     setConteudoSelecionado(item);
     setErro('');
     setSucesso('');
     setIsConfirmDeleteConteudo(true);
   }
-
   function prepararCriarConteudo() {
     if (!tituloConteudo.trim() || !textoConteudo.trim() || !imagemUrlConteudo.trim()) {
       setErro('Preencha todos os campos obrigatórios do conteúdo.');
@@ -145,7 +123,6 @@ export function UseGerenciarInformatico() {
     }
     setIsConfirmAddConteudo(true);
   }
-
   function prepararEditarConteudo() {
     if (!tituloConteudo.trim() || !textoConteudo.trim() || !imagemUrlConteudo.trim()) {
       setErro('Preencha todos os campos obrigatórios.');
@@ -154,7 +131,7 @@ export function UseGerenciarInformatico() {
     setIsConfirmEditConteudo(true);
   }
 
-  // Ações de API - Conteúdos
+  //POST Conteudo
   async function executarCriarConteudo() {
     if (!user) return;
     setIsConfirmAddConteudo(false);
@@ -184,6 +161,7 @@ export function UseGerenciarInformatico() {
     }
   }
 
+  //PUT Conteudo
   async function executarEditarConteudo() {
     if (!conteudoSelecionado) return;
     setIsConfirmEditConteudo(false);
@@ -212,6 +190,7 @@ export function UseGerenciarInformatico() {
     }
   }
 
+  //DELETE Conteudo
   async function executarDeletarConteudo() {
     if (!conteudoSelecionado) return;
     setIsConfirmDeleteConteudo(false);
@@ -233,8 +212,7 @@ export function UseGerenciarInformatico() {
     }
   }
 
-  // --- Handlers Eventos ---
-
+  //Modais Evento
   function abrirModalCriarEvento() {
     setTituloEvento('');
     setDescricaoEvento('');
@@ -244,7 +222,6 @@ export function UseGerenciarInformatico() {
     setSucesso('');
     setIsAddEventoOpen(true);
   }
-
   function abrirModalEditarEvento(item: EventoItem) {
     setEventoSelecionado(item);
     setTituloEvento(item.titulo);
@@ -255,19 +232,16 @@ export function UseGerenciarInformatico() {
     setSucesso('');
     setIsEditEventoOpen(true);
   }
-
   function prepararDeletarEvento(item: EventoItem) {
     setEventoSelecionado(item);
     setErro('');
     setSucesso('');
     setIsConfirmDeleteEvento(true);
   }
-
   function prepararAlternarStatusEvento(item: EventoItem) {
     setEventoSelecionado(item);
     setIsConfirmStatusEvento(true);
   }
-
   function prepararCriarEvento() {
     if (!tituloEvento.trim() || !descricaoEvento.trim()) {
       setErro('Preencha os campos obrigatórios do evento.');
@@ -275,7 +249,6 @@ export function UseGerenciarInformatico() {
     }
     setIsConfirmAddEvento(true);
   }
-
   function prepararEditarEvento() {
     if (!tituloEvento.trim() || !descricaoEvento.trim()) {
       setErro('Preencha os campos obrigatórios.');
@@ -284,7 +257,7 @@ export function UseGerenciarInformatico() {
     setIsConfirmEditEvento(true);
   }
 
-  // Ações de API - Eventos
+  //POST Evento
   async function executarCriarEvento() {
     if (!user) return;
     setIsConfirmAddEvento(false);
@@ -314,6 +287,7 @@ export function UseGerenciarInformatico() {
     }
   }
 
+  //PUT Evento
   async function executarEditarEvento() {
     if (!eventoSelecionado) return;
     setIsConfirmEditEvento(false);
@@ -342,6 +316,7 @@ export function UseGerenciarInformatico() {
     }
   }
 
+  //Status Evento
   async function executarAlternarStatusEvento() {
     if (!eventoSelecionado) return;
     setIsConfirmStatusEvento(false);
@@ -363,6 +338,7 @@ export function UseGerenciarInformatico() {
     }
   }
 
+  //DELETE Evento
   async function executarDeletarEvento() {
     if (!eventoSelecionado) return;
     setIsConfirmDeleteEvento(false);
@@ -371,7 +347,7 @@ export function UseGerenciarInformatico() {
 
     try {
       await Api.delete(`/aviso-evento/${eventoSelecionado.idAvisoEvento}`);
-      setSucesso('Evento excluído da agenda pública!');
+      setSucesso('Evento excluído da agenda!');
       await atualizarEventos();
     } catch (error) {
       if (error instanceof AxiosError) {

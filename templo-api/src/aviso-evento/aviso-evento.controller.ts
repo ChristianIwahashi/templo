@@ -1,11 +1,10 @@
-import { Controller, Get, Post, Body, Param, Delete, Query, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Patch, Query, UseGuards } from '@nestjs/common';
 import { AvisoEventoService } from './aviso-evento.service';
 import { CreateAvisoEventoDto } from './dto/create-aviso-evento.dto';
 import { UpdateAvisoEventoDto } from './dto/update-aviso-evento.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/roles.guard';
-import { Roles } from 'src/auth/roles.decorator';
-import { CurrentUser } from 'src/auth/current-user.decorator';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
 
 @Controller('aviso-evento')
 export class AvisoEventoController {
@@ -14,26 +13,38 @@ export class AvisoEventoController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('GESTOR')
   @Post()
-  async create(@Body() data: CreateAvisoEventoDto,
-  @CurrentUser() usuarioLogado: any) {
-    return this.avisoEventoService.create(data, usuarioLogado);
+  async create(@Body() data: CreateAvisoEventoDto) {
+    return this.avisoEventoService.create(data);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('GESTOR')
-  @Put(":idAvisoEvento")
-  async update(@Param("idAvisoEvento") idAvisoEvento: number, @Body() data: UpdateAvisoEventoDto,
-  @CurrentUser() usuarioLogado: any) {
-    return this.avisoEventoService.update(Number(idAvisoEvento), data, usuarioLogado);
+  @Put(':idAvisoEvento')
+  async updatePut(
+    @Param('idAvisoEvento') idAvisoEvento: string, 
+    @Body() data: UpdateAvisoEventoDto
+  ) {
+    return this.avisoEventoService.update(Number(idAvisoEvento), data);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('GESTOR')
-  @Delete(":idAvisoEvento")
-  async delete(@Param(":idAvisoEvento") idAvisoEvento: number,
-  @CurrentUser() usuarioLogado: any) {
-    return this.avisoEventoService.delete(Number(idAvisoEvento), usuarioLogado);
+  @Patch(':idAvisoEvento')
+  async updatePatch(
+    @Param('idAvisoEvento') idAvisoEvento: string, 
+    @Body() data: UpdateAvisoEventoDto
+  ) {
+    return this.avisoEventoService.update(Number(idAvisoEvento), data);
   }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('GESTOR')
+  @Delete(':idAvisoEvento')
+  async delete(@Param('idAvisoEvento') idAvisoEvento: string) {
+    return this.avisoEventoService.delete(Number(idAvisoEvento));
+  }
+
+  // --- ROTAS PÚBLICAS (SITE) ---
 
   @Get()
   async findAll(@Query('ativo') ativo?: string) {
@@ -41,8 +52,8 @@ export class AvisoEventoController {
     return this.avisoEventoService.findAll(apenasAtivos);
   }
 
-  @Get(":idAvisoEvento")
-  async getbyId(@Param("idAvisoEvento") idAvisoEvento: number) {
+  @Get(':idAvisoEvento')
+  async getById(@Param('idAvisoEvento') idAvisoEvento: string) {
     return this.avisoEventoService.getById(Number(idAvisoEvento));
   }
 }

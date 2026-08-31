@@ -8,32 +8,20 @@ export class ConteudoInformativoService {
   constructor(private prisma: PrismaService) {}
 
   async create(data: CreateConteudoInformativoDto, usuarioLogado?: any) {
-    const categoriaNormalizada = data.categoria.trim().toUpperCase();
+    const SECOES_UNICAS: Record<string, string> = {
+      SOBRE: 'Sobre Nós',
+      HISTORIA: 'História do Templo',
+      AULAS: 'Aulas de Japonês',
+    };
 
-    if (categoriaNormalizada === 'SOBRE' || categoriaNormalizada === 'SOBRE NÓS') {
-      const sobreExistente = await this.prisma.conteudoInformativo.findFirst({
-        where: {
-          categoria: { in: ['SOBRE', 'SOBRE NÓS', 'sobre', 'sobre nós', 'Sobre Nós'] }
-        }
+    if (SECOES_UNICAS[data.categoria]) {
+      const registroExistente = await this.prisma.conteudoInformativo.findFirst({
+        where: { categoria: data.categoria }
       });
 
-      if (sobreExistente) {
+      if (registroExistente) {
         throw new BadRequestException(
-          'Já existe uma publicação cadastrada para a seção "Sobre Nós". Por favor, edite o registro existente em vez de criar um novo.'
-        );
-      }
-    }
-
-    if (categoriaNormalizada === 'HISTORIA' || categoriaNormalizada === 'HISTÓRIA') {
-      const historiaExistente = await this.prisma.conteudoInformativo.findFirst({
-        where: {
-          categoria: { in: ['HISTORIA', 'HISTÓRIA', 'historia', 'história', 'História'] }
-        }
-      });
-
-      if (historiaExistente) {
-        throw new BadRequestException(
-          'Já existe uma publicação cadastrada para a seção "História do Templo". Por favor, edite o registro existente em vez de criar um novo.'
+          `Já existe uma publicação cadastrada para a seção "${SECOES_UNICAS[data.categoria]}". Por favor, edite o registro existente em vez de criar um novo.`
         );
       }
     }
@@ -48,7 +36,7 @@ export class ConteudoInformativoService {
 
     return await this.prisma.conteudoInformativo.create({
       data: {
-        categoria: categoriaNormalizada,
+        categoria: data.categoria,
         titulo: data.titulo,
         texto: data.texto,
         imagemUrl: data.imagemUrl || '',

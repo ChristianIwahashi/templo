@@ -75,7 +75,7 @@ export function GerenciarInformatico() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <p className="text-gray-500 font-medium animate-pulse">Carregando gerenciador do website...</p>
+        <p className="text-gray-500 font-medium animate-pulse">Carregando...</p>
       </div>
     );
   }
@@ -83,7 +83,7 @@ export function GerenciarInformatico() {
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6 animate-fade-in-up relative">
       
-      {/* Cabeçalho */}
+      {/*Título*/}
       <div className="flex items-center justify-between pb-4">
         <div className="flex items-center gap-2">
           <Globe className="w-6 h-6 text-sys-blue" />
@@ -107,7 +107,7 @@ export function GerenciarInformatico() {
         )}
       </div>
 
-      {/* Alertas Globais */}
+      {/*Alerta Global*/}
       {erro && !isAddConteudoOpen && !isEditConteudoOpen && !isAddEventoOpen && !isEditEventoOpen && (
         <div className="p-4 bg-red-50 text-red-600 rounded-xl border border-red-150 flex items-center gap-2 font-semibold">
           <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
@@ -119,7 +119,7 @@ export function GerenciarInformatico() {
         </div>
       )}
 
-      {/* Seletor de Abas Internas */}
+      {/*Seletor de Abas*/}
       <div className="flex border-b border-gray-200 bg-white p-2 rounded-xl shadow-xs">
         <button
           onClick={() => setAbaAtiva('conteudos')}
@@ -147,12 +147,10 @@ export function GerenciarInformatico() {
         </button>
       </div>
 
-      {/* =========================================================================
-        ABA 1: CONTEÚDOS & PÁGINAS (História, Galeria, Sobre)
-        ========================================================================= */}
+      {/*Conteúdo Informativo*/}
       {abaAtiva === 'conteudos' && (
         conteudos.length === 0 ? (
-          <div className="bg-white p-12 rounded-2xl border border-gray-150 text-center text-gray-500 max-w-lg mx-auto">
+          <div className="bg-white p-12 rounded-2xl border border-gray-100 text-center text-gray-500 max-w-lg mx-auto">
             <Info className="w-12 h-12 text-gray-300 mx-auto mb-3" />
             <p className="font-bold text-gray-700 text-lg">Nenhum Conteúdo Cadastrado</p>
             <p className="text-xs text-gray-500 mt-1">Cadastre as seções de História, Galeria ou Cursos para alimentar a vitrine do site.</p>
@@ -206,12 +204,10 @@ export function GerenciarInformatico() {
         )
       )}
 
-      {/* =========================================================================
-        ABA 2: EVENTOS PÚBLICOS
-        ========================================================================= */}
+      {/*Avisos Eventos*/}
       {abaAtiva === 'eventos' && (
         eventos.length === 0 ? (
-          <div className="bg-white p-12 rounded-2xl border border-gray-150 text-center text-gray-500 max-w-lg mx-auto">
+          <div className="bg-white p-12 rounded-2xl border border-gray-100 text-center text-gray-500 max-w-lg mx-auto">
             <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-3" />
             <p className="font-bold text-gray-700 text-lg">Nenhum Evento na Agenda</p>
             <p className="text-xs text-gray-500 mt-1">Publique eventos para que apareçam na página inicial e no mural aberto do templo.</p>
@@ -283,9 +279,7 @@ export function GerenciarInformatico() {
         )
       )}
 
-      {/* =========================================================================
-        MODAIS: CONTEÚDO (POST / PATCH)
-        ========================================================================= */}
+      {/*Conteudo Informatico*/}
       {(isAddConteudoOpen || isEditConteudoOpen) && (
         <div className="fixed inset-0 bg-black/60 z-250 flex items-center justify-center p-4 backdrop-blur-xs">
           <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 border border-gray-100 animate-modal-enter text-sm max-h-[90vh] overflow-y-auto">
@@ -313,7 +307,7 @@ export function GerenciarInformatico() {
                   <option value="HISTORIA">História do Templo</option>
                   <option value="SOBRE">Sobre Nós</option>
                   <option value="GALERIA">Galeria de Fotos</option>
-                  <option value="AULAS">Aulas de Japonês (Estrutura)</option>
+                  <option value="AULAS">Aulas de Japonês</option>
                 </select>
               </div>
 
@@ -367,9 +361,7 @@ export function GerenciarInformatico() {
         </div>
       )}
 
-      {/* =========================================================================
-        MODAIS: EVENTO (POST / PATCH)
-        ========================================================================= */}
+      {/*Evento*/}
       {(isAddEventoOpen || isEditEventoOpen) && (
         <div className="fixed inset-0 bg-black/60 z-250 flex items-center justify-center p-4 backdrop-blur-xs">
           <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 border border-gray-100 animate-modal-enter text-sm max-h-[90vh] overflow-y-auto">
@@ -447,11 +439,7 @@ export function GerenciarInformatico() {
         </div>
       )}
 
-      {/* =========================================================================
-        🛡️ MODAIS DE CONFIRMAÇÃO (ConfirmModal)
-        ========================================================================= */}
-
-      {/* Conteúdos */}
+      {/*Modais de Conteúdo*/}
       <ConfirmModal 
         isOpen={isConfirmAddConteudo}
         onClose={() => setIsConfirmAddConteudo(false)}
@@ -461,7 +449,6 @@ export function GerenciarInformatico() {
         type="info"
         isLoading={salvando}
       />
-
       <ConfirmModal 
         isOpen={isConfirmEditConteudo}
         onClose={() => setIsConfirmEditConteudo(false)}
@@ -471,7 +458,6 @@ export function GerenciarInformatico() {
         type="info"
         isLoading={salvando}
       />
-
       <ConfirmModal 
         isOpen={isConfirmDeleteConteudo}
         onClose={() => setIsConfirmDeleteConteudo(false)}
@@ -482,7 +468,7 @@ export function GerenciarInformatico() {
         isLoading={salvando}
       />
 
-      {/* Eventos */}
+      {/*Modais de Evento*/}
       <ConfirmModal 
         isOpen={isConfirmAddEvento}
         onClose={() => setIsConfirmAddEvento(false)}
@@ -492,7 +478,6 @@ export function GerenciarInformatico() {
         type="info"
         isLoading={salvando}
       />
-
       <ConfirmModal 
         isOpen={isConfirmEditEvento}
         onClose={() => setIsConfirmEditEvento(false)}
@@ -502,7 +487,6 @@ export function GerenciarInformatico() {
         type="info"
         isLoading={salvando}
       />
-
       <ConfirmModal 
         isOpen={isConfirmStatusEvento}
         onClose={() => setIsConfirmStatusEvento(false)}
@@ -512,7 +496,6 @@ export function GerenciarInformatico() {
         type="warning"
         isLoading={salvando}
       />
-
       <ConfirmModal 
         isOpen={isConfirmDeleteEvento}
         onClose={() => setIsConfirmDeleteEvento(false)}
@@ -522,7 +505,6 @@ export function GerenciarInformatico() {
         type="danger"
         isLoading={salvando}
       />
-
     </div>
   );
 }
