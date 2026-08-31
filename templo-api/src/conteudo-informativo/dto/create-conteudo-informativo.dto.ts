@@ -17,7 +17,7 @@ export class CreateConteudoInformativoDto {
 
     @IsString()
     @IsNotEmpty({ message: 'A URL da mídia (imagem/vídeo) é obrigatório.' })
-    imagemUrl!: string;
+    imagemUrl?: string;
 
     @IsInt()
     @IsNotEmpty()

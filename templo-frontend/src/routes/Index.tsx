@@ -18,6 +18,8 @@ import { GerenciarAlunos } from "../pages/private/GerenciarAlunos";
 import { GerenciarProfessores } from "../pages/private/GerenciarProfessores";
 import { GerenciarTurmas } from "../pages/private/GerenciarTurmas";
 import { GerenciarGestores } from "../pages/private/GerenciarGestores";
+import { GerenciarMensalidade } from "../pages/private/GerenciarMensalidade";
+import { GerenciarInformatico } from "../pages/private/GerenciarInformatico";
 
 export function AppRoutes() {
     const { isAuthenticated, loading, user } = UseAuth();
@@ -68,6 +70,8 @@ export function AppRoutes() {
                                 <Route path="/gerenciar-professores" element={<GerenciarProfessores />} />
                                 <Route path="/gerenciar-turmas" element={<GerenciarTurmas />} />
                                 <Route path="/gerenciar-gestores" element={<GerenciarGestores />} />
+                                <Route path="/gerenciar-mensalidade" element={<GerenciarMensalidade />} />
+                                <Route path="/gerenciar-informatico" element={<GerenciarInformatico />} />
                                 <Route path="/gerenciar-chamada" element={<GerenciarChamada />} />
                                 <Route path="/gerenciar-nota" element={<GerenciarNota />} />
                                 <Route path="/gerenciar-aviso" element={<GerenciarAviso />} />

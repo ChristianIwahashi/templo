@@ -156,8 +156,8 @@ export function GerenciarAlunos() {
                   const isExpanded = alunoExpandidoId === aluno.idUsuario;
                   return (
                     <>
-                      <tr 
-                        key={aluno.idUsuario} 
+                      <tr
+                        key={aluno.idUsuario}
                         onClick={() => setAlunoExpandidoId(isExpanded ? null : aluno.idUsuario)}
                         className="border-b border-gray-100 hover:bg-gray-50/30 transition-colors cursor-pointer"
                       >
@@ -342,13 +342,12 @@ export function GerenciarAlunos() {
                     </button>
                   </div>
                 </div>
-
-                <div className="flex justify-end gap-2 pt-4 border-t border-gray-100">
-                  <button type="button" onClick={() => setIsAddModalOpen(false)} className="px-4 py-2 border rounded-xl text-gray-600 hover:bg-gray-50 cursor-pointer">Cancelar</button>
-                  <button type="submit" disabled={salvando} className="px-4 py-2 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl font-bold cursor-pointer">
-                    {salvando ? 'Matriculando...' : 'Matrícular'}
-                  </button>
-                </div>
+              </div>
+              <div className="flex justify-end gap-2 pt-4 border-t border-gray-100">
+                <button type="button" onClick={() => setIsAddModalOpen(false)} className="px-4 py-2 border rounded-xl text-gray-600 hover:bg-gray-50 cursor-pointer">Cancelar</button>
+                <button type="submit" disabled={salvando} className="px-4 py-2 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl font-bold cursor-pointer">
+                  {salvando ? 'Matriculando...' : 'Matrícular'}
+                </button>
               </div>
             </form>
           </div>

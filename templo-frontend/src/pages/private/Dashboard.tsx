@@ -121,13 +121,23 @@ export function Dashboard() {
           </div>
 
           {/*Frequência*/}
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 border-l-4 border-l-green-500">
-            <div className="p-3 bg-green-50 text-green-600 rounded-xl">
-              <CheckCircle className="w-6 h-6" />
+          <div className={`bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 border-l-4 
+            ${frequencia >= 75 ? 'border-l-green-500' : 'border-l-red-500'}`}
+          >
+            <div className={`p-3 rounded-xl ${frequencia >= 75 ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
+              {frequencia >= 75 ? (
+                <CheckCircle className="w-6 h-6" />
+              ) : (
+                <AlertCircle className="w-6 h-6" />
+              )}
             </div>
             <div>
               <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Frequência</p>
-              <p className="text-lg font-bold text-gray-800 mt-0.5">{frequencia}%</p>
+              <div className="flex items-baseline gap-1.5 mt-0.5">
+                <p className={`text-lg font-bold ${frequencia >= 75 ? 'text-gray-800' : 'text-red-600'}`}>
+                  {frequencia}%
+                </p>
+              </div>
             </div>
           </div>
 

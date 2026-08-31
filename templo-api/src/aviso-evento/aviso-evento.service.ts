@@ -57,7 +57,7 @@ export class AvisoEventoService {
         titulo: data.titulo,
         descricao: data.descricao,
         imagemUrl: data.imagemUrl,
-        ativo: data.ativo,
+        ativo: data.ativo !== undefined ? data.ativo : undefined
       }
     });
   }

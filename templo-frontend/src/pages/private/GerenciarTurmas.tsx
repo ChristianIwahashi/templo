@@ -248,10 +248,6 @@ export function GerenciarTurmas() {
                 </select>
               </div>
 
-              <p className="text-xs text-gray-400 italic">
-                O número de identificação da turma será gerado automaticamente pelo sistema após a confirmação.
-              </p>
-
               <div className="flex justify-end gap-2 pt-4 border-t border-gray-100">
                 <button
                   type="button"

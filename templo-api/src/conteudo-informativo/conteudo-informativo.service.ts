@@ -1,40 +1,66 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { PrismaService } from '../database/prisma.service';
 import { CreateConteudoInformativoDto } from './dto/create-conteudo-informativo.dto';
 import { UpdateConteudoInformativoDto } from './dto/update-conteudo-informativo.dto';
-import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
 export class ConteudoInformativoService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
-  async create(data: CreateConteudoInformativoDto,
-    usuarioLogado?: any) {
-    if (usuarioLogado && data.idGestor !== usuarioLogado.idUsuario) {
-      throw new ForbiddenException('Você só pode criar conteúdos no seu próprio nome.');
+  async create(data: CreateConteudoInformativoDto, usuarioLogado?: any) {
+    const categoriaNormalizada = data.categoria.trim().toUpperCase();
+
+    if (categoriaNormalizada === 'SOBRE' || categoriaNormalizada === 'SOBRE NÓS') {
+      const sobreExistente = await this.prisma.conteudoInformativo.findFirst({
+        where: {
+          categoria: { in: ['SOBRE', 'SOBRE NÓS', 'sobre', 'sobre nós', 'Sobre Nós'] }
+        }
+      });
+
+      if (sobreExistente) {
+        throw new BadRequestException(
+          'Já existe uma publicação cadastrada para a seção "Sobre Nós". Por favor, edite o registro existente em vez de criar um novo.'
+        );
+      }
     }
 
-    const gestorExists = await this.prisma.gestor.findUnique({
-      where: { idUsuario: data.idGestor }
+    if (categoriaNormalizada === 'HISTORIA' || categoriaNormalizada === 'HISTÓRIA') {
+      const historiaExistente = await this.prisma.conteudoInformativo.findFirst({
+        where: {
+          categoria: { in: ['HISTORIA', 'HISTÓRIA', 'historia', 'história', 'História'] }
+        }
+      });
+
+      if (historiaExistente) {
+        throw new BadRequestException(
+          'Já existe uma publicação cadastrada para a seção "História do Templo". Por favor, edite o registro existente em vez de criar um novo.'
+        );
+      }
+    }
+
+    const gestorExists = await this.prisma.gestor.findUnique({ 
+      where: { idUsuario: data.idGestor } 
     });
-    if (!gestorExists) throw new NotFoundException('Gestor não encontrado.');
+    
+    if (!gestorExists) {
+      throw new NotFoundException('Gestor não encontrado.');
+    }
 
     return await this.prisma.conteudoInformativo.create({
       data: {
-        categoria: data.categoria,
+        categoria: categoriaNormalizada,
         titulo: data.titulo,
         texto: data.texto,
-        imagemUrl: data.imagemUrl,
-        idGestor: data.idGestor,
-      },
+        imagemUrl: data.imagemUrl || '',
+        idGestor: data.idGestor
+      }
     });
   }
 
   async findAll(categoria?: string) {
     return await this.prisma.conteudoInformativo.findMany({
-      where: categoria ? { categoria } : {},
-      include: {
-        gestor: { include: { usuario: { select: { nome: true } } } }
-      },
+      where: categoria ? { categoria: categoria.trim().toUpperCase() } : {},
+      include: { gestor: { include: { usuario: { select: { nome: true } } } } },
       orderBy: { idConteudo: 'desc' }
     });
   }
@@ -42,27 +68,24 @@ export class ConteudoInformativoService {
   async getById(idConteudo: number) {
     const conteudo = await this.prisma.conteudoInformativo.findUnique({
       where: { idConteudo },
-      include: {
-        gestor: { include: { usuario: { select: { nome: true } } } }
-      }
+      include: { gestor: { include: { usuario: { select: { nome: true } } } } }
     });
-
+    
     if (!conteudo) throw new NotFoundException('Conteúdo informativo não encontrado.');
     return conteudo;
   }
 
-  async update(idConteudo: number,
-    data: UpdateConteudoInformativoDto, usuarioLogado?: any) {
+  async update(idConteudo: number, data: UpdateConteudoInformativoDto, usuarioLogado?: any) {
     await this.getById(idConteudo);
 
     return await this.prisma.conteudoInformativo.update({
       where: { idConteudo },
       data: {
-        categoria: data.categoria,
+        categoria: data.categoria ? data.categoria.trim().toUpperCase() : undefined,
         titulo: data.titulo,
         texto: data.texto,
         imagemUrl: data.imagemUrl,
-      },
+      }
     });
   }
 

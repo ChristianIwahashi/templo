@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, Query, UseGuards, Patch } from '@nestjs/common';
 import { ConteudoInformativoService } from './conteudo-informativo.service';
 import { CreateConteudoInformativoDto } from './dto/create-conteudo-informativo.dto';
 import { UpdateConteudoInformativoDto } from './dto/update-conteudo-informativo.dto';
@@ -25,6 +25,13 @@ export class ConteudoInformativoController {
   async update(@Param('idConteudo') idConteudo: number,
   @Body() data: UpdateConteudoInformativoDto,
   @CurrentUser() usuarioLogado: any) {
+    return this.conteudoInformativoService.update(Number(idConteudo), data, usuarioLogado);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('GESTOR')
+  @Patch(':idConteudo')
+  async updatePatch(@Param('idConteudo') idConteudo: number, @Body() data: UpdateConteudoInformativoDto, @CurrentUser() usuarioLogado: any) {
     return this.conteudoInformativoService.update(Number(idConteudo), data, usuarioLogado);
   }
 
