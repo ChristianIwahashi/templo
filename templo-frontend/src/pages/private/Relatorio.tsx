@@ -24,7 +24,7 @@ export function Relatorio() {
   const {
     user,
     tipoRelatorio,
-    setTipoRelatorio,
+    trocarTipoRelatorio,
     turmaSelecionada,
     setTurmaSelecionada,
     anoSelecionado,
@@ -94,22 +94,20 @@ export function Relatorio() {
             {user?.papel === 'GESTOR' && (
               <div>
                 <label className="block text-xs font-semibold text-gray-500 uppercase mb-1.5">Tipo de Dados</label>
-                <div className="grid grid-cols-2 gap-2 bg-slate-50 p-1 rounded-xl border">
+                <div className="grid grid-cols-2 gap-2 bg-slate-50 p-1 rounded-xl border-slate-100">
                   <button
                     type="button"
-                    onClick={() => { setTipoRelatorio('academico'); }}
-                    className={`py-2 rounded-lg font-bold text-xs transition-all cursor-pointer
-                      ${tipoRelatorio === 'academico' ? 'bg-white text-sys-blue shadow-sm' : 'text-gray-500'}
-                    `}
+                    onClick={() => trocarTipoRelatorio('academico')}
+                    className={`py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${tipoRelatorio === 'academico' ? 'bg-white text-sys-blue shadow-sm' : 'text-gray-500'
+                      }`}
                   >
                     Acadêmico
                   </button>
                   <button
                     type="button"
-                    onClick={() => { setTipoRelatorio('financeiro'); }}
-                    className={`py-2 rounded-lg font-bold text-xs transition-all cursor-pointer
-                      ${tipoRelatorio === 'financeiro' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500'}
-                    `}
+                    onClick={() => trocarTipoRelatorio('financeiro')}
+                    className={`py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${tipoRelatorio === 'financeiro' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500'
+                      }`}
                   >
                     Financeiro
                   </button>
@@ -208,7 +206,7 @@ export function Relatorio() {
                 <table className="w-full text-left border-collapse text-xs">
                   {tipoRelatorio === 'academico' ? (
                     <thead>
-                      <tr className="border-b border-gray-150 text-gray-500 uppercase bg-gray-50/20">
+                      <tr className="border-b border-gray-100 text-gray-500 uppercase bg-gray-50/20">
                         <th className="p-4 font-semibold">Nome do Aluno</th>
                         <th className="p-4 font-semibold text-center">Frequência</th>
                         <th className="p-4 font-semibold text-center">Média Geral</th>
@@ -217,7 +215,7 @@ export function Relatorio() {
                     </thead>
                   ) : (
                     <thead>
-                      <tr className="border-b border-gray-150 text-gray-500 uppercase bg-gray-50/20">
+                      <tr className="border-b border-gray-100 text-gray-500 uppercase bg-gray-50/20">
                         <th className="p-4 font-semibold">Nome do Aluno</th>
                         <th className="p-4 font-semibold text-center">Mensalidades Pagas</th>
                         <th className="p-4 font-semibold text-center">Mensalidades Pendentes</th>
@@ -230,11 +228,15 @@ export function Relatorio() {
                   <tbody className="text-sm">
                     {tipoRelatorio === 'academico' ? (
                       (dadosPrevia as LinhaAcademica[]).map((linha: LinhaAcademica) => (
-                        <tr key={linha.idUsuario} className="border-b border-gray-100 hover:bg-gray-50/20 transition-colors">
-                          <td className="p-4 font-semibold text-gray-800">{linha.nome}</td>
-                          <td className={`p-4 text-center font-bold ${linha.frequencia >= 75 ? 'text-green-600' : 'text-red-500'}`}>{linha.frequencia}%</td>
-                          <td className={`p-4 text-center font-bold ${linha.media >= 7.0 ? 'text-sys-blue' : 'text-red-500'}`}>{linha.media.toFixed(1)}</td>
-                          <td className="p-4 text-center text-gray-500">{linha.totalAulas} aulas</td>
+                        <tr key={linha.idUsuario || Math.random()} className="border-b border-gray-100 hover:bg-gray-50/20 transition-colors">
+                          <td className="p-4 font-semibold text-gray-800">{linha.nome || '-'}</td>
+                          <td className={`p-4 text-center font-bold ${(linha.frequencia ?? 0) >= 75 ? 'text-green-600' : 'text-red-500'}`}>
+                            {linha.frequencia ?? 0}%
+                          </td>
+                          <td className={`p-4 text-center font-bold ${(linha.media ?? 0) >= 7.0 ? 'text-sys-blue' : 'text-red-500'}`}>
+                            {typeof linha.media === 'number' ? linha.media.toFixed(1) : '0.0'}
+                          </td>
+                          <td className="p-4 text-center text-gray-500">{linha.totalAulas ?? 0} aulas</td>
                         </tr>
                       ))
                     ) : (

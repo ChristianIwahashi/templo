@@ -175,6 +175,13 @@ export function UseRelatorio() {
     }, 2500);
   }
 
+  function trocarTipoRelatorio(novoTipo: 'academico' | 'financeiro') {
+    setTipoRelatorio(novoTipo);
+    setDadosPrevia([]);
+    setErro('');
+    setSucesso('');
+  }
+
   function showMockDownload(filename: string) {
       //link físico de download
       const link = document.createElement('a');
@@ -189,6 +196,7 @@ export function UseRelatorio() {
   return {
     user,
     tipoRelatorio,
+    trocarTipoRelatorio,
     setTipoRelatorio,
     turmaSelecionada,
     setTurmaSelecionada,

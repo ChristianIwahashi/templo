@@ -6,8 +6,13 @@ import {
   BookOpen, CheckCircle, AlertCircle, Megaphone,
   Users, FolderOpen, Clock,
   GraduationCap,
-  Star
+  Star,
+  DollarSign,
+  ArrowRight,
+  Calendar,
+  UserCheck
 } from "lucide-react";
+import { formatarDinheiro } from "../../utils/formatters";
 
 export function Dashboard() {
   const { user } = UseAuth();
@@ -25,6 +30,14 @@ export function Dashboard() {
   const [totalMateriais, setTotalMateriais] = useState(0);
   const [ultimosAvisosProf, setUltimosAvisosProf] = useState<any[]>([]);
   const [ultimasNotasProf, setUltimasNotasProf] = useState<any[]>([]);
+
+  //Gestor
+  const [totalAlunosGestor, setTotalAlunosGestor] = useState(0);
+  const [totalProfessoresGestor, setTotalProfessoresGestor] = useState(0);
+  const [totalTurmasGestor, setTotalTurmasGestor] = useState(0);
+  const [inadimplenciaGestor, setInadimplenciaGestor] = useState(0);
+  const [ultimosAlunosMatriculados, setUltimosAlunosMatriculados] = useState<any[]>([]);
+  const [ultimosEventosGestor, setUltimosEventosGestor] = useState<any[]>([]);
 
   useEffect(() => {
     if (!user) return;
@@ -80,6 +93,34 @@ export function Dashboard() {
           setTotalMateriais(materiaisRes.data.length);
           setUltimosAvisosProf(avisosRes.data.slice(0, 2));
           setUltimasNotasProf(notasRes.data.slice(0, 3));
+
+          //Gestor
+        } else if (currentUser.papel === 'GESTOR') {
+          const [usuariosRes, turmasRes, mensRes, eventosRes] = await Promise.all([
+            Api.get('/usuario'),
+            Api.get('/turma'),
+            Api.get('/mensalidade'),
+            Api.get('/aviso-evento')
+          ]);
+
+          const todosUsuarios: any[] = usuariosRes.data;
+          const todasMensalidades: any[] = mensRes.data;
+          const alunosAtivos = todosUsuarios.filter(u => u.papel === 'ALUNO' && u.ativo);
+          const professoresAtivos = todosUsuarios.filter(u => u.papel === 'PROFESSOR' && u.ativo);
+
+          setTotalAlunosGestor(alunosAtivos.length);
+          setTotalProfessoresGestor(professoresAtivos.length);
+          setTotalTurmasGestor(turmasRes.data.length);
+
+          const totalInadimplente = todasMensalidades
+            .filter(m => m.statusPagamento === 'PENDENTE' || m.statusPagamento === 'ATRASADO')
+            .reduce((acc, curr) => acc + curr.valor, 0);
+
+          setInadimplenciaGestor(totalInadimplente);
+
+          setUltimosAlunosMatriculados(todosUsuarios.filter(u => u.papel === 'ALUNO').slice(-3).reverse());
+          
+          setUltimosEventosGestor(eventosRes.data.slice(0, 2));
         }
       } catch (error) {
         console.error("Erro ao carregar dados do dashboard:", error);
@@ -306,4 +347,125 @@ export function Dashboard() {
       </div>
     );
   }
+
+  //Gestor
+  return (
+    <div className="p-6 space-y-8 animate-fade-in-up">
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        {/*Total Alunos*/}
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 border-l-4 border-l-blue-500">
+          <div className="p-3 bg-blue-50 text-sys-blue rounded-xl"><Users className="w-6 h-6" /></div>
+          <div>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Alunos Matriculados</p>
+            <p className="text-2xl font-bold text-gray-800 mt-0.5">{totalAlunosGestor}</p>
+          </div>
+        </div>
+
+        {/*Total Professores*/}
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 border-l-4 border-l-green-500">
+          <div className="p-3 bg-green-50 text-green-600 rounded-xl"><UserCheck className="w-6 h-6" /></div>
+          <div>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Professores</p>
+            <p className="text-2xl font-bold text-gray-800 mt-0.5">{totalProfessoresGestor}</p>
+          </div>
+        </div>
+
+        {/*Turmas Abertas*/}
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 border-l-4 border-l-purple-500">
+          <div className="p-3 bg-purple-50 text-purple-600 rounded-xl"><GraduationCap className="w-6 h-6" /></div>
+          <div>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Turmas Abertas</p>
+            <p className="text-2xl font-bold text-gray-800 mt-0.5">{totalTurmasGestor}</p>
+          </div>
+        </div>
+
+        {/*Mensalidade*/}
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 border-l-4 border-l-yellow-500">
+          <div className="p-3 bg-yellow-50 text-yellow-600 rounded-xl"><DollarSign className="w-6 h-6" /></div>
+          <div>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Matrículas Atrasadas</p>
+            <p className="text-xl font-bold text-yellow-600 mt-0.5">{formatarDinheiro(inadimplenciaGestor)}</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        {/*Últimas Matrículas*/}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between">
+          <div>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-bold text-gray-800 flex items-center gap-2">
+                <Users className="w-5 h-5 text-sys-blue" /> Últimos Alunos Cadastrados
+              </h3>
+            </div>
+
+            {ultimosAlunosMatriculados.length === 0 ? (
+              <p className="text-sm text-gray-500 italic py-4">Nenhum aluno registrado no sistema.</p>
+            ) : (
+              <div className="divide-y divide-gray-100">
+                {ultimosAlunosMatriculados.map((aluno: any) => (
+                  <div key={aluno.idUsuario} className="py-2.5 flex justify-between items-center text-sm">
+                    <div>
+                      <p className="font-semibold text-gray-800 leading-tight">{aluno.nome}</p>
+                      <p className="text-xs text-gray-400 mt-0.5">{aluno.email}</p>
+                    </div>
+                    <span className="text-xs font-mono font-medium text-gray-500 bg-gray-50 px-2 py-1 rounded">
+                      Matrícula #{aluno.idUsuario}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="mt-6 border-t border-gray-100 pt-4">
+            <Link to="/gerenciar-alunos" className="text-sm text-sys-blue font-bold hover:underline flex items-center gap-1">
+              Ver lista completa de alunos <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+
+        {/*Aviso Eventos*/}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between">
+          <div>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-bold text-gray-800 flex items-center gap-2">
+                <Calendar className="w-5 h-5 text-sys-blue" /> Agenda do Website Institucional
+              </h3>
+            </div>
+
+            {ultimosEventosGestor.length === 0 ? (
+              <p className="text-sm text-gray-500 italic py-4">Nenhum evento agendado na página pública.</p>
+            ) : (
+              <div className="space-y-3">
+                {ultimosEventosGestor.map((evento: any) => (
+                  <div key={evento.idAvisoEvento} className="border border-gray-100 rounded-xl p-3 bg-slate-50/40 flex justify-between items-center">
+                    <div>
+                      <p className="font-semibold text-sm text-gray-800">{evento.titulo}</p>
+                      <p className="text-xs text-gray-400 mt-0.5">Postado em {formatarData(evento.dataPostagem)}</p>
+                    </div>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                      evento.ativo ? 'bg-green-50 text-green-700 border-green-200' : 'bg-gray-100 text-gray-500'
+                    }`}>
+                      {evento.ativo ? 'Público' : 'Oculto'}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="mt-6 border-t border-gray-100 pt-4">
+            <Link to="/gerenciar-informatico" className="text-sm text-sys-blue font-bold hover:underline flex items-center gap-1">
+              Gerenciar o website <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
