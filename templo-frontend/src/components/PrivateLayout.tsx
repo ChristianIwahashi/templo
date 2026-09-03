@@ -19,7 +19,8 @@ const menuConfig = {
         { path: '/gerenciar-materiais', label: 'Gerenciar Materiais', icon: FolderOpen },
         { path: '/gerenciar-chamada', label: 'Gerenciar Chamada', icon: Users },
         { path: '/gerenciar-nota', label: 'Gerenciar Notas', icon: Star },
-        { path: '/relatorio', label: 'Relatórios', icon: PieChart }
+        { path: '/relatorio', label: 'Relatórios', icon: PieChart },
+        { path: '/perfil', label: 'Meu Perfil', icon: User }
     ],
     GESTOR: [
         { path: '/dashboard', label: 'Início', icon: Home },
@@ -33,7 +34,8 @@ const menuConfig = {
         { path: '/gerenciar-materiais', label: 'Gerenciar Materiais', icon: FolderOpen },
         { path: '/gerenciar-chamada', label: 'Gerenciar Chamada', icon: Users },
         { path: '/gerenciar-nota', label: 'Gerenciar Notas', icon: Star },
-        { path: '/relatorio', label: 'Relatórios', icon: PieChart }
+        { path: '/relatorio', label: 'Relatórios', icon: PieChart },
+        { path: '/perfil', label: 'Meu Perfil', icon: User }
     ],
 };
 

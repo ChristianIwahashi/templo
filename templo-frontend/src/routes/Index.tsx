@@ -43,6 +43,7 @@ export function AppRoutes() {
                 <Route element={<PrivateRoute />}>
                     <Route element={<PrivateLayout />}>
                         <Route path="/dashboard" element={<Dashboard />} />
+                        <Route path="/perfil" element={<Perfil />} />
 
                         {user?.papel === 'ALUNO' && (
                             <>
@@ -50,7 +51,6 @@ export function AppRoutes() {
                                 <Route path="/mensalidade" element={<Mensalidade />} />
                                 <Route path="/avisos" element={<Avisos />} />
                                 <Route path="/materiais" element={<Materiais />} />
-                                <Route path="/perfil" element={<Perfil />} />
                             </>
                         )}
 
