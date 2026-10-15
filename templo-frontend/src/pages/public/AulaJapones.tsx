@@ -52,7 +52,7 @@ export function AulasJapones() {
       </header>
 
       {/*Card Principal*/}
-      <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-150 grid grid-cols-1 md:grid-cols-2">
+      <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 grid grid-cols-1 md:grid-cols-2">
         
         {/*Lado Esquerdo: Logo Institucional*/}
         <div className="bg-blue-50/70 p-8 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r border-gray-100 min-h-75">
@@ -125,7 +125,7 @@ export function AulasJapones() {
       </div>
 
       {/*Seção Informativa*/}
-      <section className="bg-white p-8 rounded-3xl border border-gray-150 shadow-sm grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+      <section className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
         <div className="md:col-span-2 space-y-2">
           <h4 className="text-xl font-bold text-slate-800 flex items-center gap-2">
             <CheckCircle2 className="w-5 h-5 text-green-600" /> Como ingressar nas aulas?
@@ -135,7 +135,7 @@ export function AulasJapones() {
           </p>
         </div>
 
-        <div className="bg-slate-50 p-5 rounded-2xl border border-slate-150 text-xs space-y-2 text-slate-700">
+        <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 text-xs space-y-2 text-slate-700">
           <p className="font-bold text-[#0060ba] uppercase tracking-wider">Secretaria Assoka</p>
           <p className="flex items-center gap-2">
             <Phone className="w-3.5 h-3.5 text-[#0060ba]" /> (14) 3522-3184

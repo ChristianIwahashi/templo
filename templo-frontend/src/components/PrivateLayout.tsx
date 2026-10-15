@@ -85,16 +85,21 @@ export function PrivateLayout() {
                 </button>
 
                 {/*Logo Templo*/}
-                <div className={`bg-sys-blue h-18 hidden md:flex items-center gap-3 shrink-0 transition-all duration-300 overflow-hidden
-                    ${isSidebarCollapsed ? 'px-3 justify-center' : 'px-6'}
-                `}>
+                <Link
+                    to="/dashboard"
+                    title="Ir para o Dashboard"
+                    className={`bg-sys-blue h-18 hidden md:flex items-center gap-3 shrink-0 transition-all duration-300 overflow-hidden cursor-pointer hover:opacity-95 ${
+                        isSidebarCollapsed ? 'px-3 justify-center' : 'px-6'
+                    }`}
+                >
                     <img src={LogoTemplo} alt="Logo do Templo" className="w-10 h-10 object-contain shrink-0" />
-                    <div className={`transition-opacity duration-200 whitespace-nowrap overflow-hidden
-                        ${isSidebarCollapsed ? 'opacity-0 w-0 hidden' : 'opacity-100 w-auto'}`}>
+                    <div className={`transition-opacity duration-200 whitespace-nowrap overflow-hidden ${
+                        isSidebarCollapsed ? 'opacity-0 w-0 hidden' : 'opacity-100 w-auto'
+                    }`}>
                         <h2 className="font-bold text-white">Assoka</h2>
                         <h2 className="text-xs text-blue-100">Nichiyougakkou</h2>
                     </div>
-                </div>
+                </Link>
 
                 {/*Perfil*/}
                 <div className="p-4 border-b border-gray-100 overflow-hidden">

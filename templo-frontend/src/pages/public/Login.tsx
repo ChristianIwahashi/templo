@@ -1,7 +1,8 @@
 import { useState, type FormEvent } from "react";
 import { UseAuth } from "../../hooks/UseAuth";
 import { AxiosError } from "axios";
-import { Mail, Lock, ArrowRight, EyeOff, Eye } from "lucide-react";
+import { Mail, Lock, ArrowRight, EyeOff, Eye, ArrowLeft } from "lucide-react";
+import { Link } from "react-router-dom";
 import LogoTemplo from "../../assets/images/Hongwanji.png";
 
 export function Login() {
@@ -113,8 +114,16 @@ export function Login() {
               {!loading && <ArrowRight className="w-4 h-4" />}
             </button>
           </form>
+          <div className="text-center pt-4 mt-6 border-t border-gray-100">
+            <Link
+              to="/"
+              className="inline-flex items-center justify-center gap-2 text-xs font-semibold text-gray-500 hover:text-sys-blue transition-colors cursor-pointer group"
+            >
+              <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+              <span>Voltar ao site do Templo</span>
+            </Link>
+          </div>
         </div>
-
       </div>
     </div>
   );
