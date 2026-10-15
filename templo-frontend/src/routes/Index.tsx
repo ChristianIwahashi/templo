@@ -20,6 +20,11 @@ import { GerenciarTurmas } from "../pages/private/GerenciarTurmas";
 import { GerenciarGestores } from "../pages/private/GerenciarGestores";
 import { GerenciarMensalidade } from "../pages/private/GerenciarMensalidade";
 import { GerenciarInformatico } from "../pages/private/GerenciarInformatico";
+import { PublicLayout } from '../components/PublicLayout';
+import { Sobre } from "../pages/public/Sobre";
+import { Eventos } from "../pages/public/Eventos";
+import { Galeria } from "../pages/public/Galeira";
+import { AulasJapones } from "../pages/public/AulaJapones";
 
 export function AppRoutes() {
     const { isAuthenticated, loading, user } = UseAuth();
@@ -35,6 +40,13 @@ export function AppRoutes() {
     return (
         <BrowserRouter>
             <Routes>
+                <Route element={<PublicLayout />}>
+                    <Route path="/" element={<Sobre />} />
+                    <Route path="/eventos" element={<Eventos />} />
+                    <Route path="/galeria" element={<Galeria />} />
+                    <Route path="/aulas-japones" element={<AulasJapones />} />
+                </Route>
+
                 <Route
                     path="/login"
                     element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />}
@@ -82,8 +94,8 @@ export function AppRoutes() {
                     </Route>
                 </Route>
 
-                <Route path="*" element={<Navigate to="/login" replace />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </BrowserRouter>
-    )
+    );
 }
