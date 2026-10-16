@@ -2,6 +2,7 @@ import { UseGerenciarMateriais } from "../../hooks/UseGerenciarMateriais";
 import { FolderOpen, Plus, Edit, Trash2, Info, AlertCircle, Check, CheckSquare, Square, FileText } from "lucide-react";
 import { formatarData } from "../../utils/formatters";
 import { InfoAuditoria } from "../../components/InfoAuditoria";
+import { UploadInput } from "../../components/UploadInput";
 
 export function GerenciarMateriais() {
     const {
@@ -205,20 +206,12 @@ export function GerenciarMateriais() {
                                 />
                             </div>
 
-                            <div>
-                                <label htmlFor="url-add" className="block text-xs font-semibold text-gray-500 uppercase mb-1 items-center gap-1.5">
-                                    Link / URL do Arquivo *
-                                </label>
-                                <input
-                                    id="url-add"
-                                    type="text"
-                                    value={arquivoUrl}
-                                    onChange={e => setArquivoUrl(e.target.value)}
-                                    placeholder="https://site.com/arquivo.pdf"
-                                    className="w-full p-2.5 border border-gray-200 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50"
-                                    required
-                                />
-                            </div>
+                            <UploadInput
+                                label="Upload da Apostila / Arquivo de Estudo *"
+                                accept=".pdf,.png,.jpg,.jpeg,.docx,.xlsx,.zip"
+                                value={arquivoUrl}
+                                onChange={setArquivoUrl}
+                            />
 
                             <div>
                                 <label htmlFor="select-turma-add" className="block text-xs font-semibold text-gray-500 uppercase mb-1">Selecione a Turma *</label>

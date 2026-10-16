@@ -34,6 +34,7 @@ services:
       - ./templo-api:/usr/src/app
       - /usr/src/app/node_modules
       - /usr/src/app/dist
+      - ./backend/uploads:/usr/src/app/uploads
     # Comando mágico: Roda as migrations antes de ligar a API
     command: sh -c "npx prisma migrate dev && npm run start:dev"
 
