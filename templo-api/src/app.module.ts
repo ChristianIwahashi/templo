@@ -11,9 +11,10 @@ import { MaterialDidaticoModule } from './material-didatico/material-didatico.mo
 import { AvisoEventoModule } from './aviso-evento/aviso-evento.module';
 import { ConteudoInformativoModule } from './conteudo-informativo/conteudo-informativo.module';
 import { AuthModule } from './auth/auth.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
-  imports: [UsuarioModule, TurmaModule, MensalidadeModule, NotaModule, FrequenciaModule, AvisoAulaModule, MaterialDidaticoModule, AvisoEventoModule, ConteudoInformativoModule, AuthModule],
+  imports: [UsuarioModule, TurmaModule, MensalidadeModule, NotaModule, FrequenciaModule, AvisoAulaModule, MaterialDidaticoModule, AvisoEventoModule, ConteudoInformativoModule, AuthModule, UploadModule],
   controllers: [AppController],
   providers: [AppService],
 })

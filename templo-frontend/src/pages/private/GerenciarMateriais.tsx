@@ -325,16 +325,11 @@ export function GerenciarMateriais() {
                             </div>
 
                             <div>
-                                <label htmlFor="url-edit" className="block text-xs font-semibold text-gray-500 uppercase mb-1 items-center gap-1.5">
-                                    Link / URL do Arquivo *
-                                </label>
-                                <input
-                                    id="url-edit"
-                                    type="text"
+                                <UploadInput
+                                    label="Substituir Arquivo / Apostila (Opcional)"
+                                    accept=".pdf,.png,.jpg,.jpeg,.docx,.xlsx,.zip"
                                     value={arquivoUrl}
-                                    onChange={e => setArquivoUrl(e.target.value)}
-                                    className="w-full p-2.5 border border-gray-200 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50"
-                                    required
+                                    onChange={setArquivoUrl}
                                 />
                             </div>
 

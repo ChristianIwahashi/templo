@@ -1,6 +1,7 @@
 import { UseGerenciarInformatico, type ConteudoItem, type EventoItem } from "../../hooks/UseGerenciarInformatico";
 import { formatarData } from "../../utils/formatters";
 import { ConfirmModal } from "../../components/ConfirmModal";
+import { UploadInput } from "../../components/UploadInput";
 import { Globe, Plus, Edit, Trash2, Power, Info, AlertCircle, Check, Calendar, Layers } from "lucide-react";
 
 export function GerenciarInformatico() {
@@ -75,7 +76,7 @@ export function GerenciarInformatico() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <p className="text-gray-500 font-medium animate-pulse">Carregando...</p>
+        <p className="text-gray-500 font-medium animate-pulse">Carregando gerenciador do website...</p>
       </div>
     );
   }
@@ -83,11 +84,11 @@ export function GerenciarInformatico() {
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6 animate-fade-in-up relative">
       
-      {/*Título*/}
-      <div className="flex items-center justify-between pb-4">
+      {/* Cabeçalho */}
+      <div className="flex items-center justify-between border-b border-gray-200 pb-4">
         <div className="flex items-center gap-2">
           <Globe className="w-6 h-6 text-sys-blue" />
-          <h2 className="text-2xl font-bold text-gray-800">Gerenciador do Website</h2>
+          <h2 className="text-2xl font-bold text-gray-800">Gerenciador do Website (CMS)</h2>
         </div>
 
         {abaAtiva === 'conteudos' ? (
@@ -107,7 +108,7 @@ export function GerenciarInformatico() {
         )}
       </div>
 
-      {/*Alerta Global*/}
+      {/* Alertas Globais */}
       {erro && !isAddConteudoOpen && !isEditConteudoOpen && !isAddEventoOpen && !isEditEventoOpen && (
         <div className="p-4 bg-red-50 text-red-600 rounded-xl border border-red-150 flex items-center gap-2 font-semibold">
           <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
@@ -119,7 +120,7 @@ export function GerenciarInformatico() {
         </div>
       )}
 
-      {/*Seletor de Abas*/}
+      {/* Seletor de Abas Internas */}
       <div className="flex border-b border-gray-200 bg-white p-2 rounded-xl shadow-xs">
         <button
           onClick={() => setAbaAtiva('conteudos')}
@@ -147,23 +148,23 @@ export function GerenciarInformatico() {
         </button>
       </div>
 
-      {/*Conteúdo Informativo*/}
+      {/*CONTEÚDOS & PÁGINAS (História, Galeria, Sobre)*/}
       {abaAtiva === 'conteudos' && (
         conteudos.length === 0 ? (
-          <div className="bg-white p-12 rounded-2xl border border-gray-100 text-center text-gray-500 max-w-lg mx-auto">
+          <div className="bg-white p-12 rounded-2xl border border-gray-150 text-center text-gray-500 max-w-lg mx-auto">
             <Info className="w-12 h-12 text-gray-300 mx-auto mb-3" />
             <p className="font-bold text-gray-700 text-lg">Nenhum Conteúdo Cadastrado</p>
             <p className="text-xs text-gray-500 mt-1">Cadastre as seções de História, Galeria ou Cursos para alimentar a vitrine do site.</p>
           </div>
         ) : (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-150 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-gray-100 text-xs text-gray-500 uppercase bg-gray-50/20">
+                  <tr className="border-b border-gray-150 text-xs text-gray-500 uppercase bg-gray-50/20">
                     <th className="p-4 font-semibold">Seção / Categoria</th>
                     <th className="p-4 font-semibold">Título do Conteúdo</th>
-                    <th className="p-4 font-semibold">Texto</th>
+                    <th className="p-4 font-semibold">Texto / Resumo</th>
                     <th className="p-4 font-semibold text-right">Ações</th>
                   </tr>
                 </thead>
@@ -204,20 +205,20 @@ export function GerenciarInformatico() {
         )
       )}
 
-      {/*Avisos Eventos*/}
+      {/*EVENTOS PÚBLICOS*/}
       {abaAtiva === 'eventos' && (
         eventos.length === 0 ? (
-          <div className="bg-white p-12 rounded-2xl border border-gray-100 text-center text-gray-500 max-w-lg mx-auto">
+          <div className="bg-white p-12 rounded-2xl border border-gray-150 text-center text-gray-500 max-w-lg mx-auto">
             <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-3" />
             <p className="font-bold text-gray-700 text-lg">Nenhum Evento na Agenda</p>
             <p className="text-xs text-gray-500 mt-1">Publique eventos para que apareçam na página inicial e no mural aberto do templo.</p>
           </div>
         ) : (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-150 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-gray-100 text-xs text-gray-500 uppercase bg-gray-50/20">
+                  <tr className="border-b border-gray-150 text-xs text-gray-500 uppercase bg-gray-50/20">
                     <th className="p-4 font-semibold">Evento</th>
                     <th className="p-4 font-semibold">Data da Postagem</th>
                     <th className="p-4 font-semibold text-center">Visibilidade</th>
@@ -279,10 +280,10 @@ export function GerenciarInformatico() {
         )
       )}
 
-      {/*Conteudo Informatico*/}
+      {/*CONTEÚDO (POST / PATCH)*/}
       {(isAddConteudoOpen || isEditConteudoOpen) && (
         <div className="fixed inset-0 bg-black/60 z-250 flex items-center justify-center p-4 backdrop-blur-xs">
-          <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 border border-gray-100 animate-modal-enter text-sm max-h-[90vh] overflow-y-auto">
+          <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 border border-gray-100 animate-modal-enter text-sm max-h-[90vh] overflow-y-auto acc-scrollbar">
             <h3 className="text-lg font-bold text-gray-800 mb-4 border-b pb-2 flex items-center gap-1.5">
               <Layers className="w-5 h-5 text-sys-blue" />
               {isAddConteudoOpen ? 'Novo Conteúdo Institucional' : 'Editar Conteúdo'}
@@ -307,7 +308,7 @@ export function GerenciarInformatico() {
                   <option value="HISTORIA">História do Templo</option>
                   <option value="SOBRE">Sobre Nós</option>
                   <option value="GALERIA">Galeria de Fotos</option>
-                  <option value="AULAS">Aulas de Japonês</option>
+                  <option value="AULAS">Aulas de Japonês (Estrutura)</option>
                 </select>
               </div>
 
@@ -336,35 +337,27 @@ export function GerenciarInformatico() {
                   required
                 />
               </div>
-
-              <div>
-                <label htmlFor="url-conteudo" className="block text-xs font-semibold text-gray-500 uppercase mb-1 items-center gap-1">
-                  URL da Foto / Mídia *
-                </label>
-                <input 
-                  id="url-conteudo"
-                  type="text" 
-                  value={imagemUrlConteudo}
-                  onChange={e => setImagemUrlConteudo(e.target.value)}
-                  placeholder="https://link-da-imagem.com/foto.jpg"
-                  className="w-full p-2.5 border border-gray-200 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50"
-                  required
-                />
-              </div>
-
+              <UploadInput
+                label="Foto / Imagem da Seção *"
+                accept="image/*"
+                value={imagemUrlConteudo}
+                onChange={setImagemUrlConteudo}
+              />
               <div className="flex justify-end gap-2 pt-4 border-t border-gray-100">
                 <button type="button" onClick={() => { setIsAddConteudoOpen(false); setIsEditConteudoOpen(false); }} className="px-4 py-2 border rounded-xl text-gray-600 hover:bg-gray-50 cursor-pointer">Cancelar</button>
-                <button type="submit" className="px-4 py-2 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl font-bold cursor-pointer">Prosseguir</button>
+                <button type="submit" disabled={salvando} className="px-4 py-2 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl font-bold cursor-pointer disabled:opacity-50">
+                  {salvando ? 'Salvando...' : 'Prosseguir'}
+                </button>
               </div>
             </form>
           </div>
         </div>
       )}
 
-      {/*Evento*/}
+      {/*EVENTO (POST / PATCH)*/}
       {(isAddEventoOpen || isEditEventoOpen) && (
         <div className="fixed inset-0 bg-black/60 z-250 flex items-center justify-center p-4 backdrop-blur-xs">
-          <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 border border-gray-100 animate-modal-enter text-sm max-h-[90vh] overflow-y-auto">
+          <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 border border-gray-100 animate-modal-enter text-sm max-h-[90vh] overflow-y-auto acc-scrollbar">
             <h3 className="text-lg font-bold text-gray-800 mb-4 border-b pb-2 flex items-center gap-1.5">
               <Calendar className="w-5 h-5 text-sys-blue" />
               {isAddEventoOpen ? 'Novo Evento na Agenda' : 'Editar Evento'}
@@ -397,33 +390,24 @@ export function GerenciarInformatico() {
                   rows={3}
                   value={descricaoEvento}
                   onChange={e => setDescricaoEvento(e.target.value)}
-                  placeholder="Descreva as atrações, horários e informações de entrada..."
+                  placeholder="Descreva as atrações, horários e informações..."
                   className="w-full p-2.5 border border-gray-200 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50"
                   required
                 />
               </div>
-
-              <div>
-                <label htmlFor="img-evento" className="block text-xs font-semibold text-gray-500 uppercase mb-1 items-center gap-1">
-                  URL da Foto do Cartaz (Opcional)
-                </label>
-                <input 
-                  id="img-evento"
-                  type="text" 
-                  value={imagemUrlEvento}
-                  onChange={e => setImagemUrlEvento(e.target.value)}
-                  placeholder="https://link-do-cartaz.com/evento.jpg"
-                  className="w-full p-2.5 border border-gray-200 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50"
-                />
-              </div>
-
+              <UploadInput
+                label="Cartaz / Imagem do Evento (Opcional)"
+                accept="image/*"
+                value={imagemUrlEvento}
+                onChange={setImagemUrlEvento}
+              />
               <div className="flex items-center gap-2 pt-2">
                 <input 
                   type="checkbox" 
                   id="chk-ativo-evento"
                   checked={ativoEvento}
                   onChange={e => setAtivoEvento(e.target.checked)}
-                  className="w-4 h-4 rounded text-sys-blue focus:ring-sys-blue"
+                  className="w-4 h-4 rounded text-sys-blue focus:ring-sys-blue cursor-pointer"
                 />
                 <label htmlFor="chk-ativo-evento" className="text-xs font-semibold text-gray-700 cursor-pointer">
                   Publicar imediatamente na página inicial do site
@@ -432,14 +416,16 @@ export function GerenciarInformatico() {
 
               <div className="flex justify-end gap-2 pt-4 border-t border-gray-100">
                 <button type="button" onClick={() => { setIsAddEventoOpen(false); setIsEditEventoOpen(false); }} className="px-4 py-2 border rounded-xl text-gray-600 hover:bg-gray-50 cursor-pointer">Cancelar</button>
-                <button type="submit" className="px-4 py-2 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl font-bold cursor-pointer">Prosseguir</button>
+                <button type="submit" disabled={salvando} className="px-4 py-2 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl font-bold cursor-pointer disabled:opacity-50">
+                  {salvando ? 'Salvando...' : 'Prosseguir'}
+                </button>
               </div>
             </form>
           </div>
         </div>
       )}
 
-      {/*Modais de Conteúdo*/}
+      {/*MODAIS DE CONFIRMAÇÃO (ConfirmModal)*/}
       <ConfirmModal 
         isOpen={isConfirmAddConteudo}
         onClose={() => setIsConfirmAddConteudo(false)}
@@ -449,6 +435,7 @@ export function GerenciarInformatico() {
         type="info"
         isLoading={salvando}
       />
+
       <ConfirmModal 
         isOpen={isConfirmEditConteudo}
         onClose={() => setIsConfirmEditConteudo(false)}
@@ -458,6 +445,7 @@ export function GerenciarInformatico() {
         type="info"
         isLoading={salvando}
       />
+
       <ConfirmModal 
         isOpen={isConfirmDeleteConteudo}
         onClose={() => setIsConfirmDeleteConteudo(false)}
@@ -468,7 +456,7 @@ export function GerenciarInformatico() {
         isLoading={salvando}
       />
 
-      {/*Modais de Evento*/}
+      {/* Eventos */}
       <ConfirmModal 
         isOpen={isConfirmAddEvento}
         onClose={() => setIsConfirmAddEvento(false)}
@@ -478,6 +466,7 @@ export function GerenciarInformatico() {
         type="info"
         isLoading={salvando}
       />
+
       <ConfirmModal 
         isOpen={isConfirmEditEvento}
         onClose={() => setIsConfirmEditEvento(false)}
@@ -487,6 +476,7 @@ export function GerenciarInformatico() {
         type="info"
         isLoading={salvando}
       />
+
       <ConfirmModal 
         isOpen={isConfirmStatusEvento}
         onClose={() => setIsConfirmStatusEvento(false)}
@@ -496,6 +486,7 @@ export function GerenciarInformatico() {
         type="warning"
         isLoading={salvando}
       />
+
       <ConfirmModal 
         isOpen={isConfirmDeleteEvento}
         onClose={() => setIsConfirmDeleteEvento(false)}
