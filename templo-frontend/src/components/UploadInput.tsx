@@ -125,7 +125,6 @@ export function UploadInput({
               <>
                 <UploadCloud className="w-6 h-6 text-sys-blue" />
                 <span className="font-semibold text-xs text-gray-700">Clique para selecionar do computador</span>
-                <span className="text-[10px] text-gray-400 uppercase tracking-wider">PDF, Imagens, Documentos (Máx: 20 MB)</span>
               </>
             )}
           </button>

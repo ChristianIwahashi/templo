@@ -72,6 +72,30 @@ export function Materiais() {
         return new Date(dataStr).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
     }
 
+    const [baixandoId, setBaixandoId] = useState<number | null>(null);
+
+    async function handleBaixarArquivo(url: string, titulo: string, idMaterial: number) {
+        try {
+            setBaixandoId(idMaterial);
+            const response = await fetch(url);
+            const blob = await response.blob();
+            const extensao = url.split('.').pop() || 'pdf';
+            const nomeLimpo = `${titulo.replace(/[/\\?%*:|"<>]/g, '_')}.${extensao}`;
+            const blobUrl = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            link.download = nomeLimpo;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(blobUrl);
+        } catch (error) {
+            window.open(url, '_blank');
+        } finally {
+            setBaixandoId(null);
+        }
+    }
+
     if (loading) {
         return (
             <div className="flex justify-center items-center h-64">
@@ -185,15 +209,19 @@ export function Materiais() {
                                         </td>
 
                                         <td className="p-4 text-center">
-                                            <a
-                                                href={m.arquivoUrl}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="inline-flex items-center justify-center p-2 rounded-lg bg-blue-50 text-sys-blue hover:bg-sys-blue hover:text-white transition-all cursor-pointer"
-                                                title="Abrir / Baixar arquivo"
+                                            <button
+                                                type="button"
+                                                onClick={() => handleBaixarArquivo(m.arquivoUrl, m.titulo, m.idMaterial)}
+                                                disabled={baixandoId === m.idMaterial}
+                                                className="inline-flex items-center justify-center p-2 rounded-lg bg-blue-50 text-sys-blue hover:bg-sys-blue hover:text-white transition-all cursor-pointer disabled:opacity-50"
+                                                title="Baixar material para o computador"
                                             >
-                                                <Download className="w-5 h-5" />
-                                            </a>
+                                                {baixandoId === m.idMaterial ? (
+                                                    <span className="text-[10px] font-bold animate-pulse">Baixando...</span>
+                                                ) : (
+                                                    <Download className="w-5 h-5" />
+                                                )}
+                                            </button>
                                         </td>
                                     </tr>
                                 ))
