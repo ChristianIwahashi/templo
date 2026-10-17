@@ -157,11 +157,11 @@ export function GerenciarInformatico() {
             <p className="text-xs text-gray-500 mt-1">Cadastre as seções de História, Galeria ou Cursos para alimentar a vitrine do site.</p>
           </div>
         ) : (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-150 overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-gray-150 text-xs text-gray-500 uppercase bg-gray-50/20">
+                  <tr className="border-b border-gray-100 text-xs text-gray-500 uppercase bg-gray-50/20">
                     <th className="p-4 font-semibold">Seção / Categoria</th>
                     <th className="p-4 font-semibold">Título do Conteúdo</th>
                     <th className="p-4 font-semibold">Texto / Resumo</th>
