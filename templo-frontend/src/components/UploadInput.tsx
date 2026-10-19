@@ -20,8 +20,6 @@ export function UploadInput({
 }: UploadInputProps) {
   const [uploading, setUploading] = useState(false);
   const [erro, setErro] = useState('');
-  
-  //Guarda o nome real do arquivo
   const [nomeArquivoLocal, setNomeArquivoLocal] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -38,8 +36,6 @@ export function UploadInput({
       formData.append('file', file);
 
       const response = await Api.post('/upload', formData);
-
-      //Salva a URL da nuvem no estado do formulário pai
       onChange(response.data.url);
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -60,7 +56,6 @@ export function UploadInput({
     }
   }
 
-  //Função que oculta a URL da nuvem e exibe apenas o nome limpo do arquivo
   function formatarNomeExibicao(url: string): string {
     if (nomeArquivoLocal) return nomeArquivoLocal;
     if (!url) return '';
@@ -74,7 +69,7 @@ export function UploadInput({
 
   return (
     <div className="space-y-1.5 text-sm">
-      <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider">
+      <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
         {label}
       </label>
 
@@ -87,13 +82,12 @@ export function UploadInput({
         className="hidden" 
       />
 
-      {/*ARQUIVO ANEXADO*/}
       {value ? (
-        <div className="flex items-center justify-between p-3 bg-blue-50/70 border border-blue-200 rounded-xl text-xs">
+        <div className="flex items-center justify-between p-3 bg-blue-50/70 dark:bg-slate-800 border border-blue-200 dark:border-slate-700 rounded-xl text-xs">
           <div className="flex items-center gap-2.5 overflow-hidden pr-2">
-            <Check className="w-4 h-4 text-green-600 shrink-0" />
+            <Check className="w-4 h-4 text-green-600 dark:text-green-400 shrink-0" />
             <FileText className="w-4 h-4 text-sys-blue shrink-0" />
-            <span className="font-semibold text-gray-800 truncate">
+            <span className="font-semibold text-gray-800 dark:text-slate-200 truncate">
               {formatarNomeExibicao(value)}
             </span>
           </div>
@@ -102,19 +96,18 @@ export function UploadInput({
             onClick={handleRemoverArquivo}
             disabled={disabled}
             className="text-gray-400 hover:text-red-500 p-1 rounded-lg transition-colors cursor-pointer"
-            title="Remover / Substituir arquivo"
+            title="Remover arquivo"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
       ) : (
-        /*BOTÃO DE SELEÇÃO*/
         <div>
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={disabled || uploading}
-            className="w-full p-6 border-2 border-dashed border-gray-200 hover:border-sys-blue rounded-xl flex flex-col items-center justify-center gap-2 transition-all cursor-pointer bg-slate-50/50 hover:bg-blue-50/20 text-gray-500 hover:text-sys-blue disabled:opacity-50"
+            className="w-full p-6 border-2 border-dashed border-gray-200 dark:border-slate-700 hover:border-sys-blue dark:hover:border-sys-blue rounded-xl flex flex-col items-center justify-center gap-2 transition-all cursor-pointer bg-slate-50/50 dark:bg-slate-800/40 hover:bg-blue-50/20 text-gray-500 dark:text-slate-400 hover:text-sys-blue disabled:opacity-50"
           >
             {uploading ? (
               <>
@@ -124,12 +117,14 @@ export function UploadInput({
             ) : (
               <>
                 <UploadCloud className="w-6 h-6 text-sys-blue" />
-                <span className="font-semibold text-xs text-gray-700">Clique para selecionar do computador</span>
+                <span className="font-semibold text-xs text-gray-700 dark:text-slate-300">Clique para selecionar do computador</span>
+                <span className="text-[10px] text-gray-400 uppercase tracking-wider">PDF, Imagens, Documentos (Máx: 20 MB)</span>
               </>
             )}
           </button>
         </div>
       )}
+
       {erro && (
         <p className="text-xs text-red-500 font-semibold">{erro}</p>
       )}

@@ -6,7 +6,7 @@ export interface FotoItem {
   idConteudo: number;
   titulo: string;
   texto?: string;
-  midiaUrl: string;
+  imagemUrl: string;
 }
 
 export function Galeria() {
@@ -46,7 +46,7 @@ export function Galeria() {
         </p>
       </div>
 
-      {/*Estado Carregamento*/}
+      {/*ESTADO DE CARREGAMENTO*/}
       {loading && (
         <div className="flex flex-col justify-center items-center h-64 space-y-3">
           <RefreshCw className="w-8 h-8 text-[#0060ba] animate-spin" />
@@ -54,7 +54,7 @@ export function Galeria() {
         </div>
       )}
 
-      {/*Estado de Erro*/}
+      {/*ESTADO DE ERRO*/}
       {!loading && erro && (
         <div className="bg-red-50 text-red-600 p-6 rounded-2xl border border-red-200 max-w-xl mx-auto text-center space-y-4">
           <AlertCircle className="w-10 h-10 mx-auto text-red-500" />
@@ -68,7 +68,7 @@ export function Galeria() {
         </div>
       )}
 
-      {/*Estado Vazio*/}
+      {/*ESTADO VAZIO*/}
       {!loading && !erro && fotos.length === 0 && (
         <div className="bg-white rounded-3xl p-12 text-center max-w-xl mx-auto border border-gray-150 shadow-sm space-y-4">
           <div className="w-16 h-16 bg-blue-50 text-[#0060ba] rounded-2xl flex items-center justify-center mx-auto mb-2">
@@ -76,28 +76,28 @@ export function Galeria() {
           </div>
           <h3 className="text-2xl font-bold text-slate-800">Nenhuma foto publicada</h3>
           <p className="text-sm text-slate-500 leading-relaxed">
-            O acervo fotográfico do templo está sendo digitalizado. Em breve novas memórias e registros de nossos eventos estarão disponíveis aqui.
+            O acervo fotográfico do templo está sendo digitalizado. Em breve novas memórias e registros estarão disponíveis aqui.
           </p>
         </div>
       )}
 
-      {/*Grid Fotos*/}
+      {/*GRID DE FOTOS*/}
       {!loading && !erro && fotos.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {fotos.map((foto) => (
             <div
               key={foto.idConteudo}
               onClick={() => setFotoSelecionada(foto)}
-              className="relative group rounded-2xl overflow-hidden shadow-md aspect-4/3 bg-slate-150 cursor-pointer border border-gray-100"
+              className="relative group rounded-2xl overflow-hidden shadow-md aspect-4/3 bg-slate-100 cursor-pointer border border-gray-100"
             >
               <img 
-                src={foto.midiaUrl} 
+                src={foto.imagemUrl} 
                 alt={foto.titulo} 
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 absolute inset-0"
                 loading="lazy"
               />
 
-              {/*Overlay Escuro*/}
+              {/*Overlay com Zoom*/}
               <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4 text-center z-10 backdrop-blur-[2px]">
                 <ZoomIn className="w-8 h-8 text-white mb-2 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300" />
                 <span className="text-white font-bold text-base sm:text-lg tracking-wide line-clamp-2">
@@ -114,13 +114,12 @@ export function Galeria() {
         </div>
       )}
 
-      {/*Modal Visualização Tela Cheia*/}
+      {/*MODAL ZOOM*/}
       {fotoSelecionada && (
         <div 
           onClick={() => setFotoSelecionada(null)}
           className="fixed inset-0 bg-black/85 z-250 flex items-center justify-center p-4 backdrop-blur-sm cursor-zoom-out animate-fade-in-up"
         >
-          {/*Botão de Fechar*/}
           <button 
             onClick={() => setFotoSelecionada(null)}
             className="absolute top-4 right-4 text-white hover:text-gray-300 p-2.5 bg-black/50 rounded-full cursor-pointer transition-colors z-20 backdrop-blur-md"
@@ -129,20 +128,18 @@ export function Galeria() {
             <X className="w-6 h-6" />
           </button>
 
-          {/*Container da Foto Ampliada*/}
           <div 
             onClick={(e) => e.stopPropagation()} 
             className="max-w-4xl w-full bg-slate-900 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-slate-800 cursor-default"
           >
             <div className="relative flex-1 bg-black flex items-center justify-center overflow-hidden min-h-75">
               <img 
-                src={fotoSelecionada.midiaUrl} 
+                src={fotoSelecionada.imagemUrl} 
                 alt={fotoSelecionada.titulo} 
                 className="max-h-[70vh] w-auto max-w-full object-contain"
               />
             </div>
 
-            {/*Rodapé do Modal com Legenda*/}
             <div className="p-5 bg-slate-900 text-white border-t border-slate-800">
               <h3 className="text-lg font-bold text-white mb-1">
                 {fotoSelecionada.titulo}

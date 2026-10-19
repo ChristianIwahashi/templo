@@ -8,7 +8,7 @@ interface ConteudoDB {
   categoria: string;
   titulo: string;
   texto: string;
-  midiaUrl: string;
+  imagemUrl: string;
 }
 
 export function AulasJapones() {
@@ -39,6 +39,8 @@ export function AulasJapones() {
     );
   }
 
+  const imagemDinamica = conteudos.length > 0 && conteudos[0].imagemUrl ? conteudos[0].imagemUrl : null;
+
   return (
     <article className="space-y-12 animate-fade-in-up">
       {/*Cabeçalho*/}
@@ -54,27 +56,26 @@ export function AulasJapones() {
       {/*Card Principal*/}
       <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 grid grid-cols-1 md:grid-cols-2">
         
-        {/*Lado Esquerdo: Logo Institucional*/}
-        <div className="bg-blue-50/70 p-8 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r border-gray-100 min-h-75">
+        {/*Lado Esquerdo*/}
+        <div className="bg-blue-50/70 p-8 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r border-gray-100 min-h-75 relative overflow-hidden">
           <img 
-            src={LogoTemplo} 
+            src={imagemDinamica || LogoTemplo} 
             alt="Escola Assoka Nichiyougakkou" 
-            className="w-32 h-32 object-contain mb-4"
+            className={`object-contain mb-4 ${imagemDinamica ? 'w-full h-full absolute inset-0 object-cover' : 'w-32 h-32'}`}
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = LogoTemplo;
+            }}
           />
-          <h2 className="text-2xl font-bold text-[#0060ba]">Assoka Nichiyougakkou</h2>
-          <p className="text-xs text-slate-500 uppercase tracking-widest mt-1 font-semibold">
-            Escola de Língua Japonesa de Lins
-          </p>
         </div>
 
-        {/*Lado Direito: Detalhes, Horários e Metodologia*/}
+        {/*Lado Direito*/}
         <div className="p-8 sm:p-10 flex flex-col justify-between space-y-8">
           <div>
             <h3 className="text-2xl font-bold text-slate-900 mb-3">
               {conteudos.length > 0 ? conteudos[0].titulo : "Metodologia e Estrutura"}
             </h3>
             
-            <p className="text-slate-600 leading-relaxed text-sm sm:text-base">
+            <p className="text-slate-600 leading-relaxed text-sm sm:text-base whitespace-pre-line">
               {conteudos.length > 0 
                 ? conteudos[0].texto 
                 : "Nossas turmas são divididas de acordo com o nível de proficiência de cada estudante (do básico ao intermediário). O currículo abrange leitura (Hiragana, Katakana e Kanji), gramática prática, conversação e preparação para o exame internacional de proficiência JLPT."

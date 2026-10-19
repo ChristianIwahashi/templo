@@ -70,7 +70,7 @@ export function AppRoutes() {
                             <>
                                 <Route path="/gerenciar-chamada" element={<GerenciarChamada />} />
                                 <Route path="/gerenciar-nota" element={<GerenciarNota />} />
-                                <Route path="/gerenciar-aviso" element={<GerenciarAviso />} />
+                                <Route path="/gerenciar-avisos" element={<GerenciarAviso />} />
                                 <Route path="/gerenciar-materiais" element={<GerenciarMateriais />} />
                                 <Route path="/relatorio" element={<Relatorio />} />
                             </>
@@ -86,7 +86,7 @@ export function AppRoutes() {
                                 <Route path="/gerenciar-informatico" element={<GerenciarInformatico />} />
                                 <Route path="/gerenciar-chamada" element={<GerenciarChamada />} />
                                 <Route path="/gerenciar-nota" element={<GerenciarNota />} />
-                                <Route path="/gerenciar-aviso" element={<GerenciarAviso />} />
+                                <Route path="/gerenciar-avisos" element={<GerenciarAviso />} />
                                 <Route path="/gerenciar-materiais" element={<GerenciarMateriais />} />
                                 <Route path="/relatorio" element={<Relatorio />} />
                             </>

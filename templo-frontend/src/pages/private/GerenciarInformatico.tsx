@@ -88,7 +88,7 @@ export function GerenciarInformatico() {
       <div className="flex items-center justify-between border-b border-gray-200 pb-4">
         <div className="flex items-center gap-2">
           <Globe className="w-6 h-6 text-sys-blue" />
-          <h2 className="text-2xl font-bold text-gray-800">Gerenciador do Website (CMS)</h2>
+          <h2 className="text-2xl font-bold text-gray-800">Gerenciador do Website</h2>
         </div>
 
         {abaAtiva === 'conteudos' ? (
@@ -214,11 +214,11 @@ export function GerenciarInformatico() {
             <p className="text-xs text-gray-500 mt-1">Publique eventos para que apareçam na página inicial e no mural aberto do templo.</p>
           </div>
         ) : (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-150 overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-gray-150 text-xs text-gray-500 uppercase bg-gray-50/20">
+                  <tr className="border-b border-gray-100 text-xs text-gray-500 uppercase bg-gray-50/20">
                     <th className="p-4 font-semibold">Evento</th>
                     <th className="p-4 font-semibold">Data da Postagem</th>
                     <th className="p-4 font-semibold text-center">Visibilidade</th>

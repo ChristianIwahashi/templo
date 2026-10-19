@@ -1,8 +1,9 @@
+import { useState } from "react";
 import { UseGerenciarAviso } from "../../hooks/UseGerenciarAviso";
 import { formatarData } from "../../utils/formatters";
 import { UploadInput } from "../../components/UploadInput";
 import { ConfirmModal } from "../../components/ConfirmModal";
-import { Megaphone, Plus, Edit, Trash2, Calendar, Info, AlertCircle, Check } from "lucide-react";
+import { Megaphone, Plus, Edit, Trash2, Calendar, Info, AlertCircle, Check, ZoomIn, X } from "lucide-react";
 
 export function GerenciarAviso() {
   const {
@@ -31,6 +32,9 @@ export function GerenciarAviso() {
     executarEditarAviso,
     executarDeletarAviso
   } = UseGerenciarAviso();
+
+  // 📍 ESTADO NOVO: Controla a imagem aberta em tela cheia (Zoom)
+  const [imagemZoom, setImagemZoom] = useState<string | null>(null);
 
   if (loading) {
     return (
@@ -80,7 +84,7 @@ export function GerenciarAviso() {
       ) : (
         <div className="space-y-4">
           {avisos.map(aviso => (
-            <div key={aviso.idAvisoAula} className="bg-white rounded-2xl border border-gray-150 shadow-xs hover:shadow-md transition overflow-hidden">
+            <div key={aviso.idAvisoAula} className="bg-white rounded-2xl border border-gray-100 shadow-xs hover:shadow-md transition overflow-hidden">
               <div className="p-6 space-y-4 relative">
                 
                 {/*Ações Rápidas*/}
@@ -114,10 +118,24 @@ export function GerenciarAviso() {
                   </span>
                 </div>
                 
-                {/*Imagem do Aviso*/}
+                {/* 📍 IMAGEM COM SUPORTE A ZOOM E OBJECT-CONTAIN */}
                 {aviso.imagemUrl && (
-                  <div className="relative rounded-xl overflow-hidden max-h-80 bg-gray-50 border border-gray-150 flex items-center justify-center">
-                    <img src={aviso.imagemUrl} alt="Anexo do aviso" className="w-full h-full object-contain" />
+                  <div
+                    onClick={() => setImagemZoom(aviso.imagemUrl || null)}
+                    className="relative rounded-xl overflow-hidden h-64 sm:h-80 bg-gray-50 border border-gray-100 flex items-center justify-center cursor-pointer group"
+                    title="Clique para ver em tamanho cheio"
+                  >
+                    <img 
+                      src={aviso.imagemUrl} 
+                      alt="Anexo do aviso" 
+                      className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-[1.02]" 
+                    />
+
+                    <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
+                      <span className="bg-black/50 text-white px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 backdrop-blur-xs">
+                        <ZoomIn className="w-4 h-4" /> Clique para ampliar
+                      </span>
+                    </div>
                   </div>
                 )}
 
@@ -215,7 +233,6 @@ export function GerenciarAviso() {
                 />
               </div>
 
-              {/*COMPONENTE UPLOADINPUT INTEGRADO NA EDIÇÃO*/}
               <UploadInput
                 label="Substituir Foto / Cartaz (Opcional)"
                 accept="image/*"
@@ -244,6 +261,30 @@ export function GerenciarAviso() {
         type="danger"
         isLoading={salvando}
       />
+
+      {/* 📍 MODAL DE ZOOM (LIGHTBOX) EM TELA CHEIA */}
+      {imagemZoom && (
+        <div 
+          onClick={() => setImagemZoom(null)} 
+          className="fixed inset-0 bg-black/85 z-300 flex items-center justify-center p-4 backdrop-blur-sm cursor-zoom-out animate-fade-in-up"
+        >
+          <button 
+            onClick={() => setImagemZoom(null)}
+            className="absolute top-4 right-4 text-white hover:text-gray-300 p-2.5 bg-black/50 rounded-full cursor-pointer transition-colors z-20 backdrop-blur-md"
+            aria-label="Fechar zoom"
+          >
+            <X className="w-6 h-6" />
+          </button>
+          
+          <img 
+            src={imagemZoom} 
+            alt="Aviso ampliado" 
+            className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl animate-modal-enter cursor-default"
+            onClick={(e) => e.stopPropagation()} 
+          />
+        </div>
+      )}
+
     </div>
   );
 }

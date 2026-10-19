@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Api } from "../../api/Api";
-import { DollarSign } from "lucide-react";
-import { formatarData, formatarDinheiro, obterEstiloStatusPagamento } from '../../utils/formatters';
+import { DollarSign, Filter } from "lucide-react";
+import { obterEstiloStatusPagamento, formatarDinheiro, formatarData } from "../../utils/formatters";
 
 interface Mensalidade {
   idMensalidade: number;
@@ -9,45 +9,43 @@ interface Mensalidade {
   valor: number;
   dataVencimento: string;
   statusPagamento: 'PENDENTE' | 'PAGO' | 'ATRASADO' | 'CANCELADO';
-  payDate?: string;
+  payDate?: string; 
 }
 
 export function Mensalidade() {
   const [mensalidades, setMensalidades] = useState<Mensalidade[]>([]);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState('');
-
   const [filtroOrdem, setFiltroOrdem] = useState<'desc' | 'asc'>('desc');
   const [filtroStatus, setFiltroStatus] = useState<string>('todos');
   const [filtroAno, setFiltroAno] = useState<string>('todos');
 
   useEffect(() => {
-    async function carregarMensalidade() {
+    async function carregarMensalidades() {
       try {
         setLoading(true);
         const response = await Api.get('/mensalidade');
         setMensalidades(response.data);
       } catch (error) {
         console.error(error);
-        setErro('Não foi possível carregar o seu histórico de mensalidades.');
+        setErro('Não foi possível carregar o seu histórico financeiro.');
       } finally {
         setLoading(false);
       }
     }
-
-    carregarMensalidade();
+    carregarMensalidades();
   }, []);
 
-  // filtro e ordenação
   const anosDisponiveis = Array.from(
     new Set(mensalidades.map(m => new Date(m.dataVencimento).getUTCFullYear()))
   ).sort((a, b) => b - a);
 
-  const mensalidadesFiltradas = mensalidades.filter((m) => {
-    const matchesStatus = filtroStatus === 'todos' ? true : m.statusPagamento === filtroStatus;
-    const matchesAno = filtroAno === 'todos' ? true : new Date(m.dataVencimento).getUTCFullYear().toString() === filtroAno;
-    return matchesStatus && matchesAno;
-  })
+  const mensalidadesFiltradas = mensalidades
+    .filter((m) => {
+      const matchesStatus = filtroStatus === 'todos' ? true : m.statusPagamento === filtroStatus;
+      const matchesAno = filtroAno === 'todos' ? true : new Date(m.dataVencimento).getUTCFullYear().toString() === filtroAno;
+      return matchesStatus && matchesAno;
+    })
     .sort((a, b) => {
       const dataA = new Date(a.dataVencimento).getTime();
       const dataB = new Date(b.dataVencimento).getTime();
@@ -57,7 +55,7 @@ export function Mensalidade() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <p className="text-gray-500 font-medium animate-pulse">Carregando...</p>
+        <p className="text-gray-500 dark:text-slate-400 font-medium animate-pulse">Carregando dados financeiros...</p>
       </div>
     );
   }
@@ -65,7 +63,7 @@ export function Mensalidade() {
   if (erro) {
     return (
       <div className="p-6 max-w-4xl mx-auto">
-        <div className="bg-red-50 text-red-600 p-4 rounded-xl border border-red-200 font-semibold text-center">
+        <div className="bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 p-4 rounded-xl border border-red-200 dark:border-red-900 font-semibold text-center">
           {erro}
         </div>
       </div>
@@ -73,37 +71,35 @@ export function Mensalidade() {
   }
 
   return (
-    <div className="p-6 max-w-5xl mx-auto space-y-6">
-
-      {/*Filtros*/}
-      <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-wrap gap-4 items-end">
-
-        {/*Ordem*/}
+    <div className="p-6 max-w-5xl mx-auto space-y-6 animate-fade-in-up text-slate-800 dark:text-slate-100">
+      
+      {/*Seção de Filtros*/}
+      <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 flex flex-wrap gap-4 items-end">
+        
         <div className="flex-1 min-w-50">
-          <label htmlFor="ordem" className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5 items-center gap-1.5">
-            Ordenação
+          <label htmlFor="ordem" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1.5 items-center gap-1.5">
+            <Filter className="w-3.5 h-3.5 text-sys-blue" /> Ordenação
           </label>
-          <select
+          <select 
             id="ordem"
             value={filtroOrdem}
             onChange={e => setFiltroOrdem(e.target.value as 'desc' | 'asc')}
-            className="w-full p-2.5 text-sm border border-gray-200 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50 cursor-pointer"
+            className="w-full p-2.5 text-sm border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50 dark:bg-slate-800 text-gray-800 dark:text-slate-100 cursor-pointer"
           >
             <option value="desc">Mais recentes primeiro</option>
             <option value="asc">Mais antigas primeiro</option>
           </select>
         </div>
 
-        {/*Status*/}
         <div className="flex-1 min-w-50">
-          <label htmlFor="status" className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+          <label htmlFor="status" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">
             Status
           </label>
-          <select
+          <select 
             id="status"
             value={filtroStatus}
             onChange={e => setFiltroStatus(e.target.value)}
-            className="w-full p-2.5 text-sm border border-gray-200 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50 cursor-pointer"
+            className="w-full p-2.5 text-sm border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50 dark:bg-slate-800 text-gray-800 dark:text-slate-100 cursor-pointer"
           >
             <option value="todos">Todos os status</option>
             <option value="PENDENTE">Pendentes</option>
@@ -112,16 +108,15 @@ export function Mensalidade() {
           </select>
         </div>
 
-        {/* Ano Dinâmico */}
         <div className="flex-1 min-w-37.5">
-          <label htmlFor="ano" className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+          <label htmlFor="ano" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">
             Ano
           </label>
-          <select
+          <select 
             id="ano"
             value={filtroAno}
             onChange={e => setFiltroAno(e.target.value)}
-            className="w-full p-2.5 text-sm border border-gray-200 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50 cursor-pointer"
+            className="w-full p-2.5 text-sm border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50 dark:bg-slate-800 text-gray-800 dark:text-slate-100 cursor-pointer"
           >
             <option value="todos">Todos os anos</option>
             {anosDisponiveis.map(ano => (
@@ -132,17 +127,17 @@ export function Mensalidade() {
 
       </div>
 
-      {/*Mensalidades*/}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-5 border-b border-gray-100 bg-gray-50/50 flex items-center gap-2">
+      {/*Tabela de Mensalidades*/}
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 overflow-hidden">
+        <div className="p-5 border-b border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-800/60 flex items-center gap-2">
           <DollarSign className="w-5 h-5 text-sys-blue" />
-          <h4 className="font-bold text-gray-700">Histórico de Mensalidades</h4>
+          <h4 className="font-bold text-gray-700 dark:text-slate-100">Histórico de Mensalidades</h4>
         </div>
-
+        
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-gray-200 text-sm text-gray-600 bg-gray-50/30">
+              <tr className="border-b border-gray-200 dark:border-slate-700 text-sm text-gray-600 dark:text-slate-300 bg-gray-50/30 dark:bg-slate-800/40">
                 <th className="p-4 font-semibold">Mês de Ref.</th>
                 <th className="p-4 font-semibold">Vencimento</th>
                 <th className="p-4 font-semibold">Valor</th>
@@ -150,25 +145,25 @@ export function Mensalidade() {
                 <th className="p-4 font-semibold">Data do Pagamento</th>
               </tr>
             </thead>
-            <tbody className="text-sm">
+            <tbody className="text-sm divide-y divide-gray-100 dark:divide-slate-800">
               {mensalidadesFiltradas.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-gray-500 font-medium">
-                    Nenhuma mensalidade encontrada com os filtros atuais.
+                  <td colSpan={5} className="p-8 text-center text-gray-500 dark:text-slate-400 font-medium">
+                    Nenhuma mensalidade cadastrada.
                   </td>
                 </tr>
               ) : (
                 mensalidadesFiltradas.map((m) => (
-                  <tr key={m.idMensalidade} className="border-b border-gray-100 hover:bg-gray-50/50 transition-colors">
-                    <td className="p-4 font-semibold text-gray-800">{m.mes}</td>
-                    <td className="p-4 text-gray-600">{formatarData(m.dataVencimento)}</td>
-                    <td className="p-4 font-semibold text-gray-700">{formatarDinheiro(m.valor)}</td>
+                  <tr key={m.idMensalidade} className="hover:bg-gray-50/50 dark:hover:bg-slate-800/30 transition-colors">
+                    <td className="p-4 font-semibold text-gray-800 dark:text-slate-100">{m.mes}</td>
+                    <td className="p-4 text-gray-600 dark:text-slate-300">{formatarData(m.dataVencimento)}</td>
+                    <td className="p-4 font-semibold text-gray-700 dark:text-slate-200">{formatarDinheiro(m.valor)}</td>
                     <td className="p-4">
                       <span className={`px-3 py-1 rounded-full text-xs font-bold tracking-wide ${obterEstiloStatusPagamento(m.statusPagamento)}`}>
                         {m.statusPagamento}
                       </span>
                     </td>
-                    <td className="p-4 text-gray-500">{m.payDate ? formatarData(m.payDate) : '-'}</td>
+                    <td className="p-4 text-gray-500 dark:text-slate-400">{m.payDate ? formatarData(m.payDate) : 'Aguardando baixa'}</td>
                   </tr>
                 ))
               )}
@@ -176,7 +171,6 @@ export function Mensalidade() {
           </table>
         </div>
       </div>
-
     </div>
   );
 }
