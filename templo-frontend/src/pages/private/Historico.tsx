@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Api } from "../../api/Api";
-import { GraduationCap, CheckCircle, BookOpen, Filter } from "lucide-react";
+import { GraduationCap, CheckCircle, BookOpen } from "lucide-react";
 
 interface Nota {
   idNota: number;
@@ -90,7 +90,7 @@ export function Historico() {
       <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 flex items-end">
         <div className="w-full sm:w-72">
           <label htmlFor="filtro-ano" className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-            <Filter className="w-3.5 h-3.5 text-sys-blue" /> Filtrar por Ano Letivo
+            Filtrar por Ano Letivo
           </label>
           <select 
             id="filtro-ano"

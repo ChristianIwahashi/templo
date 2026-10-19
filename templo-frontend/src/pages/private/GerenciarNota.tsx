@@ -1,6 +1,6 @@
 import { UseGerenciarNota } from "../../hooks/UseGerenciarNota";
 import { formatarData } from "../../utils/formatters";
-import { GraduationCap, Plus, Edit, Trash2, Info, AlertCircle, Check, ArrowLeft, Star } from "lucide-react";
+import { Plus, Edit, Trash2, Info, AlertCircle, Check, ArrowLeft, Star } from "lucide-react";
 
 export function GerenciarNota() {
   const {
@@ -67,7 +67,7 @@ export function GerenciarNota() {
       {/*Seleção de Turma*/}
       <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800">
         <label htmlFor="select-turma" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1.5 items-center gap-1.5">
-          <GraduationCap className="w-3.5 h-3.5 text-sys-blue" /> Selecione a Turma
+          Selecione a Turma
         </label>
         <select 
           id="select-turma"

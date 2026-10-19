@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Api } from "../../api/Api";
-import { DollarSign, Filter } from "lucide-react";
+import { DollarSign } from "lucide-react";
 import { obterEstiloStatusPagamento, formatarDinheiro, formatarData } from "../../utils/formatters";
 
 interface Mensalidade {
@@ -78,7 +78,7 @@ export function Mensalidade() {
         
         <div className="flex-1 min-w-50">
           <label htmlFor="ordem" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1.5 items-center gap-1.5">
-            <Filter className="w-3.5 h-3.5 text-sys-blue" /> Ordenação
+            Ordenação
           </label>
           <select 
             id="ordem"

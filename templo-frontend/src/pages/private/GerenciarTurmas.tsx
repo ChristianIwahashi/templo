@@ -1,4 +1,4 @@
-import { UseGerenciarTurmas, TurmaCompleta } from "../../hooks/UseGerenciarTurmas";
+import { UseGerenciarTurmas, type TurmaCompleta } from "../../hooks/UseGerenciarTurmas";
 import { ConfirmModal } from "../../components/ConfirmModal";
 import { BookOpen, Plus, Search, Edit, Trash2, Users, UserPlus, Info, AlertCircle, Check, GraduationCap } from "lucide-react";
 

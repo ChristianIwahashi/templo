@@ -1,4 +1,4 @@
-import { Users, Calendar, Check, Info, AlertCircle, CheckSquare, Square, Trash2 } from "lucide-react";
+import { Users, Check, Info, AlertCircle, CheckSquare, Square, Trash2 } from "lucide-react";
 import { UseGerenciarChamada } from "../../hooks/UseGerenciarChamada";
 import { ConfirmModal } from "../../components/ConfirmModal";
 
@@ -53,7 +53,7 @@ export function GerenciarChamada() {
       <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label htmlFor="select-turma" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1.5 items-center gap-1.5">
-            <Users className="w-3.5 h-3.5 text-sys-blue" /> Selecione a Turma
+            Selecione a Turma
           </label>
           <select 
             id="select-turma"
@@ -70,7 +70,7 @@ export function GerenciarChamada() {
 
         <div>
           <label htmlFor="data-aula" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1.5 items-center gap-1.5">
-            <Calendar className="w-3.5 h-3.5 text-sys-blue" /> Data da Aula
+            Data da Aula
           </label>
           <input 
             id="data-aula"

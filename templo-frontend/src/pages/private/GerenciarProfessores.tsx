@@ -64,7 +64,7 @@ export function GerenciarProfessores() {
       <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-800 pb-4">
         <div className="flex items-center gap-2">
           <UserCheck className="w-6 h-6 text-sys-blue" />
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-slate-100">Gerenciar Professores (Corpo Docente)</h2>
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-slate-100">Gerenciar Professores</h2>
         </div>
         
         <button

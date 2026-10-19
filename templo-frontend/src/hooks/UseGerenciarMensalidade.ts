@@ -258,8 +258,8 @@ export function UseGerenciarMensalidades() {
   const mensalidadesFiltradas = mensalidades
     .filter(m => {
       const batePesquisa = m.aluno?.usuario?.nome.toLowerCase().includes(pesquisa.toLowerCase()) ||
-                            m.mes.toLowerCase().includes(pesquisa.toLowerCase()) ||
-                            m.idAluno.toString().includes(pesquisa);
+        m.mes.toLowerCase().includes(pesquisa.toLowerCase()) ||
+        m.idAluno.toString().includes(pesquisa);
       const bateStatus = filtroStatus === 'todos' ? true : m.statusPagamento === filtroStatus;
       const bateAno = filtroAno === 'todos' ? true : new Date(m.dataVencimento).getUTCFullYear().toString() === filtroAno;
       return batePesquisa && bateStatus && bateAno;
@@ -272,9 +272,19 @@ export function UseGerenciarMensalidades() {
 
   const alunoSelecionadoObj = alunos.find(a => a.idUsuario.toString() === idAluno);
 
+  const totalArrecadado = mensalidades
+    .filter(m => m.statusPagamento === 'PAGO')
+    .reduce((acc, curr) => acc + curr.valor, 0);
+
+  const totalInadimplente = mensalidades
+    .filter(m => m.statusPagamento === 'PENDENTE' || m.statusPagamento === 'ATRASADO')
+    .reduce((acc, curr) => acc + curr.valor, 0);
+
   return {
     mensalidadesFiltradas,
     alunos,
+    totalArrecadado,
+    totalInadimplente,
     anosDisponiveis,
     pesquisa,
     setPesquisa,

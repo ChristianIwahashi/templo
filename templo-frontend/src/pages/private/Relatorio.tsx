@@ -1,6 +1,6 @@
 import { UseRelatorio } from "../../hooks/UseRelatorio";
 import { formatarDinheiro } from "../../utils/formatters";
-import { PieChart, Filter, FileSpreadsheet, Download, AlertCircle, Check, Loader2 } from "lucide-react";
+import { PieChart, FileSpreadsheet, Download, AlertCircle, Check, Loader2 } from "lucide-react";
 
 interface Turma {
   idTurma: number;
@@ -84,7 +84,7 @@ export function Relatorio() {
         {/*Filtros*/}
         <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 h-fit space-y-5 md:col-span-1">
           <h3 className="font-bold text-gray-800 dark:text-slate-100 text-sm flex items-center gap-1.5 border-b border-gray-100 dark:border-slate-800 pb-2">
-            <Filter className="w-4 h-4 text-sys-blue" /> Filtros de Exportação
+            Filtros de Exportação
           </h3>
 
           <form onSubmit={e => { e.preventDefault(); executarGerarRelatorio(); }} className="space-y-4 text-sm">

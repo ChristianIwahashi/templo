@@ -1,11 +1,11 @@
-import { useEffect, useState, FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { UseAuth } from "../../hooks/UseAuth";
 import { Api } from "../../api/Api";
 import { formatarData } from "../../utils/formatters";
 import { padraoTelefone } from "../../utils/telefone";
 import { validarSenhaForte, regexTextoSeguro } from "../../utils/validator";
 import { ConfirmModal } from "../../components/ConfirmModal";
-import { User, Phone, Mail, Calendar, Eye, EyeOff, ShieldCheck, CheckCircle2, AlertCircle, Key } from "lucide-react";
+import { User, Eye, EyeOff, ShieldCheck, CheckCircle2, AlertCircle } from "lucide-react";
 import { AxiosError } from "axios";
 
 interface PerfilData {
@@ -21,22 +21,18 @@ interface PerfilData {
 
 export function Perfil() {
   const { user } = UseAuth();
-
   const [perfil, setPerfil] = useState<PerfilData | null>(null);
   const [loading, setLoading] = useState(true);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState('');
   const [sucesso, setSucesso] = useState('');
-
   const [telefone, setTelefone] = useState('');
   const [senhaAntiga, setSenhaAntiga] = useState('');
   const [novaSenha, setNovaSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
-
   const [showSenhaAntiga, setShowSenhaAntiga] = useState(false);
   const [showNovaSenha, setShowNovaSenha] = useState(false);
   const [showConfirmar, setShowConfirmar] = useState(false);
-
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   useEffect(() => {
@@ -54,7 +50,6 @@ export function Perfil() {
         setLoading(false);
       }
     }
-
     carregarPerfilCompleto();
   }, [user]);
 
@@ -67,30 +62,25 @@ export function Perfil() {
       setErro('Você precisa informar sua senha atual para confirmar as alterações.');
       return;
     }
-
     const digitosTelefone = telefone.replace(/\D/g, "").length;
     if (digitosTelefone > 0 && digitosTelefone < 10) {
       setErro('O telefone informado está incompleto. Digite o DDD + 8 ou 9 números.');
       return;
     }
-
     if (novaSenha) {
       if (!validarSenhaForte(novaSenha)) {
         setErro('A nova senha deve ter no mínimo 6 caracteres, contendo letras maiúsculas, minúsculas, números e caracteres especiais.');
         return;
       }
-
       if (!regexTextoSeguro.test(novaSenha)) {
         setErro('A nova senha contém caracteres inválidos.');
         return;
       }
-
       if (novaSenha !== confirmarSenha) {
         setErro('A nova senha e a confirmação não coincidem.');
         return;
       }
     }
-
     setIsConfirmModalOpen(true);
   }
 
@@ -140,7 +130,7 @@ export function Perfil() {
 
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 p-6 md:p-8">
         
-        {/* Identificação de Perfil */}
+        {/*Identificação de Perfil*/}
         <div className="flex items-center gap-6 mb-8 border-b border-gray-100 dark:border-slate-800 pb-6">
           <div className="w-20 h-20 bg-blue-100 dark:bg-blue-950/60 text-sys-blue rounded-full flex items-center justify-center text-3xl font-bold uppercase shrink-0">
             {perfil?.nome.charAt(0)}
@@ -154,7 +144,7 @@ export function Perfil() {
           </div>
         </div>
 
-        {/* Formulário */}
+        {/*Formulário*/}
         <form onSubmit={handlePrepararSalvar} className="space-y-6">
           
           {erro && (
@@ -170,10 +160,10 @@ export function Perfil() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             
-            {/* E-mail (Desabilitado) */}
+            {/*E-mail*/}
             <div>
               <label className="block text-xs font-semibold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1.5 items-center gap-1.5">
-                <Mail className="w-3.5 h-3.5" /> E-mail (Login)
+                E-mail (Login)
               </label>
               <input
                 type="text"
@@ -183,10 +173,10 @@ export function Perfil() {
               />
             </div>
 
-            {/* Telefone (Editável) */}
+            {/*Telefone*/}
             <div>
               <label htmlFor="telefone-perfil" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1.5 items-center gap-1.5">
-                <Phone className="w-3.5 h-3.5 text-sys-blue" /> Telefone / Celular
+                Telefone / Celular
               </label>
               <input
                 id="telefone-perfil"
@@ -199,11 +189,11 @@ export function Perfil() {
               />
             </div>
 
-            {/* Data de Nascimento (Exclusivo Aluno) */}
+            {/*Data de Nascimento*/}
             {user?.papel === 'ALUNO' && (
               <div className="col-span-1 md:col-span-2">
                 <label className="block text-xs font-semibold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1.5 items-center gap-1.5">
-                  <Calendar className="w-3.5 h-3.5" /> Data de Nascimento
+                  Data de Nascimento
                 </label>
                 <input
                   type="text"
@@ -214,15 +204,15 @@ export function Perfil() {
               </div>
             )}
 
-            {/* Divisória */}
+            {/*Divisória*/}
             <div className="col-span-1 md:col-span-2 pt-4 border-t border-gray-100 dark:border-slate-800">
               <h4 className="font-bold text-gray-700 dark:text-slate-200 text-sm flex items-center gap-1.5 mb-1">
-                <Key className="w-4 h-4 text-sys-blue" /> Segurança e Senha de Acesso
+                Segurança e Senha de Acesso
               </h4>
               <p className="text-xs text-gray-400 dark:text-slate-400">Preencha apenas caso deseje redefinir a sua senha de acesso.</p>
             </div>
 
-            {/* Senha Atual */}
+            {/*Senha Atual*/}
             <div className="col-span-1 md:col-span-2">
               <label htmlFor="senha-antiga" className="block text-xs font-semibold text-gray-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                 Senha Atual * (Necessária para confirmar alterações)
@@ -248,7 +238,7 @@ export function Perfil() {
               </div>
             </div>
 
-            {/* Nova Senha */}
+            {/*Nova Senha*/}
             <div>
               <label htmlFor="nova-senha" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">
                 Nova Senha
@@ -273,7 +263,7 @@ export function Perfil() {
               </div>
             </div>
 
-            {/* Confirmar Nova Senha */}
+            {/*Confirmar Nova Senha*/}
             <div>
               <label htmlFor="confirmar-senha" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">
                 Confirmar Nova Senha
@@ -310,9 +300,7 @@ export function Perfil() {
               {salvando ? 'Salvando Alterações...' : 'Salvar Alterações'}
             </button>
           </div>
-
         </form>
-
       </div>
 
       <ConfirmModal 
@@ -324,7 +312,6 @@ export function Perfil() {
         type="info"
         isLoading={salvando}
       />
-
     </div>
   );
 }

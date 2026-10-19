@@ -116,12 +116,12 @@ export function UseGerenciarAlunos() {
     }
 
     if (senha.length < 6) {
-        setErro('A senha inicial deve ter pelo menos 6 caracteres.');
-        return;
+      setErro('A senha inicial deve ter pelo menos 6 caracteres.');
+      return;
     }
     if (!regexTextoSeguro.test(senha)) {
-        setErro('A senha contém caracteres inválidos. Use apenas letras, números e caracteres especiais.');
-        return;
+      setErro('A senha contém caracteres inválidos. Use apenas letras, números e caracteres especiais.');
+      return;
     }
 
     setErro('');
@@ -302,12 +302,12 @@ export function UseGerenciarAlunos() {
     setOcultarInativos,
     alunoExpandidoId,
     setAlunoExpandidoId,
-    setIsConfirmAddOpen,
     isConfirmAddOpen,
-    setIsConfirmEditOpen,
+    setIsConfirmAddOpen,
     isConfirmEditOpen,
-    setIsConfirmStatusOpen,
+    setIsConfirmEditOpen,
     isConfirmStatusOpen,
+    setIsConfirmStatusOpen,
     isConfirmDeleteOpen,
     setIsConfirmDeleteOpen,
     prepararMatricula,

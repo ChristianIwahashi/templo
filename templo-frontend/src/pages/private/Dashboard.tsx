@@ -6,7 +6,7 @@ import { formatarDinheiro } from "../../utils/formatters";
 import { 
   BookOpen, CheckCircle, AlertCircle, Megaphone, 
   Users, FolderOpen, DollarSign, Clock, Star, 
-  GraduationCap, UserCheck, Calendar, ArrowRight, Plus
+  GraduationCap, UserCheck, Calendar, ArrowRight
 } from "lucide-react";
 
 export function Dashboard() {
@@ -340,9 +340,6 @@ export function Dashboard() {
               <h3 className="font-bold text-gray-800 dark:text-slate-100 flex items-center gap-2">
                 <Users className="w-5 h-5 text-sys-blue" /> Últimos Alunos Cadastrados
               </h3>
-              <Link to="/gerenciar-alunos" className="text-xs bg-blue-50 dark:bg-blue-950/50 text-sys-blue hover:bg-sys-blue hover:text-white px-2.5 py-1.5 rounded-lg font-bold transition-all flex items-center gap-1">
-                <Plus className="w-3.5 h-3.5" /> Matricular
-              </Link>
             </div>
 
             {ultimosAlunosMatriculados.length === 0 ? (
@@ -377,9 +374,6 @@ export function Dashboard() {
               <h3 className="font-bold text-gray-800 dark:text-slate-100 flex items-center gap-2">
                 <Calendar className="w-5 h-5 text-sys-blue" /> Agenda do Website Institucional
               </h3>
-              <Link to="/gerenciar-informatico" className="text-xs bg-blue-50 dark:bg-blue-950/50 text-sys-blue hover:bg-sys-blue hover:text-white px-2.5 py-1.5 rounded-lg font-bold transition-all flex items-center gap-1">
-                <Plus className="w-3.5 h-3.5" /> Novo Evento
-              </Link>
             </div>
 
             {ultimosEventosGestor.length === 0 ? (
