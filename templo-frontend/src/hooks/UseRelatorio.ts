@@ -3,6 +3,7 @@ import { UseAuth } from "./UseAuth";
 import { Api } from "../api/Api";
 import { AxiosError } from "axios";
 import { calcularMediaGeral, calcularPercentualFrequencia } from "../utils/calculations";
+import * as XLSX from 'xlsx';
 
 export interface Turma {
   idTurma: number;
@@ -159,20 +160,50 @@ export function UseRelatorio() {
 
   //download de Planilha Excel (.xlsx)
   function exportarParaPlanilha() {
-    if (dadosPrevia.length === 0) return;
-    
+    if (dadosPrevia.length === 0) {
+      setErro('Não há dados gerados na pré-visualização para exportar.');
+      return;
+    }
     setSalvando(true);
     const nomeArquivo = tipoRelatorio === 'academico' 
       ? `Relatorio_Academico_Turma_${turmaSelecionada}_${anoSelecionado}.xlsx`
       : `Relatorio_Financeiro_Inadimplencia_${anoSelecionado}.xlsx`;
+    setToastMessage(`Gerando planilha formatada...`);
 
-    setToastMessage(`Gerando planilha: ${nomeArquivo}...`);
-    
-    setTimeout(() => {
+    try {
+      let dadosFormatados = [];
+
+      if (tipoRelatorio === 'academico') {
+        dadosFormatados = dadosPrevia.map(item => ({
+          'ID do Aluno': item.idUsuario,
+          'Nome do Estudante': item.nome,
+          'Média Geral': Number(item.media.toFixed(1)),
+          'Frequência (%)': `${item.frequencia}%`,
+          'Total de Aulas': item.totalAulas
+        }));
+      } else {
+        dadosFormatados = dadosPrevia.map(item => ({
+          'ID do Aluno': item.idUsuario,
+          'Nome do Estudante': item.nome,
+          'Parcelas Pagas': item.parcelasPagas,
+          'Parcelas Pendentes': item.parcelasPendentes,
+          'Valor Inadimplente (R$)': (item.valorPendente / 100).toFixed(2)
+        }));
+      }
+      const worksheet = XLSX.utils.json_to_sheet(dadosFormatados);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Relatório Templo");
+
+      XLSX.writeFile(workbook, nomeArquivo);
       setToastMessage('');
+      setSucesso('Planilha exportada com sucesso!');
+    } catch (error) {
+      console.error(error);
+      setErro('Erro ao gerar o arquivo Excel.');
+    } finally {
       setSalvando(false);
-      showMockDownload(nomeArquivo);
-    }, 2500);
+      setTimeout(() => setToastMessage(''), 3000);
+    }
   }
 
   function trocarTipoRelatorio(novoTipo: 'academico' | 'financeiro') {
@@ -180,17 +211,6 @@ export function UseRelatorio() {
     setDadosPrevia([]);
     setErro('');
     setSucesso('');
-  }
-
-  function showMockDownload(filename: string) {
-      //link físico de download
-      const link = document.createElement('a');
-      link.href = '#';
-      link.setAttribute('download', filename);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      alert(`Download concluído: ${filename}`);
   }
 
   return {
