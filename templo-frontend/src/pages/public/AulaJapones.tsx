@@ -63,7 +63,7 @@ export function AulasJapones() {
               (e.target as HTMLImageElement).src = LogoTemplo;
             }}
           />
-          {imagemDinamica && <div className="absolute inset-0 bg-black/30 pointer-events-none" />}
+          {imagemDinamica && <div className="absolute inset-0 pointer-events-none" />}
         </div>
 
         <div className="p-8 sm:p-10 flex flex-col justify-between space-y-8">
