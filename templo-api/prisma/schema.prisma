@@ -27,6 +27,9 @@ model Usuario {
   ativo     Boolean  @default(true)
   papel     Papel
 
+  tokenRecuperacao String?   @db.VarChar(255)
+  expiracaoToken   DateTime?
+
   gestor    Gestor?
   aluno     Aluno?
   professor Professor?
