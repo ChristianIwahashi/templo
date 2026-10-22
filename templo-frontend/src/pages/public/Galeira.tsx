@@ -38,7 +38,7 @@ export function Galeria() {
       
       {/*Cabeçalho*/}
       <div className="text-center space-y-3 max-w-3xl mx-auto">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#0060ba] tracking-tight">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-templo-blue tracking-tight">
           Galeria de Fotos
         </h1>
         <p className="text-base sm:text-lg text-slate-600 opacity-90">
@@ -49,7 +49,7 @@ export function Galeria() {
       {/*ESTADO DE CARREGAMENTO*/}
       {loading && (
         <div className="flex flex-col justify-center items-center h-64 space-y-3">
-          <RefreshCw className="w-8 h-8 text-[#0060ba] animate-spin" />
+          <RefreshCw className="w-8 h-8 text-templo-blue animate-spin" />
           <p className="text-slate-500 font-medium text-sm">Carregando acervo fotográfico...</p>
         </div>
       )}
@@ -71,7 +71,7 @@ export function Galeria() {
       {/*ESTADO VAZIO*/}
       {!loading && !erro && fotos.length === 0 && (
         <div className="bg-white rounded-3xl p-12 text-center max-w-xl mx-auto border border-gray-150 shadow-sm space-y-4">
-          <div className="w-16 h-16 bg-blue-50 text-[#0060ba] rounded-2xl flex items-center justify-center mx-auto mb-2">
+          <div className="w-16 h-16 bg-blue-50 text-templo-blue rounded-2xl flex items-center justify-center mx-auto mb-2">
             <ImageOff className="w-8 h-8 opacity-60" />
           </div>
           <h3 className="text-2xl font-bold text-slate-800">Nenhuma foto publicada</h3>

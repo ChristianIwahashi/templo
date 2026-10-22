@@ -25,6 +25,8 @@ import { Sobre } from "../pages/public/Sobre";
 import { Eventos } from "../pages/public/Eventos";
 import { Galeria } from "../pages/public/Galeira";
 import { AulasJapones } from "../pages/public/AulaJapones";
+import { EsqueciSenha } from '../pages/public/EsqueciSenha';
+import { RedefinirSenha } from '../pages/public/RedefinirSenha';
 
 export function AppRoutes() {
     const { isAuthenticated, loading, user } = UseAuth();
@@ -51,6 +53,8 @@ export function AppRoutes() {
                     path="/login"
                     element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />}
                 />
+                <Route path="/esqueci-senha" element={<EsqueciSenha />} />
+                <Route path="/redefinir-senha" element={<RedefinirSenha />} />
 
                 <Route element={<PrivateRoute />}>
                     <Route element={<PrivateLayout />}>
