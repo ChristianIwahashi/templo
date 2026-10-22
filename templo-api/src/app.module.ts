@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ConfigModule } from '@nestjs/config';
+import { PrismaModule } from './database/prisma.module';
+import { AuthModule } from './auth/auth.module';
 import { UsuarioModule } from './usuario/usuario.module';
 import { TurmaModule } from './turma/turma.module';
 import { MensalidadeModule } from './mensalidade/mensalidade.module';
@@ -8,14 +9,27 @@ import { NotaModule } from './nota/nota.module';
 import { FrequenciaModule } from './frequencia/frequencia.module';
 import { AvisoAulaModule } from './aviso-aula/aviso-aula.module';
 import { MaterialDidaticoModule } from './material-didatico/material-didatico.module';
-import { AvisoEventoModule } from './aviso-evento/aviso-evento.module';
 import { ConteudoInformativoModule } from './conteudo-informativo/conteudo-informativo.module';
-import { AuthModule } from './auth/auth.module';
+import { AvisoEventoModule } from './aviso-evento/aviso-evento.module';
 import { UploadModule } from './upload/upload.module';
 
 @Module({
-  imports: [UsuarioModule, TurmaModule, MensalidadeModule, NotaModule, FrequenciaModule, AvisoAulaModule, MaterialDidaticoModule, AvisoEventoModule, ConteudoInformativoModule, AuthModule, UploadModule],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    PrismaModule,
+    AuthModule,
+    UsuarioModule,
+    TurmaModule,
+    MensalidadeModule,
+    NotaModule,
+    FrequenciaModule,
+    AvisoAulaModule,
+    MaterialDidaticoModule,
+    ConteudoInformativoModule,
+    AvisoEventoModule,
+    UploadModule,
+  ],
 })
 export class AppModule {}
