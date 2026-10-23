@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Api } from "../../api/api";
 import { RefreshCw } from "lucide-react";
-import LogoTemplo from "../../public/Hongwanji.png";
+import LogoTemplo from "/Hongwanji.png";
 
 interface ConteudoDB {
   idConteudo: number;

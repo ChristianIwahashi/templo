@@ -4,7 +4,7 @@ import { useTheme } from "../../contexts/ThemeContext";
 import { AxiosError } from "axios";
 import { Mail, Lock, ArrowRight, Eye, EyeOff, ArrowLeft, Sun, Moon } from "lucide-react";
 import { Link } from "react-router-dom";
-import LogoTemplo from "../../public/Hongwanji.png";
+import LogoTemplo from "/Hongwanji.png";
 
 export function Login() {
   const { signIn } = UseAuth();
