@@ -23,8 +23,8 @@ import { GerenciarInformatico } from "../pages/private/GerenciarInformatico";
 import { PublicLayout } from '../components/PublicLayout';
 import { Sobre } from "../pages/public/Sobre";
 import { Eventos } from "../pages/public/Eventos";
-import { Galeria } from "../pages/public/Galeira";
-import { AulasJapones } from "../pages/public/AulaJapones";
+import { Galeria } from "../pages/public/Galeria";
+import { AulasJapones } from "../pages/public/AulasJapones";
 import { EsqueciSenha } from '../pages/public/EsqueciSenha';
 import { RedefinirSenha } from '../pages/public/RedefinirSenha';
 
