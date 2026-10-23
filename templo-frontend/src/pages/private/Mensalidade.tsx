@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Api } from "../../api/Api";
+import { Api } from "../../api/api";
 import { DollarSign } from "lucide-react";
 import { obterEstiloStatusPagamento, formatarDinheiro, formatarData } from "../../utils/formatters";
 

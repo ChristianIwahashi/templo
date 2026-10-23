@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { UseAuth } from "../../hooks/UseAuth";
-import { Api } from "../../api/Api";
+import { Api } from "../../api/api";
 import { Link } from "react-router-dom";
 import { formatarDinheiro } from "../../utils/formatters";
 import { 

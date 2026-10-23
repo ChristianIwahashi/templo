@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { UseAuth } from "../../hooks/UseAuth";
-import { Api } from "../../api/Api";
+import { Api } from "../../api/api";
 import { formatarData } from "../../utils/formatters";
 import { padraoTelefone } from "../../utils/telefone";
 import { validarSenhaForte, regexTextoSeguro } from "../../utils/validator";

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Api } from "../../api/Api";
+import { Api } from "../../api/api";
 import { RefreshCw } from "lucide-react";
 import LogoTemplo from "../../assets/images/Hongwanji.png";
 

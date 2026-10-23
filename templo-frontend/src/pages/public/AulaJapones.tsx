@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Api } from "../../api/Api";
+import { Api } from "../../api/api";
 import { Calendar, Clock, GraduationCap, CheckCircle2, Phone, Mail, ExternalLink, RefreshCw } from "lucide-react";
 import LogoTemplo from "../../assets/images/Hongwanji.png";
 

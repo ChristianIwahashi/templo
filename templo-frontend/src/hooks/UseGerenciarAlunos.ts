@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { UseAuth } from "./UseAuth";
-import { Api } from "../api/Api";
+import { Api } from "../api/api";
 import { AxiosError } from "axios";
 import { padraoTelefone } from "../utils/telefone";
 export const regexTextoSeguro = /^(?=.*[a-zA-Z0-9À-ÿ])[a-zA-Z0-9À-ÿ\s.!?,;\-_@()]+$/;

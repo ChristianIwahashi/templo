@@ -1,5 +1,5 @@
 import { useState, type ChangeEvent, useRef } from "react";
-import { Api } from "../api/Api";
+import { Api } from "../api/api";
 import { UploadCloud, Check, Loader2, X, FileText } from "lucide-react";
 import { AxiosError } from "axios";
 

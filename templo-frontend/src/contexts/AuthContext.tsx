@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState, type ReactNode } from "react";
-import { Api } from "../api/Api";
+import { Api } from "../api/api";
 
 interface User {
     idUsuario: number;

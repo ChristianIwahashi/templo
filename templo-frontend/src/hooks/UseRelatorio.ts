@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { UseAuth } from "./UseAuth";
-import { Api } from "../api/Api";
+import { Api } from "../api/api";
 import { AxiosError } from "axios";
 import { calcularMediaGeral, calcularPercentualFrequencia } from "../utils/calculations";
 import * as XLSX from 'xlsx';

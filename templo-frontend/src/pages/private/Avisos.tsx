@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Api } from "../../api/Api";
+import { Api } from "../../api/api";
 import { Clock, User, Info, BookOpen, ZoomIn, X } from "lucide-react";
 
 interface AvisoAula {

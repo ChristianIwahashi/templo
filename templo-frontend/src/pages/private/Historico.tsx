@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Api } from "../../api/Api";
+import { Api } from "../../api/api";
 import { GraduationCap, CheckCircle, BookOpen } from "lucide-react";
 
 interface Nota {

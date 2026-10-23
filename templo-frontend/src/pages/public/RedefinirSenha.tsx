@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Api } from "../../api/Api";
+import { Api } from "../../api/api";
 import { useTheme } from "../../contexts/ThemeContext";
 import { Eye, EyeOff, CheckCircle2, AlertCircle, Loader2, ArrowLeft, Sun, Moon } from "lucide-react";
 import { AxiosError } from "axios";

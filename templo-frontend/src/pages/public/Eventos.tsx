@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Api } from "../../api/Api";
+import { Api } from "../../api/api";
 import { Clock, Calendar, X, AlertCircle, MapPin, RefreshCw, CalendarX, HeartHandshake } from "lucide-react";
 
 export interface EventoPublico {
