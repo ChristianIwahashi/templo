@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, ExternalLink, Sun, Moon } from "lucide-react";
-import LogoTemplo from "../assets/images/Hongwanji.png";
+import LogoTemplo from "../../public/Hongwanji.png";
 import { useTheme } from "../contexts/ThemeContext";
 
 export function PublicNavbar() {

@@ -1,7 +1,7 @@
 import { Bell, ChevronLeft, ChevronRight, DollarSign, FileText, FolderOpen, Globe, GraduationCap, Home, LogOut, Megaphone, Menu, PieChart, Shield, Star, User, UserCheck, Users, X, Sun, Moon } from "lucide-react";
 import { UseAuth } from "../hooks/UseAuth";
 import { useTheme } from "../contexts/ThemeContext";
-import LogoTemplo from "../assets/images/Hongwanji.png";
+import LogoTemplo from "../../public/Hongwanji.png";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useState } from "react";
 
