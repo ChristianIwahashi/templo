@@ -65,7 +65,7 @@ export function GerenciarGestores() {
       <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-800 pb-4">
         <div className="flex items-center gap-2">
           <Shield className="w-6 h-6 text-sys-blue" />
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-slate-100">Gerenciar Administradores</h2>
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-slate-100">Gerenciar Gestores</h2>
         </div>
         
         <button
@@ -89,7 +89,7 @@ export function GerenciarGestores() {
       )}
 
       {/*Filtros*/}
-      <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 flex flex-col md:flex-row gap-4 items-center justify-between">
+      <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="w-full md:grow relative">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -119,17 +119,17 @@ export function GerenciarGestores() {
 
       {/*Tabela de Gestores*/}
       {gestoresFiltrados.length === 0 ? (
-        <div className="bg-white dark:bg-slate-900 p-12 rounded-2xl border border-gray-150 dark:border-slate-800 text-center text-gray-500 dark:text-slate-400 max-w-lg mx-auto">
+        <div className="bg-white dark:bg-slate-900 p-12 rounded-2xl border border-gray-100 dark:border-slate-800 text-center text-gray-500 dark:text-slate-400 max-w-lg mx-auto">
           <Info className="w-12 h-12 text-gray-300 dark:text-slate-600 mx-auto mb-3" />
           <p className="font-bold text-gray-700 dark:text-slate-200 text-lg">Nenhum Administrador Encontrado</p>
           <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">Clique em "Novo Administrador" para registrar outro gestor no sistema.</p>
         </div>
       ) : (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 overflow-hidden">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-gray-150 dark:border-slate-800 text-xs text-gray-500 dark:text-slate-400 uppercase bg-gray-50/20 dark:bg-slate-800/40">
+                <tr className="border-b border-gray-100 dark:border-slate-800 text-xs text-gray-500 dark:text-slate-400 uppercase bg-gray-50/20 dark:bg-slate-800/40">
                   <th className="p-4 font-semibold">Nome / E-mail</th>
                   <th className="p-4 font-semibold">ID</th>
                   <th className="p-4 font-semibold text-center">Status</th>

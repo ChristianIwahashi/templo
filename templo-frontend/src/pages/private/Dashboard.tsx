@@ -140,7 +140,7 @@ export function Dashboard() {
     return (
       <div className="p-6 space-y-8 animate-fade-in-up text-slate-800 dark:text-slate-100">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 flex items-center gap-4 border-l-4 border-l-blue-500">
+          <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center gap-4 border-l-4 border-l-blue-500">
             <div className="p-3 bg-blue-50 dark:bg-blue-950/50 text-sys-blue rounded-xl"><BookOpen className="w-6 h-6" /></div>
             <div>
               <p className="text-xs font-bold text-gray-400 dark:text-slate-400 uppercase tracking-wider">Turma / Nível</p>
@@ -148,7 +148,7 @@ export function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 flex items-center gap-4 border-l-4 border-l-green-500">
+          <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center gap-4 border-l-4 border-l-green-500">
             <div className="p-3 bg-green-50 dark:bg-green-950/50 text-green-600 dark:text-green-400 rounded-xl"><CheckCircle className="w-6 h-6" /></div>
             <div>
               <p className="text-xs font-bold text-gray-400 dark:text-slate-400 uppercase tracking-wider">Frequência</p>
@@ -156,7 +156,7 @@ export function Dashboard() {
             </div>
           </div>
 
-          <div className={`bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 flex items-center gap-4 border-l-4 
+          <div className={`bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center gap-4 border-l-4 
             ${temPendente ? 'border-l-yellow-500' : 'border-l-green-500'}`}
           >
             <div className={`p-3 rounded-xl ${temPendente ? 'bg-yellow-50 dark:bg-yellow-950/50 text-yellow-600 dark:text-yellow-400' : 'bg-green-50 dark:bg-green-950/50 text-green-600 dark:text-green-400'}`}>
@@ -172,7 +172,7 @@ export function Dashboard() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 p-6">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 p-6">
             <h3 className="font-bold text-gray-800 dark:text-slate-100 mb-4 flex items-center gap-2">
               <Megaphone className="w-5 h-5 text-sys-blue" /> Últimos Avisos da Turma
             </h3>
@@ -204,7 +204,7 @@ export function Dashboard() {
     return (
       <div className="p-6 space-y-8 animate-fade-in-up text-slate-800 dark:text-slate-100">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 flex items-center gap-4 border-l-4 border-l-blue-500">
+          <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center gap-4 border-l-4 border-l-blue-500">
             <div className="p-3 bg-blue-50 dark:bg-blue-950/50 text-sys-blue rounded-xl"><Users className="w-6 h-6" /></div>
             <div>
               <p className="text-xs font-bold text-gray-400 dark:text-slate-400 uppercase tracking-wider">Alunos sob sua Gestão</p>
@@ -212,7 +212,7 @@ export function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 flex items-center gap-4 border-l-4 border-l-green-500">
+          <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center gap-4 border-l-4 border-l-green-500">
             <div className="p-3 bg-green-50 dark:bg-green-950/50 text-green-600 dark:text-green-400 rounded-xl"><GraduationCap className="w-6 h-6" /></div>
             <div>
               <p className="text-xs font-bold text-gray-400 dark:text-slate-400 uppercase tracking-wider">Suas Turmas Ativas</p>
@@ -220,7 +220,7 @@ export function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 flex items-center gap-4 border-l-4 border-l-purple-500">
+          <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center gap-4 border-l-4 border-l-purple-500">
             <div className="p-3 bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 rounded-xl"><FolderOpen className="w-6 h-6" /></div>
             <div>
               <p className="text-xs font-bold text-gray-400 dark:text-slate-400 uppercase tracking-wider">Materiais Postados</p>
@@ -230,7 +230,7 @@ export function Dashboard() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 p-6 flex flex-col justify-between">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 p-6 flex flex-col justify-between">
             <div>
               <h3 className="font-bold text-gray-800 dark:text-slate-100 mb-4 flex items-center gap-2">
                 <Megaphone className="w-5 h-5 text-sys-blue" /> Últimos Avisos Enviados
@@ -255,7 +255,7 @@ export function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 p-6 flex flex-col justify-between">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 p-6 flex flex-col justify-between">
             <div>
               <h3 className="font-bold text-gray-800 dark:text-slate-100 mb-4 flex items-center gap-2">
                 <Star className="w-5 h-5 text-sys-blue" /> Últimas Notas Atribuídas
@@ -300,7 +300,7 @@ export function Dashboard() {
   return (
     <div className="p-6 space-y-8 animate-fade-in-up text-slate-800 dark:text-slate-100">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 flex items-center gap-4 border-l-4 border-l-blue-500">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center gap-4 border-l-4 border-l-blue-500">
           <div className="p-3 bg-blue-50 dark:bg-blue-950/50 text-sys-blue rounded-xl"><Users className="w-6 h-6" /></div>
           <div>
             <p className="text-xs font-bold text-gray-400 dark:text-slate-400 uppercase tracking-wider">Alunos Matriculados</p>
@@ -308,7 +308,7 @@ export function Dashboard() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 flex items-center gap-4 border-l-4 border-l-green-500">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center gap-4 border-l-4 border-l-green-500">
           <div className="p-3 bg-green-50 dark:bg-green-950/50 text-green-600 dark:text-green-400 rounded-xl"><UserCheck className="w-6 h-6" /></div>
           <div>
             <p className="text-xs font-bold text-gray-400 dark:text-slate-400 uppercase tracking-wider">Corpo Docente Ativo</p>
@@ -316,7 +316,7 @@ export function Dashboard() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 flex items-center gap-4 border-l-4 border-l-purple-500">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center gap-4 border-l-4 border-l-purple-500">
           <div className="p-3 bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 rounded-xl"><GraduationCap className="w-6 h-6" /></div>
           <div>
             <p className="text-xs font-bold text-gray-400 dark:text-slate-400 uppercase tracking-wider">Turmas Abertas</p>
@@ -324,7 +324,7 @@ export function Dashboard() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 flex items-center gap-4 border-l-4 border-l-yellow-500">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center gap-4 border-l-4 border-l-yellow-500">
           <div className="p-3 bg-yellow-50 dark:bg-yellow-950/50 text-yellow-600 dark:text-yellow-400 rounded-xl"><DollarSign className="w-6 h-6" /></div>
           <div>
             <p className="text-xs font-bold text-gray-400 dark:text-slate-400 uppercase tracking-wider">Inadimplência Total</p>
@@ -334,7 +334,7 @@ export function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 p-6 flex flex-col justify-between">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 p-6 flex flex-col justify-between">
           <div>
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-bold text-gray-800 dark:text-slate-100 flex items-center gap-2">
@@ -368,7 +368,7 @@ export function Dashboard() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 p-6 flex flex-col justify-between">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 p-6 flex flex-col justify-between">
           <div>
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-bold text-gray-800 dark:text-slate-100 flex items-center gap-2">
@@ -381,7 +381,7 @@ export function Dashboard() {
             ) : (
               <div className="space-y-3">
                 {ultimosEventosGestor.map((evento: any) => (
-                  <div key={evento.idAvisoEvento} className="border border-gray-150 dark:border-slate-800 rounded-xl p-3 bg-slate-50/40 dark:bg-slate-800/40 flex justify-between items-center">
+                  <div key={evento.idAvisoEvento} className="border border-gray-100 dark:border-slate-800 rounded-xl p-3 bg-slate-50/40 dark:bg-slate-800/40 flex justify-between items-center">
                     <div>
                       <p className="font-semibold text-sm text-gray-800 dark:text-slate-100">{evento.titulo}</p>
                       <p className="text-xs text-gray-400 dark:text-slate-400 mt-0.5">Postado em {formatarData(evento.dataPostagem)}</p>

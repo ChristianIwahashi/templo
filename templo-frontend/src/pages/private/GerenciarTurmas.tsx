@@ -87,7 +87,7 @@ export function GerenciarTurmas() {
       )}
 
       {/* Busca */}
-      <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 flex gap-4 items-center">
+      <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex gap-4 items-center">
         <div className="w-full relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <Search className="w-4 h-4 text-gray-400" />
@@ -104,17 +104,17 @@ export function GerenciarTurmas() {
 
       {/* Tabela de Turmas */}
       {turmasFiltradas.length === 0 ? (
-        <div className="bg-white dark:bg-slate-900 p-12 rounded-2xl border border-gray-150 dark:border-slate-800 text-center text-gray-500 dark:text-slate-400 max-w-lg mx-auto">
+        <div className="bg-white dark:bg-slate-900 p-12 rounded-2xl border border-gray-100 dark:border-slate-800 text-center text-gray-500 dark:text-slate-400 max-w-lg mx-auto">
           <Info className="w-12 h-12 text-gray-300 dark:text-slate-600 mx-auto mb-3" />
           <p className="font-bold text-gray-700 dark:text-slate-200 text-lg">Nenhuma Turma Encontrada</p>
           <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">Clique em "Nova Turma" para abrir uma sala de aula e atribuir um docente.</p>
         </div>
       ) : (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 overflow-hidden">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-gray-150 dark:border-slate-800 text-xs text-gray-500 dark:text-slate-400 uppercase bg-gray-50/20 dark:bg-slate-800/40">
+                <tr className="border-b border-gray-100 dark:border-slate-800 text-xs text-gray-500 dark:text-slate-400 uppercase bg-gray-50/20 dark:bg-slate-800/40">
                   <th className="p-4 font-semibold">Identificação</th>
                   <th className="p-4 font-semibold">Professor Responsável</th>
                   <th className="p-4 font-semibold text-center">Alunos Matriculados</th>

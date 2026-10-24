@@ -87,7 +87,7 @@ export function Historico() {
     <div className="p-6 max-w-5xl mx-auto space-y-6 animate-fade-in-up text-slate-800 dark:text-slate-100">
       
       {/*Filtro por Ano*/}
-      <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 flex items-end">
+      <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-end">
         <div className="w-full sm:w-72">
           <label htmlFor="filtro-ano" className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
             Filtrar por Ano Letivo
@@ -108,7 +108,7 @@ export function Historico() {
 
       {/*Cards de Resumo*/}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 flex items-center justify-between">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="p-3 bg-green-50 dark:bg-green-950/50 text-green-600 dark:text-green-400 rounded-xl">
               <CheckCircle className="w-8 h-8" />
@@ -125,7 +125,7 @@ export function Historico() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 flex items-center justify-between">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="p-3 bg-blue-50 dark:bg-blue-950/50 text-sys-blue rounded-xl">
               <GraduationCap className="w-8 h-8" />
@@ -144,7 +144,7 @@ export function Historico() {
       </div>
 
       {/*Boletim de Notas*/}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden">
         <div className="p-5 border-b border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-800/60 flex items-center gap-2">
           <BookOpen className="w-5 h-5 text-sys-blue" />
           <h4 className="font-bold text-gray-700 dark:text-slate-100">Boletim de Notas</h4>

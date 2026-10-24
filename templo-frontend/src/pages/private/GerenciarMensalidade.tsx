@@ -97,7 +97,7 @@ export function GerenciarMensalidade() {
 
       {/*Cards de Resumo*/}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 flex items-center justify-between border-l-4 border-l-green-500">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center justify-between border-l-4 border-l-green-500">
           <div className="flex items-center gap-4">
             <div className="p-3 bg-green-50 dark:bg-green-950/50 text-green-600 dark:text-green-400 rounded-xl">
               <TrendingUp className="w-7 h-7" />
@@ -109,7 +109,7 @@ export function GerenciarMensalidade() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 flex items-center justify-between border-l-4 border-l-yellow-500">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center justify-between border-l-4 border-l-yellow-500">
           <div className="flex items-center gap-4">
             <div className="p-3 bg-yellow-50 dark:bg-yellow-950/50 text-yellow-600 dark:text-yellow-400 rounded-xl">
               <AlertTriangle className="w-7 h-7" />
@@ -123,7 +123,7 @@ export function GerenciarMensalidade() {
       </div>
 
       {/*Filtros*/}
-      <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 flex flex-wrap gap-4 items-end">
+      <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex flex-wrap gap-4 items-end">
         <div className="w-full md:flex-1 min-w-55">
           <label htmlFor="busca-mensalidade" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1.5 items-center gap-1.5">
             Buscar Aluno ou Mês
@@ -195,17 +195,17 @@ export function GerenciarMensalidade() {
 
       {/*Tabela de Mensalidades*/}
       {mensalidadesFiltradas.length === 0 ? (
-        <div className="bg-white dark:bg-slate-900 p-12 rounded-2xl border border-gray-150 dark:border-slate-800 text-center text-gray-500 dark:text-slate-400 max-w-lg mx-auto">
+        <div className="bg-white dark:bg-slate-900 p-12 rounded-2xl border border-gray-100 dark:border-slate-800 text-center text-gray-500 dark:text-slate-400 max-w-lg mx-auto">
           <DollarSign className="w-12 h-12 text-gray-300 dark:text-slate-600 mx-auto mb-3" />
           <p className="font-bold text-gray-700 dark:text-slate-200 text-lg">Nenhum Registro Financeiro</p>
           <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">Nenhuma fatura encontrada. Clique em "Nova Cobrança" para registrar.</p>
         </div>
       ) : (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 overflow-hidden">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-gray-150 dark:border-slate-800 text-xs text-gray-500 dark:text-slate-400 uppercase bg-gray-50/20 dark:bg-slate-800/40">
+                <tr className="border-b border-gray-100 dark:border-slate-800 text-xs text-gray-500 dark:text-slate-400 uppercase bg-gray-50/20 dark:bg-slate-800/40">
                   <th className="p-4 font-semibold">Aluno / Matrícula</th>
                   <th className="p-4 font-semibold">Mês de Ref.</th>
                   <th className="p-4 font-semibold">Vencimento</th>

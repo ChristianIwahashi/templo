@@ -50,7 +50,7 @@ export function GerenciarChamada() {
       </div>
 
       {/*Seleção de Turma e Data*/}
-      <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label htmlFor="select-turma" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1.5 items-center gap-1.5">
             Selecione a Turma
@@ -85,7 +85,7 @@ export function GerenciarChamada() {
 
       {/*Lista de Alunos*/}
       {turmaSelecionada && (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 overflow-hidden">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden">
           
           <div className="p-4 bg-gray-50/50 dark:bg-slate-800/60 border-b border-gray-100 dark:border-slate-800 flex flex-wrap justify-between items-center gap-4">
             <h4 className="font-bold text-gray-700 dark:text-slate-100">Lista de Alunos</h4>
@@ -133,7 +133,7 @@ export function GerenciarChamada() {
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="border-b border-gray-150 dark:border-slate-800 text-xs text-gray-600 dark:text-slate-300 uppercase bg-gray-50/20 dark:bg-slate-800/40">
+                    <tr className="border-b border-gray-100 dark:border-slate-800 text-xs text-gray-600 dark:text-slate-300 uppercase bg-gray-50/20 dark:bg-slate-800/40">
                       <th className="p-4 font-semibold text-center w-20">Presença</th>
                       <th className="p-4 font-semibold">Nome do Aluno</th>
                     </tr>

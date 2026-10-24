@@ -74,7 +74,7 @@ export function Mensalidade() {
     <div className="p-6 max-w-5xl mx-auto space-y-6 animate-fade-in-up text-slate-800 dark:text-slate-100">
       
       {/*Seção de Filtros*/}
-      <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 flex flex-wrap gap-4 items-end">
+      <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex flex-wrap gap-4 items-end">
         
         <div className="flex-1 min-w-50">
           <label htmlFor="ordem" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1.5 items-center gap-1.5">
@@ -128,7 +128,7 @@ export function Mensalidade() {
       </div>
 
       {/*Tabela de Mensalidades*/}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden">
         <div className="p-5 border-b border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-800/60 flex items-center gap-2">
           <DollarSign className="w-5 h-5 text-sys-blue" />
           <h4 className="font-bold text-gray-700 dark:text-slate-100">Histórico de Mensalidades</h4>

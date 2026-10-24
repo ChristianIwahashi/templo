@@ -26,7 +26,7 @@ export function PublicNavbar() {
             <img 
               src={LogoTemplo} 
               alt="Logo do Templo" 
-              className="h-14 w-14 sm:h-16 sm:w-16 object-contain brightness-0 dark:invert transition-transform group-hover:scale-105"
+              className="h-14 w-14 sm:h-16 sm:w-16 object-contain brightness-0 invert transition-transform group-hover:scale-105"
             />
             <div>
               <h1 className="font-bold text-base lg:text-lg xl:text-xl tracking-wide leading-tight max-w-70 sm:max-w-sm">

@@ -65,7 +65,7 @@ export function GerenciarNota() {
       )}
 
       {/*Seleção de Turma*/}
-      <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800">
+      <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800">
         <label htmlFor="select-turma" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1.5 items-center gap-1.5">
           Selecione a Turma
         </label>
@@ -87,7 +87,7 @@ export function GerenciarNota() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
           {/*Coluna Alunos*/}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 overflow-hidden md:col-span-1 h-fit">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden md:col-span-1 h-fit">
             <div className="p-4 bg-gray-50/50 dark:bg-slate-800/60 border-b border-gray-100 dark:border-slate-800">
               <h4 className="font-bold text-gray-700 dark:text-slate-100 text-sm">Alunos da Turma</h4>
             </div>
@@ -119,7 +119,7 @@ export function GerenciarNota() {
           {/*Coluna Notas*/}
           <div className="md:col-span-2 space-y-4">
             {alunoSelecionado ? (
-              <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 overflow-hidden">
+              <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden">
                 
                 <div className="p-4 bg-gray-50/50 dark:bg-slate-800/60 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center">
                   <div>
@@ -138,7 +138,7 @@ export function GerenciarNota() {
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="border-b border-gray-150 dark:border-slate-800 text-xs text-gray-500 dark:text-slate-400 uppercase bg-gray-50/20 dark:bg-slate-800/40">
+                      <tr className="border-b border-gray-100 dark:border-slate-800 text-xs text-gray-500 dark:text-slate-400 uppercase bg-gray-50/20 dark:bg-slate-800/40">
                         <th className="p-3 font-semibold">Avaliação</th>
                         <th className="p-3 font-semibold">Data</th>
                         <th className="p-3 font-semibold">Nota</th>
@@ -331,7 +331,7 @@ export function GerenciarNota() {
       {/*Modal Deletar*/}
       {isDeleteModalOpen && (
         <div className="fixed inset-0 bg-black/60 z-250 flex items-center justify-center p-4 backdrop-blur-xs">
-          <div className="bg-white dark:bg-slate-900 w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center border border-gray-150 dark:border-slate-800 animate-modal-enter text-sm">
+          <div className="bg-white dark:bg-slate-900 w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center border border-gray-100 dark:border-slate-800 animate-modal-enter text-sm">
             <h3 className="text-xl font-bold text-red-600 dark:text-red-400 mb-2">Excluir Registro de Nota</h3>
             <p className="text-sm text-gray-500 dark:text-slate-400 mb-6">
               Você tem certeza de que deseja apagar a avaliação de {alunoSelecionado?.nome}?

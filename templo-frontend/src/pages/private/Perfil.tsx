@@ -128,7 +128,7 @@ export function Perfil() {
         <h2 className="text-2xl font-bold text-gray-800 dark:text-slate-100">Meu Perfil</h2>
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 p-6 md:p-8">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 p-6 md:p-8">
         
         {/*Identificação de Perfil*/}
         <div className="flex items-center gap-6 mb-8 border-b border-gray-100 dark:border-slate-800 pb-6">
@@ -137,7 +137,6 @@ export function Perfil() {
           </div>
           <div>
             <h3 className="text-2xl font-bold text-gray-800 dark:text-slate-100 leading-tight">{perfil?.nome}</h3>
-            <p className="text-sm text-gray-500 dark:text-slate-400 mt-0.5">Identificação #{perfil?.idUsuario}</p>
             <span className="inline-block mt-2 bg-blue-50 dark:bg-blue-950/60 text-sys-blue border border-blue-200 dark:border-blue-900 text-xs px-2.5 py-1 rounded-full font-bold tracking-wide uppercase">
               {perfil?.papel}
             </span>

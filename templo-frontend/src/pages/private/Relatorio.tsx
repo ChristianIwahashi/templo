@@ -52,7 +52,7 @@ export function Relatorio() {
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6 animate-fade-in-up relative text-slate-800 dark:text-slate-100">
-      
+
       {toastMessage && (
         <div className="fixed bottom-6 right-6 bg-gray-900 text-green-400 px-5 py-4 rounded-xl shadow-2xl flex items-center gap-3 z-50 animate-bounce border border-gray-800">
           <Download className="w-5 h-5 animate-pulse" />
@@ -80,15 +80,15 @@ export function Relatorio() {
 
       {/*Grid Duas Colunas*/}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        
+
         {/*Filtros*/}
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 h-fit space-y-5 md:col-span-1">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 h-fit space-y-5 md:col-span-1">
           <h3 className="font-bold text-gray-800 dark:text-slate-100 text-sm flex items-center gap-1.5 border-b border-gray-100 dark:border-slate-800 pb-2">
             Filtros de Exportação
           </h3>
 
           <form onSubmit={e => { e.preventDefault(); executarGerarRelatorio(); }} className="space-y-4 text-sm">
-            
+
             {user?.papel === 'GESTOR' && (
               <div>
                 <label className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase mb-1.5">Tipo de Dados</label>
@@ -118,7 +118,7 @@ export function Relatorio() {
             {tipoRelatorio === 'academico' && (
               <div>
                 <label htmlFor="select-turma-rel" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase mb-1">Turma *</label>
-                <select 
+                <select
                   id="select-turma-rel"
                   value={turmaSelecionada}
                   onChange={e => setTurmaSelecionada(e.target.value)}
@@ -135,7 +135,7 @@ export function Relatorio() {
 
             <div>
               <label htmlFor="select-ano-rel" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase mb-1">Ano Letivo *</label>
-              <select 
+              <select
                 id="select-ano-rel"
                 value={anoSelecionado}
                 onChange={e => setAnoRef(e.target.value)}
@@ -156,8 +156,8 @@ export function Relatorio() {
               type="submit"
               disabled={loading}
               className={`w-full py-3 rounded-xl font-bold text-white transition-all cursor-pointer shadow-md flex items-center justify-center gap-2
-                ${tipoRelatorio === 'financeiro' 
-                  ? 'bg-green-600 hover:bg-green-700 shadow-green-100 dark:shadow-none' 
+                ${tipoRelatorio === 'financeiro'
+                  ? 'bg-green-600 hover:bg-green-700 shadow-green-100 dark:shadow-none'
                   : 'bg-sys-blue hover:bg-sys-blue-hover shadow-blue-100 dark:shadow-none'
                 }
               `}
@@ -170,20 +170,20 @@ export function Relatorio() {
         {/*Prévia*/}
         <div className="md:col-span-2 space-y-4">
           {dadosPrevia.length > 0 ? (
-            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 overflow-hidden">
-              
+            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden">
+
               <div className="p-4 bg-gray-50/50 dark:bg-slate-800/60 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center flex-wrap gap-4">
                 <div>
                   <h4 className="font-bold text-gray-800 dark:text-slate-100 text-sm">Dados Consolidados</h4>
                   <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">Visualize a prévia antes de exportar</p>
                 </div>
-                
+
                 <button
                   onClick={exportarParaPlanilha}
                   disabled={salvando}
                   className={`px-4 py-2.5 rounded-xl font-bold text-xs text-white transition-all flex items-center gap-1.5 cursor-pointer shadow-md
-                    ${tipoRelatorio === 'financeiro' 
-                      ? 'bg-green-600 hover:bg-green-700' 
+                    ${tipoRelatorio === 'financeiro'
+                      ? 'bg-green-600 hover:bg-green-700'
                       : 'bg-sys-blue hover:bg-sys-blue-hover'
                     }
                   `}
@@ -196,7 +196,7 @@ export function Relatorio() {
                 <table className="w-full text-left border-collapse text-xs">
                   {tipoRelatorio === 'academico' ? (
                     <thead>
-                      <tr className="border-b border-gray-150 dark:border-slate-800 text-gray-500 dark:text-slate-400 uppercase bg-gray-50/20 dark:bg-slate-800/40">
+                      <tr className="border-b border-gray-100 dark:border-slate-800 text-gray-500 dark:text-slate-400 uppercase bg-gray-50/20 dark:bg-slate-800/40">
                         <th className="p-4 font-semibold">Nome do Aluno</th>
                         <th className="p-4 font-semibold text-center">Frequência</th>
                         <th className="p-4 font-semibold text-center">Média Geral</th>
@@ -205,7 +205,7 @@ export function Relatorio() {
                     </thead>
                   ) : (
                     <thead>
-                      <tr className="border-b border-gray-150 dark:border-slate-800 text-gray-500 dark:text-slate-400 uppercase bg-gray-50/20 dark:bg-slate-800/40">
+                      <tr className="border-b border-gray-100 dark:border-slate-800 text-gray-500 dark:text-slate-400 uppercase bg-gray-50/20 dark:bg-slate-800/40">
                         <th className="p-4 font-semibold">Nome do Aluno</th>
                         <th className="p-4 font-semibold text-center">Mensalidades Pagas</th>
                         <th className="p-4 font-semibold text-center">Mensalidades Pendentes</th>
@@ -216,11 +216,12 @@ export function Relatorio() {
 
                   <tbody className="text-sm divide-y divide-gray-100 dark:divide-slate-800">
                     {tipoRelatorio === 'academico' ? (
-                      (dadosPrevia as LinhaAcademica[]).map((linha: LinhaAcademica) => (
-                        <tr key={linha.idUsuario} className="hover:bg-gray-50/20 dark:hover:bg-slate-800/30 transition-colors">
+                      (dadosPrevia as LinhaAcademica[]).map((linha: LinhaAcademica, index: number) => (
+                        <tr key={linha.idUsuario || index} className="hover:bg-gray-50/20 dark:hover:bg-slate-800/30 transition-colors">
                           <td className="p-4 font-semibold text-gray-800 dark:text-slate-100">{linha.nome}</td>
                           <td className={`p-4 text-center font-bold ${linha.frequencia >= 75 ? 'text-green-600 dark:text-green-400' : 'text-red-500'}`}>{linha.frequencia}%</td>
-                          <td className={`p-4 text-center font-bold ${linha.media >= 7.0 ? 'text-sys-blue' : 'text-red-500'}`}>{linha.media.toFixed(1)}</td>
+                          <td className={`p-4 text-center font-bold ${(linha.media ?? 0) >= 7.0 ? 'text-sys-blue' : 'text-red-500'}`}>
+                            {typeof linha.media === 'number' ? linha.media.toFixed(1) : '-'}</td>
                           <td className="p-4 text-center text-gray-500 dark:text-slate-400">{linha.totalAulas} aulas</td>
                         </tr>
                       ))

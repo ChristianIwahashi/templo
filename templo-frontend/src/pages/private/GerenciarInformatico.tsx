@@ -88,7 +88,7 @@ export function GerenciarInformatico() {
       <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-800 pb-4">
         <div className="flex items-center gap-2">
           <Globe className="w-6 h-6 text-sys-blue" />
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-slate-100">Gerenciador do Website (CMS)</h2>
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-slate-100">Gerenciador do Website</h2>
         </div>
 
         {abaAtiva === 'conteudos' ? (
@@ -156,11 +156,11 @@ export function GerenciarInformatico() {
             <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">Cadastre as seções de História, Galeria ou Cursos para alimentar o site.</p>
           </div>
         ) : (
-          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 overflow-hidden">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-gray-150 dark:border-slate-800 text-xs text-gray-500 dark:text-slate-400 uppercase bg-gray-50/20 dark:bg-slate-800/40">
+                  <tr className="border-b border-gray-100 dark:border-slate-800 text-xs text-gray-500 dark:text-slate-400 uppercase bg-gray-50/20 dark:bg-slate-800/40">
                     <th className="p-4 font-semibold">Seção / Categoria</th>
                     <th className="p-4 font-semibold">Título do Conteúdo</th>
                     <th className="p-4 font-semibold">Texto / Resumo</th>
@@ -213,11 +213,11 @@ export function GerenciarInformatico() {
             <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">Publique eventos para que apareçam na página pública do templo.</p>
           </div>
         ) : (
-          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-150 dark:border-slate-800 overflow-hidden">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-gray-150 dark:border-slate-800 text-xs text-gray-500 dark:text-slate-400 uppercase bg-gray-50/20 dark:bg-slate-800/40">
+                  <tr className="border-b border-gray-100 dark:border-slate-800 text-xs text-gray-500 dark:text-slate-400 uppercase bg-gray-50/20 dark:bg-slate-800/40">
                     <th className="p-4 font-semibold">Evento</th>
                     <th className="p-4 font-semibold">Data da Postagem</th>
                     <th className="p-4 font-semibold text-center">Visibilidade</th>

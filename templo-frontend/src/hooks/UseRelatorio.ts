@@ -67,7 +67,7 @@ export function UseRelatorio() {
     carregarTurmas();
   }, [user]);
 
-  //Gerar o Relatório
+  // Gerar o Relatório
   async function executarGerarRelatorio() {
     setErro('');
     setSucesso('');
@@ -89,13 +89,21 @@ export function UseRelatorio() {
         ]);
 
         const alunos: any[] = turmaRes.data.alunos || [];
-        const notas: any[] = notasRes.data;
-        const frequencias: any[] = freqRes.data;
+        const todasNotas: any[] = notasRes.data;
+        const todasFrequencias: any[] = freqRes.data;
 
-        //Monta a planilha
+        // 📍 CORREÇÃO 1: Filtra as notas e frequências pelo anoSelecionado antes do cálculo!
+        const notasDoAno = todasNotas.filter(n => 
+          new Date(n.data).getUTCFullYear().toString() === anoSelecionado
+        );
+        const frequenciasDoAno = todasFrequencias.filter(f => 
+          new Date(f.dataAula).getUTCFullYear().toString() === anoSelecionado
+        );
+
+        // Monta os dados consolidados do ano selecionado
         const relatorioConsolidado = alunos.map(aluno => {
-          const notasDoAluno = notas.filter(n => n.idAluno === aluno.idUsuario);
-          const freqDoAluno = frequencias.filter(f => f.idAluno === aluno.idUsuario);
+          const notasDoAluno = notasDoAno.filter(n => n.idAluno === aluno.idUsuario);
+          const freqDoAluno = frequenciasDoAno.filter(f => f.idAluno === aluno.idUsuario);
 
           return {
             idUsuario: aluno.idUsuario,
@@ -112,18 +120,18 @@ export function UseRelatorio() {
 
       } else if (tipoRelatorio === 'financeiro') {
         if (user?.papel !== 'GESTOR') {
-            throw new Error('Acesso negado.');
+          throw new Error('Acesso negado.');
         }
 
         const response = await Api.get('/mensalidade');
         const mensalidades: any[] = response.data;
 
-        //Filtra pelo ano selecionado
+        // Filtra pelo ano selecionado
         const mensalidadesDoAno = mensalidades.filter(m => 
           new Date(m.dataVencimento).getUTCFullYear().toString() === anoSelecionado
         );
 
-        //Agrupa por Aluno
+        // Agrupa por Aluno
         const relatorioFinanceiro: any[] = [];
         const alunosProcessados = new Set<number>();
 
@@ -135,7 +143,9 @@ export function UseRelatorio() {
             const pendentes = parcelasDoAluno.filter(p => p.statusPagamento === 'PENDENTE' || p.statusPagamento === 'ATRASADO').length;
             const totalDevido = parcelasDoAluno.reduce((acc, curr) => acc + (curr.statusPagamento !== 'PAGO' ? curr.valor : 0), 0);
 
+            // 📍 CORREÇÃO 2: Inclui o idUsuario para ser exibido e exportado!
             relatorioFinanceiro.push({
+              idUsuario: m.idAluno,
               nome: m.aluno.usuario.nome,
               parcelasPagas: pagas,
               parcelasPendentes: pendentes,
@@ -158,7 +168,7 @@ export function UseRelatorio() {
     }
   }
 
-  //download de Planilha Excel (.xlsx)
+  // Download de Planilha Excel (.xlsx)
   function exportarParaPlanilha() {
     if (dadosPrevia.length === 0) {
       setErro('Não há dados gerados na pré-visualização para exportar.');
@@ -177,13 +187,13 @@ export function UseRelatorio() {
         dadosFormatados = dadosPrevia.map(item => ({
           'ID do Aluno': item.idUsuario,
           'Nome do Estudante': item.nome,
-          'Média Geral': Number(item.media.toFixed(1)),
+          'Média Geral': Number((item.media ?? 0).toFixed(1)),
           'Frequência (%)': `${item.frequencia}%`,
           'Total de Aulas': item.totalAulas
         }));
       } else {
         dadosFormatados = dadosPrevia.map(item => ({
-          'ID do Aluno': item.idUsuario,
+          'ID do Aluno': item.idUsuario, // Agora tem valor real e não sairá em branco
           'Nome do Estudante': item.nome,
           'Parcelas Pagas': item.parcelasPagas,
           'Parcelas Pendentes': item.parcelasPendentes,

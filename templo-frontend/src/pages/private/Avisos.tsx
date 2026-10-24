@@ -72,13 +72,13 @@ export function Avisos() {
       {/*Lista de Avisos*/}
       <div className="space-y-4">
         {avisos.length === 0 ? (
-          <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-gray-150 dark:border-slate-800 text-center text-gray-500 dark:text-slate-400">
+          <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-gray-100 dark:border-slate-800 text-center text-gray-500 dark:text-slate-400">
             <Info className="w-12 h-12 text-gray-300 dark:text-slate-600 mx-auto mb-3" />
             <p className="font-semibold">Nenhum aviso ou recado para a sua turma no momento.</p>
           </div>
         ) : (
           avisos.map((aviso) => (
-            <div key={aviso.idAvisoAula} className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-150 dark:border-slate-800 shadow-xs hover:shadow-md transition overflow-hidden">
+            <div key={aviso.idAvisoAula} className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-xs hover:shadow-md transition overflow-hidden">
               <div className="p-6 space-y-4">
                 
                 <div className="flex flex-wrap justify-between items-start gap-2 border-b border-gray-100 dark:border-slate-800 pb-3">
