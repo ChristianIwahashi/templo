@@ -303,7 +303,6 @@ export function GerenciarInformatico() {
                   required
                 >
                   <option value="HISTORIA">História do Templo</option>
-                  <option value="SOBRE">Sobre Nós</option>
                   <option value="GALERIA">Galeria de Fotos</option>
                   <option value="AULAS">Aulas de Japonês (Estrutura)</option>
                 </select>
