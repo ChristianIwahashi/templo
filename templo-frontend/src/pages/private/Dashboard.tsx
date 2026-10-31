@@ -147,10 +147,10 @@ export function Dashboard() {
           <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center gap-4 border-l-4 border-l-blue-500">
             <div className="p-3 bg-blue-50 dark:bg-blue-950/50 text-sys-blue rounded-xl"><BookOpen className="w-6 h-6" /></div>
             <div>
+              <p className="text-xs font-bold text-gray-400 dark:text-slate-400 uppercase tracking-wider">Turma / Nível</p>
               <p className="text-lg font-bold text-gray-800 dark:text-slate-100 mt-0.5">
                 {nomeTurma}
               </p>
-              <p className="text-lg font-bold text-gray-800 dark:text-slate-100 mt-0.5">{nomeTurma !== 'Sem Turma' ? `Turma ${nomeTurma}` : 'Sem Turma'}</p>
             </div>
           </div>
 
