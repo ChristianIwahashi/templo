@@ -4,6 +4,7 @@ import { PieChart, FileSpreadsheet, Download, AlertCircle, Check, Loader2 } from
 
 interface Turma {
   idTurma: number;
+  nome?: string;
 }
 interface LinhaAcademica {
   idUsuario: number;
@@ -127,7 +128,9 @@ export function Relatorio() {
                 >
                   <option value="">Selecione...</option>
                   {turmas.map((t: Turma) => (
-                    <option key={t.idTurma} value={t.idTurma}>Turma {t.idTurma}</option>
+                    <option key={t.idTurma} value={t.idTurma}>
+                      {t.nome || `Turma ${t.idTurma}`}
+                    </option>
                   ))}
                 </select>
               </div>

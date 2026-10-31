@@ -7,6 +7,7 @@ import * as XLSX from 'xlsx';
 
 export interface Turma {
   idTurma: number;
+  nome?: string;
 }
 
 export function UseRelatorio() {

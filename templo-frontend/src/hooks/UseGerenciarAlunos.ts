@@ -3,11 +3,12 @@ import { UseAuth } from "./UseAuth";
 import { Api } from "../api/api";
 import { AxiosError } from "axios";
 import { padraoTelefone } from "../utils/telefone";
-export const regexTextoSeguro = /^(?=.*[a-zA-Z0-9À-ÿ])[a-zA-Z0-9À-ÿ\s.!?,;\-_@()]+$/;
 
 export interface Turma {
   idTurma: number;
+  nome?: string;
 }
+
 export interface AlunoCompleto {
   idUsuario: number;
   nome: string;
@@ -23,29 +24,42 @@ export interface AlunoCompleto {
 
 export function UseGerenciarAlunos() {
   const { user } = UseAuth();
+
+  // Estados de dados
   const [alunos, setAlunos] = useState<AlunoCompleto[]>([]);
   const [turmas, setTurmas] = useState<Turma[]>([]);
+
+  // Estados do formulário (Matrícula / Edição)
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [telefone, setTelefone] = useState('');
   const [dataNascimento, setDataNascimento] = useState('');
   const [turmaSelecionada, setTurmaSelecionada] = useState('');
+
+  // Estados de busca
   const [pesquisa, setPesquisa] = useState('');
+  const [ocultarInativos, setOcultarInativos] = useState(false);
+  const [profExpandidoId, setProfExpandidoId] = useState<number | null>(null);
+
+  // Estados de controle de UI
   const [loading, setLoading] = useState(true);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState('');
   const [sucesso, setSucesso] = useState('');
+
+  // Modais de formulário
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [alunoSelecionado, setAlunoSelecionado] = useState<AlunoCompleto | null>(null);
-  const [ocultarInativos, setOcultarInativos] = useState(true);
-  const [alunoExpandidoId, setAlunoExpandidoId] = useState<number | null>(null);
+
+  // Modais de Confirmação (ConfirmModal)
   const [isConfirmAddOpen, setIsConfirmAddOpen] = useState(false);
   const [isConfirmEditOpen, setIsConfirmEditOpen] = useState(false);
   const [isConfirmStatusOpen, setIsConfirmStatusOpen] = useState(false);
-  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false)
+  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
 
+  // 1. Carrega alunos e turmas em paralelo
   useEffect(() => {
     async function carregarDadosSecretaria() {
       try {
@@ -54,7 +68,7 @@ export function UseGerenciarAlunos() {
           Api.get('/usuario'),
           Api.get('/turma')
         ]);
-        //Filtra para usuários Aluno
+
         const todosAlunos = usuariosRes.data.filter((u: any) => u.papel === 'ALUNO');
         setAlunos(todosAlunos);
         setTurmas(turmasRes.data);
@@ -68,7 +82,6 @@ export function UseGerenciarAlunos() {
     carregarDadosSecretaria();
   }, []);
 
-  //Sincronizar a tela
   async function atualizarListaAlunos() {
     try {
       const response = await Api.get('/usuario');
@@ -79,7 +92,8 @@ export function UseGerenciarAlunos() {
     }
   }
 
-  //Modais
+  // --- Handlers de Abertura ---
+
   function abrirModalMatricular() {
     setNome('');
     setEmail('');
@@ -91,44 +105,48 @@ export function UseGerenciarAlunos() {
     setSucesso('');
     setIsAddModalOpen(true);
   }
+
   function abrirModalEditar(aluno: AlunoCompleto) {
     setAlunoSelecionado(aluno);
     setNome(aluno.nome);
     setEmail(aluno.email);
-    setTelefone(padraoTelefone(aluno.telefone));
+    setTelefone(padraoTelefone(aluno.telefone || ''));
     setTurmaSelecionada(aluno.aluno?.idTurma ? aluno.aluno.idTurma.toString() : '');
     setDataNascimento(aluno.aluno?.dataNascimento ? new Date(aluno.aluno.dataNascimento).toISOString().split('T')[0] : '');
     setErro('');
     setSucesso('');
     setIsEditModalOpen(true);
   }
-  function prepararDeletarAluno(aluno: AlunoCompleto) {
+
+  function abrirModalDeletar(aluno: AlunoCompleto) {
     setAlunoSelecionado(aluno);
     setErro('');
     setSucesso('');
     setIsConfirmDeleteOpen(true);
   }
 
-  function prepararMatricula() {
+  function prepararCadastrar() {
     if (!nome.trim() || !email.trim() || !senha.trim() || !telefone.trim() || !dataNascimento.trim()) {
       setErro('Preencha todos os campos obrigatórios.');
       return;
     }
-
-    if (senha.length < 6) {
-      setErro('A senha inicial deve ter pelo menos 6 caracteres.');
-      return;
-    }
-    if (!regexTextoSeguro.test(senha)) {
-      setErro('A senha contém caracteres inválidos. Use apenas letras, números e caracteres especiais.');
-      return;
-    }
-
-    setErro('');
     setIsConfirmAddOpen(true);
   }
 
-  //POST Aluno
+  function prepararEditar() {
+    if (!nome.trim() || !email.trim() || !telefone.trim()) {
+      setErro('Preencha todos os campos obrigatórios.');
+      return;
+    }
+    setIsConfirmEditOpen(true);
+  }
+
+  function prepararAlternarStatus(aluno: AlunoCompleto) {
+    setAlunoSelecionado(aluno);
+    setIsConfirmStatusOpen(true);
+  }
+
+  // AÇÃO: Matricular Aluno (POST /usuario)
   async function executarMatricula() {
     if (!user) return;
     setIsConfirmAddOpen(false);
@@ -162,16 +180,7 @@ export function UseGerenciarAlunos() {
     }
   }
 
-  function prepararEditarAluno() {
-    if (!nome.trim() || !email.trim() || !telefone.trim()) {
-      setErro('Preencha os campos obrigatórios.');
-      return;
-    }
-    setErro('');
-    setIsConfirmEditOpen(true);
-  }
-
-  //PUT Aluno
+  // AÇÃO: Editar Cadastro do Aluno (PUT /usuario/:id)
   async function executarEditarAluno() {
     if (!alunoSelecionado) return;
     setIsConfirmEditOpen(false);
@@ -184,6 +193,7 @@ export function UseGerenciarAlunos() {
         email,
         telefone,
         ativo: alunoSelecionado.ativo,
+        // 📍 Envia o idTurma atualizado (ou null se desvincular)
         idTurma: turmaSelecionada ? Number(turmaSelecionada) : null
       });
 
@@ -201,19 +211,12 @@ export function UseGerenciarAlunos() {
     }
   }
 
-  function prepararAlternarStatus(aluno: AlunoCompleto) {
-    setAlunoSelecionado(aluno);
-    setErro('');
-    setSucesso('');
-    setIsConfirmStatusOpen(true);
-  }
-
-  //Status Aluno
+  // AÇÃO: Alternar Status Ativo/Inativo
   async function executarAlternarStatusAtivo() {
     if (!alunoSelecionado) return;
     setIsConfirmStatusOpen(false);
+    setSalvando(true);
     setErro('');
-    setSucesso('');
 
     try {
       await Api.put(`/usuario/${alunoSelecionado.idUsuario}`, {
@@ -228,9 +231,12 @@ export function UseGerenciarAlunos() {
     } catch (error) {
       console.error(error);
       setErro('Não foi possível alterar o status do aluno.');
+    } finally {
+      setSalvando(false);
     }
   }
 
+  // AÇÃO: Deletar Aluno (DELETE /usuario/:id)
   async function executarDeletarAluno() {
     if (!alunoSelecionado) return;
     setIsConfirmDeleteOpen(false);
@@ -239,7 +245,7 @@ export function UseGerenciarAlunos() {
 
     try {
       await Api.delete(`/usuario/${alunoSelecionado.idUsuario}`);
-      setSucesso('Matrícula do aluno excluída permanentemente!');
+      setSucesso('Matrícula excluída permanentemente!');
       await atualizarListaAlunos();
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -257,14 +263,11 @@ export function UseGerenciarAlunos() {
     setTimeout(() => setSucesso(''), 3000);
   }
 
-  //Filtragem na tabela
   const alunosFiltrados = alunos.filter(a => {
     const bateBusca = a.nome.toLowerCase().includes(pesquisa.toLowerCase()) ||
-      a.email.toLowerCase().includes(pesquisa.toLowerCase()) ||
-      a.idUsuario.toString().includes(pesquisa);
-
+                      a.email.toLowerCase().includes(pesquisa.toLowerCase()) ||
+                      a.idUsuario.toString().includes(pesquisa);
     const bateAtivo = ocultarInativos ? a.ativo === true : true;
-
     return bateBusca && bateAtivo;
   });
 
@@ -285,6 +288,10 @@ export function UseGerenciarAlunos() {
     setTurmaSelecionada,
     pesquisa,
     setPesquisa,
+    ocultarInativos,
+    setOcultarInativos,
+    profExpandidoId,
+    setProfExpandidoId,
     loading,
     salvando,
     erro,
@@ -293,15 +300,6 @@ export function UseGerenciarAlunos() {
     setIsAddModalOpen,
     isEditModalOpen,
     setIsEditModalOpen,
-    alunoSelecionado,
-    abrirModalMatricular,
-    abrirModalEditar,
-    executarMatricula,
-    executarEditarAluno,
-    ocultarInativos,
-    setOcultarInativos,
-    alunoExpandidoId,
-    setAlunoExpandidoId,
     isConfirmAddOpen,
     setIsConfirmAddOpen,
     isConfirmEditOpen,
@@ -310,11 +308,16 @@ export function UseGerenciarAlunos() {
     setIsConfirmStatusOpen,
     isConfirmDeleteOpen,
     setIsConfirmDeleteOpen,
-    prepararMatricula,
-    prepararEditarAluno,
-    prepararDeletarAluno,
+    alunoSelecionado,
+    abrirModalMatricular,
+    abrirModalEditar,
+    abrirModalDeletar,
+    prepararCadastrar,
+    prepararEditar,
     prepararAlternarStatus,
-    executarAlternarStatusAtivo,
-    executarDeletarAluno
+    executarMatricula,
+    executarEditarAluno,
+    executarDeletarAluno,
+    executarAlternarStatusAtivo
   };
 }
