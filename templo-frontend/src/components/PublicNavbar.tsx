@@ -4,8 +4,6 @@ import { Menu, X, ExternalLink, Sun, Moon } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
 const LogoTemplo = "/Hongwanji.png";
 
-const LogoTemplo = "/Hongwanji.png"; 
-
 export function PublicNavbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
