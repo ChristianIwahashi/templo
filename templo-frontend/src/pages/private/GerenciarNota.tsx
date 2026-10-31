@@ -46,7 +46,7 @@ export function GerenciarNota() {
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6 animate-fade-in-up relative text-slate-800 dark:text-slate-100">
-      
+
       {/*Título*/}
       <div className="flex items-center gap-2 border-b border-gray-200 dark:border-slate-800 pb-4">
         <Star className="w-6 h-6 text-sys-blue" />
@@ -69,7 +69,7 @@ export function GerenciarNota() {
         <label htmlFor="select-turma" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1.5 items-center gap-1.5">
           Selecione a Turma
         </label>
-        <select 
+        <select
           id="select-turma"
           value={turmaSelecionada}
           onChange={e => setTurmaSelecionada(e.target.value)}
@@ -77,7 +77,9 @@ export function GerenciarNota() {
         >
           <option value="">Selecione uma turma...</option>
           {turmas.map(t => (
-            <option key={t.idTurma} value={t.idTurma}>Turma {t.idTurma}</option>
+            <option key={t.idTurma} value={t.idTurma}>
+              {t.nome || `Turma ${t.idTurma}`}
+            </option>
           ))}
         </select>
       </div>
@@ -85,7 +87,7 @@ export function GerenciarNota() {
       {/*Grid de Alunos e Notas*/}
       {turmaSelecionada && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
+
           {/*Coluna Alunos*/}
           <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden md:col-span-1 h-fit">
             <div className="p-4 bg-gray-50/50 dark:bg-slate-800/60 border-b border-gray-100 dark:border-slate-800">
@@ -103,8 +105,8 @@ export function GerenciarNota() {
                     key={aluno.idUsuario}
                     onClick={() => { setAlunoSelecionado(aluno); }}
                     className={`w-full text-left p-3.5 text-sm transition-colors flex items-center justify-between cursor-pointer
-                      ${alunoSelecionado?.idUsuario === aluno.idUsuario 
-                        ? 'bg-blue-50 dark:bg-blue-950/60 text-sys-blue font-semibold' 
+                      ${alunoSelecionado?.idUsuario === aluno.idUsuario
+                        ? 'bg-blue-50 dark:bg-blue-950/60 text-sys-blue font-semibold'
                         : 'text-gray-700 dark:text-slate-300 hover:bg-gray-50/50 dark:hover:bg-slate-800/40'
                       }
                     `}
@@ -120,13 +122,13 @@ export function GerenciarNota() {
           <div className="md:col-span-2 space-y-4">
             {alunoSelecionado ? (
               <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden">
-                
+
                 <div className="p-4 bg-gray-50/50 dark:bg-slate-800/60 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center">
                   <div>
                     <h4 className="font-bold text-gray-800 dark:text-slate-100 text-sm">{alunoSelecionado.nome}</h4>
                     <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">Histórico de avaliações lançadas</p>
                   </div>
-                  
+
                   <button
                     onClick={abrirModalAdicionar}
                     className="bg-sys-blue hover:bg-sys-blue-hover text-white text-xs font-bold px-3 py-2 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer shadow-sm shadow-blue-100 dark:shadow-none"
@@ -162,13 +164,13 @@ export function GerenciarNota() {
                               {nota.valor.toFixed(1)}
                             </td>
                             <td className="p-3 text-right space-x-1 whitespace-nowrap">
-                              <button 
+                              <button
                                 onClick={() => abrirModalEditar(nota)}
                                 className="text-blue-500 hover:bg-blue-50 dark:hover:bg-slate-800 p-1.5 rounded cursor-pointer"
                               >
                                 <Edit className="w-4 h-4" />
                               </button>
-                              <button 
+                              <button
                                 onClick={() => abrirModalDeletar(nota)}
                                 className="text-red-500 hover:bg-red-50 dark:hover:bg-slate-800 p-1.5 rounded cursor-pointer"
                               >
@@ -211,9 +213,9 @@ export function GerenciarNota() {
             <form onSubmit={e => { e.preventDefault(); executarAdicionarNota(); }} className="space-y-4">
               <div>
                 <label htmlFor="tipo-add" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase mb-1">Tipo de Avaliação *</label>
-                <input 
+                <input
                   id="tipo-add"
-                  type="text" 
+                  type="text"
                   value={tipo}
                   onChange={e => setTipo(e.target.value)}
                   placeholder="Ex: PROVA 1, TRABALHO, RECUPERAÇÃO"
@@ -225,9 +227,9 @@ export function GerenciarNota() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="valor-add" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase mb-1">Nota (0.0 a 10.0) *</label>
-                  <input 
+                  <input
                     id="valor-add"
-                    type="number" 
+                    type="number"
                     step="0.1"
                     min="0"
                     max="10"
@@ -240,9 +242,9 @@ export function GerenciarNota() {
                 </div>
                 <div>
                   <label htmlFor="data-add" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase mb-1">Data da Prova *</label>
-                  <input 
+                  <input
                     id="data-add"
-                    type="date" 
+                    type="date"
                     value={dataNota}
                     onChange={e => setDataNota(e.target.value)}
                     className="w-full p-2.5 border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50 dark:bg-slate-800 text-gray-800 dark:text-slate-100 font-medium"
@@ -279,9 +281,9 @@ export function GerenciarNota() {
             <form onSubmit={e => { e.preventDefault(); executarEditarNota(); }} className="space-y-4">
               <div>
                 <label htmlFor="tipo-edit" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase mb-1">Tipo de Avaliação *</label>
-                <input 
+                <input
                   id="tipo-edit"
-                  type="text" 
+                  type="text"
                   value={tipo}
                   onChange={e => setTipo(e.target.value)}
                   className="w-full p-2.5 border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50 dark:bg-slate-800 text-gray-800 dark:text-slate-100"
@@ -292,9 +294,9 @@ export function GerenciarNota() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="valor-edit" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase mb-1">Nota (0.0 a 10.0) *</label>
-                  <input 
+                  <input
                     id="valor-edit"
-                    type="number" 
+                    type="number"
                     step="0.1"
                     min="0"
                     max="10"
@@ -306,9 +308,9 @@ export function GerenciarNota() {
                 </div>
                 <div>
                   <label htmlFor="data-edit" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase mb-1">Data da Prova *</label>
-                  <input 
+                  <input
                     id="data-edit"
-                    type="date" 
+                    type="date"
                     value={dataNota}
                     onChange={e => setDataNota(e.target.value)}
                     className="w-full p-2.5 border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50 dark:bg-slate-800 text-gray-800 dark:text-slate-100 font-medium"

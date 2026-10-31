@@ -6,6 +6,7 @@ import type { AutorAuditoria } from "../components/InfoAuditoria";
 
 export interface Turma {
     idTurma: number;
+    nome?: string;
     idProfessor: number;
     alunos?: {
         idUsuario: number;

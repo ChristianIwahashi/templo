@@ -7,6 +7,8 @@ export function GerenciarTurmas() {
     turmasFiltradas,
     professores,
     alunosDisponiveis,
+    nomeTurma,
+    setNomeTurma,
     idProfessorSelecionado,
     setIdProfessorSelecionado,
     idAlunoSelecionado,
@@ -96,7 +98,7 @@ export function GerenciarTurmas() {
             type="text"
             value={pesquisa}
             onChange={e => setPesquisa(e.target.value)}
-            placeholder="Buscar por número da turma ou nome do professor..."
+            placeholder="Buscar por nome, número da turma ou professor..."
             className="w-full pl-9 pr-4 py-2.5 text-sm border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50 dark:bg-slate-800 text-gray-800 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500"
           />
         </div>
@@ -115,7 +117,7 @@ export function GerenciarTurmas() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-gray-100 dark:border-slate-800 text-xs text-gray-500 dark:text-slate-400 uppercase bg-gray-50/20 dark:bg-slate-800/40">
-                  <th className="p-4 font-semibold">Identificação</th>
+                  <th className="p-4 font-semibold">Identificação & Nível</th>
                   <th className="p-4 font-semibold">Professor Responsável</th>
                   <th className="p-4 font-semibold text-center">Alunos Matriculados</th>
                   <th className="p-4 font-semibold text-right">Ações</th>
@@ -133,11 +135,19 @@ export function GerenciarTurmas() {
                         onClick={() => setTurmaExpandidaId(isExpanded ? null : turma.idTurma)}
                         className="hover:bg-gray-50/20 dark:hover:bg-slate-800/30 transition-colors cursor-pointer"
                       >
-                        <td className="p-4 font-bold text-gray-800 dark:text-slate-100 flex items-center gap-2">
-                          <span className="p-2 bg-blue-50 dark:bg-blue-950/60 text-sys-blue rounded-lg">
-                            <GraduationCap className="w-4 h-4" />
+                        {/* Identificação com Nome da Turma */}
+                        <td className="p-4 font-bold text-gray-800 dark:text-slate-100 flex items-center gap-3">
+                          <span className="p-2 bg-blue-50 dark:bg-blue-950/60 text-sys-blue rounded-lg shrink-0">
+                            <GraduationCap className="w-5 h-5" />
                           </span>
-                          Turma {turma.idTurma}
+                          <div>
+                            <span className="block leading-tight text-sm font-bold text-gray-800 dark:text-slate-100">
+                              {turma.nome || `Turma ${turma.idTurma}`}
+                            </span>
+                            <span className="text-[11px] font-normal text-gray-400 dark:text-slate-400 block mt-0.5 font-mono">
+                              ID #{turma.idTurma}
+                            </span>
+                          </div>
                         </td>
 
                         <td className="p-4">
@@ -159,7 +169,7 @@ export function GerenciarTurmas() {
                           <button 
                             onClick={() => abrirModalEditar(turma)}
                             className="text-blue-500 hover:bg-blue-50 dark:hover:bg-slate-800 p-1.5 rounded cursor-pointer transition-colors" 
-                            title="Alterar Professor"
+                            title="Editar Turma / Professor"
                           >
                             <Edit className="w-4 h-4" />
                           </button>
@@ -173,13 +183,13 @@ export function GerenciarTurmas() {
                         </td>
                       </tr>
 
-                      {/* Linha Expandível */}
+                      {/* Linha Expandível com Alunos */}
                       {isExpanded && (
                         <tr className="bg-slate-50/50 dark:bg-slate-800/50">
                           <td colSpan={4} className="p-5 border-b border-gray-150 dark:border-slate-800">
                             <div className="flex justify-between items-center mb-3">
                               <h5 className="font-bold text-gray-700 dark:text-slate-200 text-xs uppercase tracking-wider flex items-center gap-1.5">
-                                <Users className="w-3.5 h-3.5 text-sys-blue" /> Alunos Matriculados nesta Turma:
+                                <Users className="w-3.5 h-3.5 text-sys-blue" /> Alunos Matriculados em {turma.nome || `Turma ${turma.idTurma}`}:
                               </h5>
 
                               <button
@@ -232,6 +242,22 @@ export function GerenciarTurmas() {
             )}
 
             <form onSubmit={e => { e.preventDefault(); prepararCriar(); }} className="space-y-4">
+              {/* Campo de Nome da Turma */}
+              <div>
+                <label htmlFor="nome-turma-add" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase mb-1">
+                  Nome / Nível da Turma *
+                </label>
+                <input 
+                  id="nome-turma-add"
+                  type="text"
+                  value={nomeTurma}
+                  onChange={e => setNomeTurma(e.target.value)}
+                  placeholder="Ex: Turma A - Livro 1 (Iniciante)"
+                  className="w-full p-2.5 border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50 dark:bg-slate-800 text-gray-800 dark:text-slate-100 font-medium"
+                  required
+                />
+              </div>
+
               <div>
                 <label htmlFor="prof-add" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase mb-1">
                   Professor Responsável *
@@ -264,7 +290,7 @@ export function GerenciarTurmas() {
         <div className="fixed inset-0 bg-black/60 z-250 flex items-center justify-center p-4 backdrop-blur-xs">
           <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl shadow-2xl p-6 border border-gray-100 dark:border-slate-800 animate-modal-enter text-sm">
             <h3 className="text-lg font-bold text-gray-800 dark:text-slate-100 mb-4 border-b border-gray-100 dark:border-slate-800 pb-2 flex items-center gap-1.5">
-              <Edit className="w-5 h-5 text-sys-blue" /> Alterar Professor da Turma {turmaSelecionada?.idTurma}
+              <Edit className="w-5 h-5 text-sys-blue" /> Editar {turmaSelecionada?.nome || `Turma ${turmaSelecionada?.idTurma}`}
             </h3>
 
             {erro && (
@@ -274,9 +300,25 @@ export function GerenciarTurmas() {
             )}
 
             <form onSubmit={e => { e.preventDefault(); prepararEditar(); }} className="space-y-4">
+              {/* Campo de Editar Nome da Turma */}
+              <div>
+                <label htmlFor="nome-turma-edit" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase mb-1">
+                  Nome / Nível da Turma *
+                </label>
+                <input 
+                  id="nome-turma-edit"
+                  type="text"
+                  value={nomeTurma}
+                  onChange={e => setNomeTurma(e.target.value)}
+                  placeholder="Ex: Turma A - Livro 1 (Iniciante)"
+                  className="w-full p-2.5 border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50 dark:bg-slate-800 text-gray-800 dark:text-slate-100 font-medium"
+                  required
+                />
+              </div>
+
               <div>
                 <label htmlFor="prof-edit" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase mb-1">
-                  Novo Professor Responsável *
+                  Professor Responsável *
                 </label>
                 <select 
                   id="prof-edit"
@@ -306,7 +348,7 @@ export function GerenciarTurmas() {
         <div className="fixed inset-0 bg-black/60 z-250 flex items-center justify-center p-4 backdrop-blur-xs">
           <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl shadow-2xl p-6 border border-gray-100 dark:border-slate-800 animate-modal-enter text-sm">
             <h3 className="text-lg font-bold text-gray-800 dark:text-slate-100 mb-4 border-b border-gray-100 dark:border-slate-800 pb-2 flex items-center gap-1.5">
-              <UserPlus className="w-5 h-5 text-sys-blue" /> Vincular Aluno à Turma {turmaSelecionada?.idTurma}
+              <UserPlus className="w-5 h-5 text-sys-blue" /> Vincular Aluno à {turmaSelecionada?.nome || `Turma ${turmaSelecionada?.idTurma}`}
             </h3>
 
             {erro && (
@@ -334,7 +376,7 @@ export function GerenciarTurmas() {
                       value={a.idUsuario}
                       disabled={a.idTurmaAtual === turmaSelecionada?.idTurma}
                     >
-                      {a.nome} - {a.idTurmaAtual ? (a.idTurmaAtual === turmaSelecionada?.idTurma ? '(Já matriculado)' : `(Turma ${a.idTurmaAtual})`) : '(Sem Turma)'}
+                      {a.nome} - {a.idTurmaAtual ? (a.idTurmaAtual === turmaSelecionada?.idTurma ? '(Já matriculado nesta turma)' : `(Turma ${a.idTurmaAtual})`) : '(Sem Turma)'}
                     </option>
                   ))}
                 </select>
@@ -355,7 +397,7 @@ export function GerenciarTurmas() {
         onClose={() => setIsConfirmAddOpen(false)}
         onConfirm={executarCriarTurma}
         title="Abrir Nova Turma"
-        description="Deseja confirmar a criação desta nova turma atribuída ao docente selecionado?"
+        description={`Deseja confirmar a criação da turma "${nomeTurma}" atribuída ao docente selecionado?`}
         type="info"
         isLoading={salvando}
       />
@@ -364,8 +406,8 @@ export function GerenciarTurmas() {
         isOpen={isConfirmEditOpen}
         onClose={() => setIsConfirmEditOpen(false)}
         onConfirm={executarEditarTurma}
-        title="Confirmar Mudança de Docente"
-        description={`Deseja transferir a responsabilidade da Turma ${turmaSelecionada?.idTurma} para o novo professor selecionado?`}
+        title="Salvar Alterações da Turma"
+        description={`Deseja confirmar as alterações de nome/docente para a turma "${nomeTurma}"?`}
         type="info"
         isLoading={salvando}
       />
@@ -375,7 +417,7 @@ export function GerenciarTurmas() {
         onClose={() => setIsConfirmMatricularOpen(false)}
         onConfirm={executarMatricularAluno}
         title="Confirmar Vinculação de Aluno"
-        description={`Deseja matricular o aluno ${alunoSelecionadoObj?.nome} na Turma ${turmaSelecionada?.idTurma}?`}
+        description={`Deseja matricular o aluno ${alunoSelecionadoObj?.nome} na turma "${turmaSelecionada?.nome || `Turma ${turmaSelecionada?.idTurma}`}"?`}
         type="info"
         isLoading={salvando}
       />
@@ -385,7 +427,7 @@ export function GerenciarTurmas() {
         onClose={() => setIsConfirmDeleteOpen(false)}
         onConfirm={executarDeletarTurma}
         title="Excluir Turma"
-        description={`Atenção: Tem certeza de que deseja encerrar e excluir a Turma ${turmaSelecionada?.idTurma}? Todos os diários de presença e avisos associados serão apagados permanentemente.`}
+        description={`Atenção: Tem certeza de que deseja encerrar e excluir permanentemente a turma "${turmaSelecionada?.nome || `Turma ${turmaSelecionada?.idTurma}`}"? Todos os diários de presença e avisos associados serão apagados.`}
         type="danger"
         isLoading={salvando}
       />

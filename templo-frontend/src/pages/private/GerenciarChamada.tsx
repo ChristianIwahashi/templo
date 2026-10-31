@@ -43,7 +43,7 @@ export function GerenciarChamada() {
 
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6 animate-fade-in-up relative text-slate-800 dark:text-slate-100">
-      
+
       <div className="flex items-center gap-2 border-b border-gray-200 dark:border-slate-800 pb-4">
         <Users className="w-6 h-6 text-sys-blue" />
         <h2 className="text-2xl font-bold text-gray-800 dark:text-slate-100">Gerenciar Chamada (Frequência)</h2>
@@ -55,7 +55,7 @@ export function GerenciarChamada() {
           <label htmlFor="select-turma" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1.5 items-center gap-1.5">
             Selecione a Turma
           </label>
-          <select 
+          <select
             id="select-turma"
             value={turmaSelecionada}
             onChange={e => setTurmaSelecionada(e.target.value)}
@@ -63,7 +63,9 @@ export function GerenciarChamada() {
           >
             <option value="">Selecione uma turma para carregar os alunos...</option>
             {turmas.map(t => (
-              <option key={t.idTurma} value={t.idTurma}>Turma {t.idTurma}</option>
+              <option key={t.idTurma} value={t.idTurma}>
+                {t.nome || `Turma ${t.idTurma}`}
+              </option>
             ))}
           </select>
         </div>
@@ -72,7 +74,7 @@ export function GerenciarChamada() {
           <label htmlFor="data-aula" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1.5 items-center gap-1.5">
             Data da Aula
           </label>
-          <input 
+          <input
             id="data-aula"
             type="date"
             value={dataAula}
@@ -86,19 +88,19 @@ export function GerenciarChamada() {
       {/*Lista de Alunos*/}
       {turmaSelecionada && (
         <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden">
-          
+
           <div className="p-4 bg-gray-50/50 dark:bg-slate-800/60 border-b border-gray-100 dark:border-slate-800 flex flex-wrap justify-between items-center gap-4">
             <h4 className="font-bold text-gray-700 dark:text-slate-100">Lista de Alunos</h4>
-            
+
             {alunos.length > 0 && !loadingAlunos && (
               <div className="flex gap-2">
-                <button 
+                <button
                   onClick={handleMarcarTodos}
                   className="px-3 py-1.5 bg-blue-50 dark:bg-blue-950/60 text-sys-blue dark:text-blue-400 border border-blue-200 dark:border-blue-900 text-xs font-bold rounded-lg transition-all cursor-pointer"
                 >
                   Marcar Todos Presentes
                 </button>
-                <button 
+                <button
                   onClick={handleDesmarcarTodos}
                   className="px-3 py-1.5 bg-red-50 dark:bg-red-950/60 text-red-500 dark:text-red-400 border border-red-200 dark:border-red-900 text-xs font-bold rounded-lg transition-all cursor-pointer"
                 >
@@ -140,8 +142,8 @@ export function GerenciarChamada() {
                   </thead>
                   <tbody className="text-sm divide-y divide-gray-100 dark:divide-slate-800">
                     {alunos.map((aluno) => (
-                      <tr 
-                        key={aluno.idUsuario} 
+                      <tr
+                        key={aluno.idUsuario}
                         onClick={() => handleAlternarPresenca(aluno.idUsuario)}
                         className="hover:bg-gray-50/30 dark:hover:bg-slate-800/40 transition-colors cursor-pointer"
                       >
@@ -157,7 +159,7 @@ export function GerenciarChamada() {
                         <td className="p-4">
                           <span className="font-semibold text-gray-800 dark:text-slate-100 block">{aluno.nome}</span>
                           <span className="text-xs text-gray-400 dark:text-slate-400 font-medium mt-1 block">
-                            ID do Estudante: {aluno.idUsuario} 
+                            ID do Estudante: {aluno.idUsuario}
                             {aluno.idFrequencia && <span className="ml-2 text-green-600 dark:text-green-400 font-bold bg-green-50 dark:bg-green-950/60 px-2 py-0.5 rounded text-[10px] uppercase border border-green-200 dark:border-green-800">Salvo no Banco</span>}
                           </span>
                         </td>
@@ -181,7 +183,7 @@ export function GerenciarChamada() {
                   <div className="hidden sm:block"></div>
                 )}
 
-                <button 
+                <button
                   onClick={handleSalvarChamada}
                   disabled={salvando}
                   className="bg-sys-blue hover:bg-sys-blue-hover text-white text-sm font-bold px-6 py-3 rounded-xl transition-all shadow-md shadow-blue-100 dark:shadow-none cursor-pointer disabled:opacity-50"

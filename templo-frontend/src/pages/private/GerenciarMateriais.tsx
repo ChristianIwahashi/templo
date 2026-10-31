@@ -1,8 +1,9 @@
 import { UseGerenciarMateriais } from "../../hooks/UseGerenciarMateriais";
+import { FolderOpen, Plus, Edit, Trash2, Info, AlertCircle, Check, CheckSquare, Square, FileText } from "lucide-react";
 import { formatarData } from "../../utils/formatters";
+import { InfoAuditoria } from "../../components/InfoAuditoria";
 import { UploadInput } from "../../components/UploadInput";
 import { ConfirmModal } from "../../components/ConfirmModal";
-import { FolderOpen, Plus, Edit, Trash2, FileText, Info, AlertCircle, Check, CheckSquare, Square } from "lucide-react";
 
 export function GerenciarMateriais() {
   const {
@@ -44,15 +45,15 @@ export function GerenciarMateriais() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <p className="text-gray-500 dark:text-slate-400 font-medium animate-pulse">Carregando painel de materiais...</p>
+        <p className="text-gray-500 font-medium animate-pulse">Carregando...</p>
       </div>
     );
   }
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6 animate-fade-in-up relative text-slate-800 dark:text-slate-100">
-      
-      {/*Título*/}
+
+      {/* Título */}
       <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-slate-800">
         <div className="flex items-center gap-2">
           <FolderOpen className="w-6 h-6 text-sys-blue" />
@@ -67,7 +68,7 @@ export function GerenciarMateriais() {
         </button>
       </div>
 
-      {/*Alertas Globais*/}
+      {/* Alertas Globais */}
       {erro && !isAddModalOpen && !isEditModalOpen && (
         <div className="p-4 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-xl border border-red-150 dark:border-red-900 flex items-center gap-2 font-semibold">
           <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
@@ -79,12 +80,12 @@ export function GerenciarMateriais() {
         </div>
       )}
 
-      {/*Tabela de Materiais Postados*/}
+      {/* Tabela de Materiais Postados */}
       {materiais.length === 0 ? (
         <div className="bg-white dark:bg-slate-900 p-12 rounded-2xl border border-gray-150 dark:border-slate-800 text-center text-gray-500 dark:text-slate-400 max-w-lg mx-auto">
           <Info className="w-12 h-12 text-gray-300 dark:text-slate-600 mx-auto mb-3" />
           <p className="font-bold text-gray-700 dark:text-slate-200 text-lg">Nenhum Material Encontrado</p>
-          <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">Você ainda não realizou o upload de nenhum material didático.</p>
+          <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">Você ainda não realizou o upload de nenhum material didático. Clique em "Novo Material" para começar.</p>
         </div>
       ) : (
         <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden">
@@ -101,35 +102,44 @@ export function GerenciarMateriais() {
               <tbody className="text-sm divide-y divide-gray-100 dark:divide-slate-800">
                 {materiais.map(material => (
                   <tr key={material.idMaterial} className="hover:bg-gray-50/50 dark:hover:bg-slate-800/40 transition-colors">
-                    
-                    {/*Nome com Ícone*/}
+
+                    {/* Nome com Ícone */}
                     <td className="p-4 flex items-center gap-3">
                       <FileText className="text-red-500 w-6 h-6 shrink-0" />
                       <div>
                         <span className="font-semibold text-gray-800 dark:text-slate-100 block leading-tight">{material.titulo}</span>
-                        <span className="text-[10px] text-gray-400 dark:text-slate-400 font-bold uppercase tracking-wider mt-0.5 block">
-                          Material Didático
-                        </span>
                       </div>
+                      {material.criadoPor && (
+                        <InfoAuditoria
+                          criadoPor={material.criadoPor}
+                          atualizadoPor={material.atualizadoPor}
+                        />
+                      )}
                     </td>
 
-                    {/*Destino*/}
+                    {/* Destino (AQUI MOSTRA O NOME DA TURMA OU EXCLUSIVO) */}
                     <td className="p-4 text-gray-600 dark:text-slate-300">
                       {material.turmasVinculadas && material.turmasVinculadas.length > 0 ? (
                         <span className="bg-blue-50 dark:bg-blue-950/60 text-sys-blue dark:text-blue-400 border border-blue-150 dark:border-blue-900 text-xs px-2.5 py-1 rounded-full font-bold">
-                          Turma {material.turmasVinculadas[0].idTurma}
+                          {material.turmasVinculadas[0].turma?.nome || `Turma ${material.turmasVinculadas[0].idTurma}`}
                         </span>
                       ) : (
                         <div className="flex flex-col gap-1 max-w-50">
                           <span className="bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 border border-purple-150 dark:border-purple-900 text-xs px-2.5 py-1 rounded-full font-bold self-start">
-                            Exclusivo ({material.alunosVinculados?.length} Alunos)
+                            Exclusivo ({material.alunosVinculados?.length || 0} Alunos)
+                          </span>
+                          <span
+                            className="text-xs text-gray-400 italic truncate"
+                            title={material.alunosVinculados?.map(av => av.aluno.usuario.nome).join(', ')}
+                          >
+                            ({material.alunosVinculados?.map(av => av.aluno.usuario.nome).join(', ') || 'Nenhum'})
                           </span>
                         </div>
                       )}
                     </td>
 
                     <td className="p-4 text-gray-600 dark:text-slate-300">
-                      {formatarData(material.dataPostagem)}
+                      {material.dataPostagem ? formatarData(material.dataPostagem) : '-'}
                     </td>
 
                     <td className="p-4 text-right space-x-1 whitespace-nowrap">
@@ -148,6 +158,7 @@ export function GerenciarMateriais() {
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </td>
+
                   </tr>
                 ))}
               </tbody>
@@ -156,7 +167,7 @@ export function GerenciarMateriais() {
         </div>
       )}
 
-      {/*Modal Adicionar*/}
+      {/* Modal Adicionar Material (POST) */}
       {isAddModalOpen && (
         <div className="fixed inset-0 bg-black/60 z-250 flex items-center justify-center p-4 backdrop-blur-xs">
           <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl shadow-2xl p-6 border border-gray-100 dark:border-slate-800 animate-modal-enter text-sm max-h-[90vh] overflow-y-auto">
@@ -171,6 +182,7 @@ export function GerenciarMateriais() {
             )}
 
             <form onSubmit={e => { e.preventDefault(); executarAdicionarMaterial(); }} className="space-y-4">
+
               <div>
                 <label htmlFor="titulo-add" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase mb-1">Título do Material *</label>
                 <input
@@ -204,6 +216,7 @@ export function GerenciarMateriais() {
                 onChange={setArquivoUrl}
               />
 
+              {/* SELEÇÃO DA TURMA (AQUI EXIBE O NOME REAL DA TURMA) */}
               <div>
                 <label htmlFor="select-turma-add" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase mb-1">Selecione a Turma *</label>
                 <select
@@ -215,11 +228,14 @@ export function GerenciarMateriais() {
                 >
                   <option value="">Selecione...</option>
                   {turmas.map(t => (
-                    <option key={t.idTurma} value={t.idTurma}>Turma {t.idTurma}</option>
+                    <option key={t.idTurma} value={t.idTurma}>
+                      {t.nome ? `${t.nome} (ID #${t.idTurma})` : `Turma ${t.idTurma}`}
+                    </option>
                   ))}
                 </select>
               </div>
 
+              {/* Exclusividade */}
               {turmaSelecionada && (
                 <div className="space-y-3">
                   <label className="flex items-center gap-2 cursor-pointer font-semibold text-gray-700 dark:text-slate-200">
@@ -274,7 +290,7 @@ export function GerenciarMateriais() {
         </div>
       )}
 
-      {/*Modal Editar*/}
+      {/* Modal Editar Material (PUT) */}
       {isEditModalOpen && (
         <div className="fixed inset-0 bg-black/60 z-250 flex items-center justify-center p-4 backdrop-blur-xs">
           <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl shadow-2xl p-6 border border-gray-100 dark:border-slate-800 animate-modal-enter text-sm">
@@ -331,7 +347,7 @@ export function GerenciarMateriais() {
         </div>
       )}
 
-      {/*Modal Deletar*/}
+      {/* Modal Deletar (Reutilizando o ConfirmModal) */}
       <ConfirmModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}

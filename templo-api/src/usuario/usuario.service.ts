@@ -138,7 +138,11 @@ export class UsuarioService {
                 idUsuario
             },
             include: {
-                aluno: true,
+                aluno: {
+                    include: {
+                        turma: true
+                    }
+                },
                 professor: true,
                 gestor: true,
             }

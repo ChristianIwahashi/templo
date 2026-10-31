@@ -6,11 +6,13 @@ import type { AutorAuditoria } from "../components/InfoAuditoria";
 
 export interface Aluno {
   idUsuario: number;
+  nome?: string;
   idProfessor: number;
   usuario: { nome: string };
 }
 export interface Turma {
   idTurma: number;
+  nome?: string;
   idProfessor: number;
   alunos?: Aluno[];
 }
@@ -25,7 +27,7 @@ export interface Material {
   atualizadoEm?: string;
   criadoPor?: AutorAuditoria | null;
   atualizadoPor?: AutorAuditoria | null;
-  turmasVinculadas?: { idTurma: number }[];
+  turmasVinculadas?: { idTurma: number; turma?: { nome?: string } }[];
 
   alunosVinculados?: {
     idAluno: number;

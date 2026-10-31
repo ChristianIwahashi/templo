@@ -18,6 +18,7 @@ export interface ProfessorNaTurma {
 }
 export interface TurmaCompleta {
   idTurma: number;
+  nome: string;
   idProfessor: number;
   professor: ProfessorNaTurma;
   alunos: AlunoNaTurma[];
@@ -38,6 +39,7 @@ export function UseGerenciarTurmas() {
   const [turmas, setTurmas] = useState<TurmaCompleta[]>([]);
   const [professores, setProfessores] = useState<ProfessorOpcao[]>([]);
   const [alunosDisponiveis, setAlunosDisponiveis] = useState<AlunoOpcao[]>([]);
+  const [nomeTurma, setNomeTurma] = useState('');
   const [idProfessorSelecionado, setIdProfessorSelecionado] = useState<string>('');
   const [idAlunoSelecionado, setIdAlunoSelecionado] = useState<string>('');
   const [pesquisa, setPesquisa] = useState('');
@@ -120,6 +122,7 @@ export function UseGerenciarTurmas() {
   //Modais
   function abrirModalCriar() {
     setIdProfessorSelecionado('');
+    setNomeTurma('');
     setErro('');
     setSucesso('');
     setIsAddModalOpen(true);
@@ -127,6 +130,7 @@ export function UseGerenciarTurmas() {
   function abrirModalEditar(turma: TurmaCompleta) {
     setTurmaSelecionada(turma);
     setIdProfessorSelecionado(turma.idProfessor.toString());
+    setNomeTurma(turma.nome);
     setErro('');
     setSucesso('');
     setIsEditModalOpen(true);
@@ -174,6 +178,7 @@ export function UseGerenciarTurmas() {
 
     try {
       await Api.post('/turma', {
+        nome: nomeTurma,
         idProfessor: Number(idProfessorSelecionado)
       });
 
@@ -200,6 +205,7 @@ export function UseGerenciarTurmas() {
 
     try {
       await Api.put(`/turma/${turmaSelecionada.idTurma}`, {
+        nome: nomeTurma,
         idProfessor: Number(idProfessorSelecionado)
       });
 
@@ -317,6 +323,8 @@ export function UseGerenciarTurmas() {
     executarCriarTurma,
     executarEditarTurma,
     executarMatricularAluno,
-    executarDeletarTurma
+    executarDeletarTurma,
+    nomeTurma,
+    setNomeTurma
   };
 }

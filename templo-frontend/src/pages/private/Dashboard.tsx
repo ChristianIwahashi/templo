@@ -3,16 +3,16 @@ import { UseAuth } from "../../hooks/UseAuth";
 import { Api } from "../../api/api";
 import { Link } from "react-router-dom";
 import { formatarDinheiro } from "../../utils/formatters";
-import { 
-  BookOpen, CheckCircle, AlertCircle, Megaphone, 
-  Users, FolderOpen, DollarSign, Clock, Star, 
+import {
+  BookOpen, CheckCircle, AlertCircle, Megaphone,
+  Users, FolderOpen, DollarSign, Clock, Star,
   GraduationCap, UserCheck, Calendar, ArrowRight
 } from "lucide-react";
 
 export function Dashboard() {
   const { user } = UseAuth();
   const [loading, setLoading] = useState(true);
-  
+
   //Estados do Aluno
   const [frequencia, setFrequencia] = useState(0);
   const [temPendente, setTemPendente] = useState(false);
@@ -58,8 +58,12 @@ export function Dashboard() {
           );
           setTemPendente(pendente);
 
-          if (perfilRes.data?.aluno?.turma) {
-            setNomeTurma(perfilRes.data.aluno.turma.idTurma);
+          if (perfilRes.data?.aluno?.turma?.nome) {
+            setNomeTurma(perfilRes.data.aluno.turma.nome);
+          } else if (perfilRes.data?.aluno?.idTurma) {
+            setNomeTurma(`Turma ${perfilRes.data.aluno.idTurma}`);
+          } else {
+            setNomeTurma('Sem Turma');
           }
           setUltimosAvisosAluno(avisosRes.data.slice(0, 2));
 
@@ -73,7 +77,7 @@ export function Dashboard() {
 
           const alunosUnicos = new Set<number>();
           const listaTurmas: any[] = turmasRes.data;
-          
+
           listaTurmas.forEach(t => {
             if (t.alunos) {
               t.alunos.forEach((aluno: any) => alunosUnicos.add(aluno.idUsuario));
@@ -143,7 +147,9 @@ export function Dashboard() {
           <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center gap-4 border-l-4 border-l-blue-500">
             <div className="p-3 bg-blue-50 dark:bg-blue-950/50 text-sys-blue rounded-xl"><BookOpen className="w-6 h-6" /></div>
             <div>
-              <p className="text-xs font-bold text-gray-400 dark:text-slate-400 uppercase tracking-wider">Turma / Nível</p>
+              <p className="text-lg font-bold text-gray-800 dark:text-slate-100 mt-0.5">
+                {nomeTurma}
+              </p>
               <p className="text-lg font-bold text-gray-800 dark:text-slate-100 mt-0.5">{nomeTurma !== 'Sem Turma' ? `Turma ${nomeTurma}` : 'Sem Turma'}</p>
             </div>
           </div>
@@ -386,9 +392,8 @@ export function Dashboard() {
                       <p className="font-semibold text-sm text-gray-800 dark:text-slate-100">{evento.titulo}</p>
                       <p className="text-xs text-gray-400 dark:text-slate-400 mt-0.5">Postado em {formatarData(evento.dataPostagem)}</p>
                     </div>
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
-                      evento.ativo ? 'bg-green-50 dark:bg-green-950/50 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800' : 'bg-gray-100 dark:bg-slate-800 text-gray-500 dark:text-slate-400 border-gray-200 dark:border-slate-700'
-                    }`}>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${evento.ativo ? 'bg-green-50 dark:bg-green-950/50 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800' : 'bg-gray-100 dark:bg-slate-800 text-gray-500 dark:text-slate-400 border-gray-200 dark:border-slate-700'
+                      }`}>
                       {evento.ativo ? 'Público' : 'Oculto'}
                     </span>
                   </div>

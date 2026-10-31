@@ -5,6 +5,7 @@ import { AxiosError } from "axios";
 
 export interface Turma {
   idTurma: number;
+  nome?: string;
   idProfessor?: number;
 }
 
@@ -15,6 +16,8 @@ export interface AvisoAula {
   imagemUrl?: string;
   idProfessor: number;
   idTurma: number;
+  turmasVinculadas?: { idTurma: number; turma?: { nome?: string } }[];
+  alunosVinculados?: { aluno: { usuario: { nome: string } } }[];
 }
 
 export function UseGerenciarAviso() {

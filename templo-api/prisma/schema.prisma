@@ -97,6 +97,7 @@ model Professor {
 
 model Turma {
   idTurma      Int      @id @default(autoincrement())
+  nome        String    @db.VarChar(100) @default("")
 
   idProfessor  Int
   professor    Professor   @relation("ProfessorParaTurma", fields: [idProfessor], references: [idUsuario])

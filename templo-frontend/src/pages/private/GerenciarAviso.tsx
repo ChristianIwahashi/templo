@@ -45,13 +45,13 @@ export function GerenciarAviso() {
 
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6 animate-fade-in-up relative text-slate-800 dark:text-slate-100">
-      
+
       <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-800 pb-4">
         <div className="flex items-center gap-2">
           <Megaphone className="w-6 h-6 text-sys-blue" />
           <h2 className="text-2xl font-bold text-gray-800 dark:text-slate-100">Gerenciar Avisos da Turma</h2>
         </div>
-        
+
         <button
           onClick={abrirModalAdicionar}
           className="bg-sys-blue hover:bg-sys-blue-hover text-white text-sm font-bold px-4 py-2.5 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-sm shadow-blue-100 dark:shadow-none"
@@ -82,18 +82,18 @@ export function GerenciarAviso() {
           {avisos.map(aviso => (
             <div key={aviso.idAvisoAula} className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-xs hover:shadow-md transition overflow-hidden">
               <div className="p-6 space-y-4 relative">
-                
+
                 <div className="absolute top-6 right-6 flex gap-1 z-10">
-                  <button 
+                  <button
                     onClick={() => abrirModalEditar(aviso)}
-                    className="text-gray-400 hover:text-sys-blue hover:bg-gray-50 dark:hover:bg-slate-800 p-1.5 rounded cursor-pointer transition-colors" 
+                    className="text-gray-400 hover:text-sys-blue hover:bg-gray-50 dark:hover:bg-slate-800 p-1.5 rounded cursor-pointer transition-colors"
                     title="Editar"
                   >
                     <Edit className="w-4 h-4" />
                   </button>
-                  <button 
+                  <button
                     onClick={() => prepararDeletar(aviso)}
-                    className="text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-slate-800 p-1.5 rounded cursor-pointer transition-colors" 
+                    className="text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-slate-800 p-1.5 rounded cursor-pointer transition-colors"
                     title="Excluir"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -111,17 +111,17 @@ export function GerenciarAviso() {
                     {formatarData(aviso.dataPostagem)}
                   </span>
                 </div>
-                
+
                 {aviso.imagemUrl && (
                   <div
                     onClick={() => setImagemZoom(aviso.imagemUrl || null)}
                     className="relative rounded-xl overflow-hidden h-64 sm:h-80 bg-gray-50 dark:bg-slate-800/60 border border-gray-100 dark:border-slate-800 flex items-center justify-center cursor-pointer group"
                     title="Clique para ver em tamanho cheio"
                   >
-                    <img 
-                      src={aviso.imagemUrl} 
-                      alt="Anexo do aviso" 
-                      className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-[1.02]" 
+                    <img
+                      src={aviso.imagemUrl}
+                      alt="Anexo do aviso"
+                      className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-[1.02]"
                     />
 
                     <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
@@ -154,7 +154,7 @@ export function GerenciarAviso() {
             <form onSubmit={e => { e.preventDefault(); executarAdicionarAviso(); }} className="space-y-4">
               <div>
                 <label htmlFor="turma-aviso-add" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase mb-1">Turma de Destino *</label>
-                <select 
+                <select
                   id="turma-aviso-add"
                   value={turmaSelecionada}
                   onChange={e => setTurmaSelecionada(e.target.value)}
@@ -163,14 +163,16 @@ export function GerenciarAviso() {
                 >
                   <option value="">Selecione uma turma...</option>
                   {turmas.map(t => (
-                    <option key={t.idTurma} value={t.idTurma}>Turma {t.idTurma}</option>
+                    <option key={t.idTurma} value={t.idTurma}>
+                      {t.nome || `Turma ${t.idTurma}`}
+                    </option>
                   ))}
                 </select>
               </div>
 
               <div>
                 <label htmlFor="titulo-aviso-add" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase mb-1">Mensagem / Recado *</label>
-                <textarea 
+                <textarea
                   id="titulo-aviso-add"
                   rows={4}
                   value={titulo}
@@ -216,7 +218,7 @@ export function GerenciarAviso() {
             <form onSubmit={e => { e.preventDefault(); executarEditarAviso(); }} className="space-y-4">
               <div>
                 <label htmlFor="titulo-aviso-edit" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase mb-1">Mensagem / Recado *</label>
-                <textarea 
+                <textarea
                   id="titulo-aviso-edit"
                   rows={4}
                   value={titulo}
@@ -257,22 +259,22 @@ export function GerenciarAviso() {
 
       {/*Modal Lightbox*/}
       {imagemZoom && (
-        <div 
-          onClick={() => setImagemZoom(null)} 
+        <div
+          onClick={() => setImagemZoom(null)}
           className="fixed inset-0 bg-black/85 z-300 flex items-center justify-center p-4 backdrop-blur-sm cursor-zoom-out animate-fade-in-up"
         >
-          <button 
+          <button
             onClick={() => setImagemZoom(null)}
             className="absolute top-4 right-4 text-white hover:text-gray-300 p-2.5 bg-black/50 rounded-full cursor-pointer transition-colors z-20 backdrop-blur-md"
             aria-label="Fechar zoom"
           >
             <X className="w-6 h-6" />
           </button>
-          <img 
-            src={imagemZoom} 
-            alt="Aviso ampliado" 
+          <img
+            src={imagemZoom}
+            alt="Aviso ampliado"
             className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl animate-modal-enter cursor-default"
-            onClick={(e) => e.stopPropagation()} 
+            onClick={(e) => e.stopPropagation()}
           />
         </div>
       )}

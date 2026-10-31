@@ -18,6 +18,7 @@ export class TurmaService {
 
         return await this.prisma.turma.create({
             data: {
+                nome: data.nome,
                 idProfessor: data.idProfessor
             }
         });
@@ -103,6 +104,7 @@ export class TurmaService {
         return await this.prisma.turma.update({
             where: { idTurma },
             data: {
+                nome: data.nome,
                 idProfessor: data.idProfessor
             }
         });

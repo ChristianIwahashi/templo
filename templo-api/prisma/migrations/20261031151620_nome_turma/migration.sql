@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `turmas` ADD COLUMN `nome` VARCHAR(100) NOT NULL DEFAULT '';
