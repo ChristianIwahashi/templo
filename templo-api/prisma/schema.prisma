@@ -69,7 +69,7 @@ model Aluno {
   gestor         Gestor @relation("GestorParaAluno", fields: [idGestor], references: [idUsuario])
 
   idTurma        Int?
-  turma          Turma?  @relation("TurmaParaAluno", fields: [idTurma], references: [idTurma])
+  turma          Turma?  @relation("TurmaParaAluno", fields: [idTurma], references: [idTurma], onDelete: SetNull)
 
   mensalidades  Mensalidade[] @relation("AlunoParaMensalidade")
   notas         Nota[]        @relation("AlunoParaNota")
@@ -100,7 +100,7 @@ model Turma {
   nome        String    @db.VarChar(100) @default("")
 
   idProfessor  Int
-  professor    Professor   @relation("ProfessorParaTurma", fields: [idProfessor], references: [idUsuario])
+  professor    Professor   @relation("ProfessorParaTurma", fields: [idProfessor], references: [idUsuario], onDelete: Cascade)
 
   alunos            Aluno[] @relation("TurmaParaAluno")
   avisosAula        AvisoAula[]  @relation("TurmaParaAvisoAula")
@@ -120,7 +120,7 @@ model Mensalidade {
   gestor          Gestor   @relation("GestorParaMensalidade", fields: [idGestor], references: [idUsuario])
 
   idAluno        Int
-  aluno          Aluno   @relation("AlunoParaMensalidade", fields: [idAluno], references: [idUsuario])
+  aluno          Aluno   @relation("AlunoParaMensalidade", fields: [idAluno], references: [idUsuario], onDelete: Cascade)
 
   @@map("mensalidades")
 }
@@ -132,10 +132,10 @@ model Nota {
   data          DateTime    @db.Date
 
   idProfessor   Int
-  professor     Professor   @relation("ProfessorParaNota", fields: [idProfessor], references: [idUsuario])
+  professor     Professor   @relation("ProfessorParaNota", fields: [idProfessor], references: [idUsuario], onDelete: Cascade)
 
   idAluno       Int
-  aluno         Aluno   @relation("AlunoParaNota", fields: [idAluno], references: [idUsuario])
+  aluno         Aluno   @relation("AlunoParaNota", fields: [idAluno], references: [idUsuario], onDelete: Cascade)
 
   criadoPorId     Int?
   criadoPor       Usuario?  @relation("NotaCriadaPor", fields: [criadoPorId], references: [idUsuario], onDelete: SetNull, map: "fk_nota_criado_por")
@@ -152,10 +152,10 @@ model Frequencia {
   presenca      Boolean
 
   idProfessor   Int
-  professor     Professor   @relation("ProfessorParaFrequencia", fields: [idProfessor], references: [idUsuario])
+  professor     Professor   @relation("ProfessorParaFrequencia", fields: [idProfessor], references: [idUsuario], onDelete: Cascade)
 
   idAluno       Int
-  aluno         Aluno   @relation("AlunoParaFrequencia", fields: [idAluno], references: [idUsuario])
+  aluno         Aluno   @relation("AlunoParaFrequencia", fields: [idAluno], references: [idUsuario], onDelete: Cascade)
 
   criadoPorId     Int?
   criadoPor       Usuario?  @relation("FrequenciaCriadaPor", fields: [criadoPorId], references: [idUsuario], onDelete: SetNull, map: "fk_frequencia_criado_por")
@@ -173,10 +173,10 @@ model AvisoAula {
   imagemUrl     String?   @db.VarChar(255)
 
   idProfessor   Int
-  professor     Professor @relation("ProfessorParaAvisoAula", fields: [idProfessor], references: [idUsuario])
+  professor     Professor @relation("ProfessorParaAvisoAula", fields: [idProfessor], references: [idUsuario], onDelete: Cascade)
 
   idTurma       Int
-  turma         Turma @relation("TurmaParaAvisoAula", fields: [idTurma], references: [idTurma])
+  turma         Turma @relation("TurmaParaAvisoAula", fields: [idTurma], references: [idTurma], onDelete: Cascade)
 
   criadoPorId     Int?
   criadoPor       Usuario?  @relation("AvisoAulaCriadaPor", fields: [criadoPorId], references: [idUsuario], onDelete: SetNull, map: "fk_aviso_aula_criado_por")
@@ -196,7 +196,7 @@ model MaterialDidatico {
   dataPostagem DateTime @default(now())
 
   idProfessor   Int
-  professor     Professor @relation("ProfessorParaMaterial", fields: [idProfessor], references: [idUsuario])
+  professor     Professor @relation("ProfessorParaMaterial", fields: [idProfessor], references: [idUsuario], onDelete: Cascade)
 
   turmasVinculadas  TurmaMaterialDidatico[]
   alunosVinculados  AlunoMaterialDidatico[]
@@ -244,7 +244,7 @@ model ConteudoInformativo {
   imagemUrl   String    @db.VarChar(255)
 
   idGestor   Int
-  gestor     Gestor @relation("GestorParaConteudo", fields: [idGestor], references: [idUsuario])
+  gestor     Gestor @relation("GestorParaConteudo", fields: [idGestor], references: [idUsuario], onDelete: Cascade)
 
   @@map("conteudos_informativos")
 }
@@ -259,7 +259,7 @@ model AvisoEvento {
   ativo         Boolean   @default(true)
 
   idGestor   Int
-  gestor     Gestor @relation("GestorParaAvisoEvento", fields: [idGestor], references: [idUsuario])
+  gestor     Gestor @relation("GestorParaAvisoEvento", fields: [idGestor], references: [idUsuario], onDelete: Cascade)
 
   @@map("avisos_eventos")
 }
