@@ -15,6 +15,7 @@ export interface EventoItem {
   idAvisoEvento: number;
   titulo: string;
   descricao: string;
+  horario: string;
   dataPostagem: string;
   imagemUrl?: string;
   ativo: boolean;
@@ -32,6 +33,7 @@ export function UseGerenciarInformatico() {
   const [imagemUrlConteudo, setImagemUrlConteudo] = useState('');
   const [conteudoSelecionado, setConteudoSelecionado] = useState<ConteudoItem | null>(null);
   const [tituloEvento, setTituloEvento] = useState('');
+  const [horarioEvento, setHorarioEvento] = useState('');
   const [descricaoEvento, setDescricaoEvento] = useState('');
   const [imagemUrlEvento, setImagemUrlEvento] = useState('');
   const [ativoEvento, setAtivoEvento] = useState(true);
@@ -216,6 +218,7 @@ export function UseGerenciarInformatico() {
   function abrirModalCriarEvento() {
     setTituloEvento('');
     setDescricaoEvento('');
+    setHorarioEvento('');
     setImagemUrlEvento('');
     setAtivoEvento(true);
     setErro('');
@@ -226,6 +229,7 @@ export function UseGerenciarInformatico() {
     setEventoSelecionado(item);
     setTituloEvento(item.titulo);
     setDescricaoEvento(item.descricao);
+    setHorarioEvento(item.horario || '');
     setImagemUrlEvento(item.imagemUrl || '');
     setAtivoEvento(item.ativo);
     setErro('');
@@ -268,6 +272,7 @@ export function UseGerenciarInformatico() {
       await Api.post('/aviso-evento', {
         titulo: tituloEvento,
         descricao: descricaoEvento,
+        horario: horarioEvento,
         imagemUrl: imagemUrlEvento || undefined,
         ativo: ativoEvento,
         idGestor: user.idUsuario
@@ -298,6 +303,7 @@ export function UseGerenciarInformatico() {
       await Api.patch(`/aviso-evento/${eventoSelecionado.idAvisoEvento}`, {
         titulo: tituloEvento,
         descricao: descricaoEvento,
+        horario: horarioEvento,
         imagemUrl: imagemUrlEvento || undefined,
         ativo: ativoEvento
       });
@@ -377,6 +383,8 @@ export function UseGerenciarInformatico() {
     setTituloEvento,
     descricaoEvento,
     setDescricaoEvento,
+    horarioEvento,
+    setHorarioEvento,
     imagemUrlEvento,
     setImagemUrlEvento,
     ativoEvento,

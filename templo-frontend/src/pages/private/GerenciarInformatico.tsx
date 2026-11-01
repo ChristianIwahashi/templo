@@ -22,6 +22,8 @@ export function GerenciarInformatico() {
     setTituloEvento,
     descricaoEvento,
     setDescricaoEvento,
+    horarioEvento,
+    setHorarioEvento,
     imagemUrlEvento,
     setImagemUrlEvento,
     ativoEvento,
@@ -187,13 +189,15 @@ export function GerenciarInformatico() {
                         >
                           <Edit className="w-4 h-4" />
                         </button>
-                        <button 
-                          onClick={() => prepararDeletarConteudo(item)}
-                          className="text-red-500 hover:bg-red-50 dark:hover:bg-slate-800 p-1.5 rounded cursor-pointer transition-colors" 
-                          title="Excluir"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                        {item.categoria !== 'HISTORIA' && item.categoria !== 'AULAS' && (
+                          <button 
+                            onClick={() => prepararDeletarConteudo(item)}
+                            className="text-red-500 hover:bg-red-50 p-1.5 rounded cursor-pointer transition-colors" 
+                            title="Excluir"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -302,9 +306,7 @@ export function GerenciarInformatico() {
                   className="w-full p-2.5 border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50 dark:bg-slate-800 text-gray-800 dark:text-slate-100 cursor-pointer font-medium"
                   required
                 >
-                  <option value="HISTORIA">História do Templo</option>
                   <option value="GALERIA">Galeria de Fotos</option>
-                  <option value="AULAS">Aulas de Japonês (Estrutura)</option>
                 </select>
               </div>
 
@@ -389,6 +391,19 @@ export function GerenciarInformatico() {
                   value={descricaoEvento}
                   onChange={e => setDescricaoEvento(e.target.value)}
                   placeholder="Descreva as atrações, horários e informações..."
+                  className="w-full p-2.5 border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50 dark:bg-slate-800 text-gray-800 dark:text-slate-100"
+                  required
+                />
+              </div>
+
+              <div>
+                <label htmlFor="horario-evento" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase mb-1">Horário do Evento *</label>
+                <input 
+                  id="horario-evento"
+                  type="text" 
+                  value={horarioEvento}
+                  onChange={e => setHorarioEvento(e.target.value)}
+                  placeholder="Ex: 14h às 18h30 ou Almoço: 11h-14h"
                   className="w-full p-2.5 border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50 dark:bg-slate-800 text-gray-800 dark:text-slate-100"
                   required
                 />

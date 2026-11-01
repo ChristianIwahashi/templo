@@ -27,7 +27,7 @@ export function Eventos() {
         id: e.idAvisoEvento,
         titulo: e.titulo,
         data: new Date(e.dataPostagem).toLocaleDateString('pt-BR', { timeZone: 'UTC' }),
-        horario: 'Consulte a programação com a secretaria',
+        horario: e.horario || 'Horário a definir',
         imagemUrl: e.imagemUrl || undefined,
         descricaoCompleta: e.descricao
       }));

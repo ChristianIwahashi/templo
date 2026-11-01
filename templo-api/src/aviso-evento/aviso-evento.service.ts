@@ -20,6 +20,7 @@ export class AvisoEventoService {
       data: {
         titulo: data.titulo,
         descricao: data.descricao,
+        horario: data.horario || 'Horário a definir',
         imagemUrl: data.imagemUrl || '',
         ativo: data.ativo ?? true,
         idGestor: data.idGestor
@@ -61,6 +62,7 @@ export class AvisoEventoService {
       data: {
         titulo: data.titulo,
         descricao: data.descricao,
+        horario: data.horario,
         imagemUrl: data.imagemUrl,
         ativo: data.ativo !== undefined ? data.ativo : undefined
       } 

@@ -253,6 +253,7 @@ model AvisoEvento {
   idAvisoEvento Int       @id @default(autoincrement())
   titulo        String    @db.VarChar(255)
   descricao     String    @db.Text
+  horario       String?  @db.VarChar(100)
   dataPostagem  DateTime  @default(now())
   imagemUrl     String?   @db.VarChar(255)
   ativo         Boolean   @default(true)

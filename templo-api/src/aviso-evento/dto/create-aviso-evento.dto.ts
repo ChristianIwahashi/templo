@@ -13,6 +13,10 @@ export class CreateAvisoEventoDto {
 
     @IsString()
     @IsOptional()
+    horario?: string;
+
+    @IsString()
+    @IsOptional()
     imagemUrl?: string;
 
     @IsBoolean()
