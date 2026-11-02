@@ -1,7 +1,7 @@
 # ⛩️ Templo Honpa Hongwanji de Lins — Portal Institucional & Sistema de Gestão
 
 <h1 align="center">
-  <img src="./templo-frontend/public/hongwanji-roxo.png" alt="downshift logo" title="Hongwanji logo" width="150">
+  <img src="./templo-frontend/public/hongwanji-roxo.png" alt="Hongwanji logo" title="Hongwanji logo" width="150">
 </h1>
 
 > Plataforma Full-Stack que integra o **Portal Institucional Público** com um **Sistema de Gestão Educacional** para o templo Hongwanji de Lins e aulas de Nichigo Gakkou.
@@ -16,9 +16,11 @@
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 
 ## 📌 Sumário
-- [Sobre o Projeto](#-sobre-o-projeto)
-- [Funcionalidades](#-funcionalidades)
-- [Tecnologias Utilizadas](#-tecnologias-utilizadas)
+- [Sobre o Projeto](#sobre)
+- [Funcionalidades](#funcionalidades)
+- [Tecnologias Utilizadas](#tecnologias)
+
+<div id="sobre"></div>
 
 ## 📖 Sobre o Projeto
 
@@ -27,6 +29,8 @@ O projeto foi desenvolvido para atender às necessidades do **Templo Honpa Hongw
 A aplicação resolve o desafio de unir em um único ecossistema:
 1. Uma presença web institucional para a comunidade externa e visitantes (história, festivais e galeria).
 2. Um sistema seguro e restrito para gestão acadêmica, controle de frequência, notas, matrículas e mensalidade.
+
+<div id="funcionalidades"></div>
 
 ## ⚡ Funcionalidades
 
@@ -37,12 +41,16 @@ A aplicação resolve o desafio de unir em um único ecossistema:
 - **Aulas de Japonês:** Informações do Nichigo Gakkou como horários, mensalidade e canal de contato da secretaria.
 - **Dark Mode:** Alternância nativa de temas claro/escuro com persistência local.
 
-### 🎒 2. Portal do Aluno (Privado)
+<img src="./assets/Imagem1.png" alt="Site Institucional" title="Site Institucional">
+
+### 🎒 2. Painel do Aluno (Privado)
 - **Boletim de Notas & Frequência:** Cálculo automático de média e percentual de presença com **filtro por Ano Letivo**.
 - **Histórico de Mensalidades:** Consulta transparente de faturas, valores e status de baixa com ordenação e filtros.
 - **Mural de Avisos da Turma:** Recados postados pelo professor titular com visualização de anexos.
 - **Materiais Didáticos:** Download de apostilas e lições exclusivas ou destinadas à sua sala.
 - **Meu Perfil:** Consulta cadastral e alteração autônoma de telefone e senha.
+
+<img src="./assets/Imagem4.png" alt="Painel do Aluno" title="Painel do Aluno">
 
 ### 👨‍🏫 3. Painel do Professor (Privado)
 - **Gerenciamento de Chamada:** Seleção de turma e data com auto-carregamento retroativo, atualização em lote e exclusão de histórico do dia.
@@ -51,11 +59,17 @@ A aplicação resolve o desafio de unir em um único ecossistema:
 - **Materiais Didáticos:** Upload de arquivos para a turma toda ou com **permissão exclusiva** para estudantes selecionados.
 - **Exportação de Relatórios:** Geração de planilhas formatadas em **Excel (.xlsx)** com notas e frequência por ano letivo.
 
+<img src="./assets/Imagem5.png" alt="Painel do Professor" title="Painel do Professor">
+
 ### 🏢 4. Painel do Gestor (Privado)
 - **Gestão de Usuários:** Gestão completa de alunos e corpo docente do templo.
 - **Gestão de Turmas:** Abertura de salas, atribuição de professores e vinculação direta de estudantes.
 - **Gestão de Mensalidades:** Lançamento de cobranças, controle de inadimplência acumulada e baixa de pagamento.
 - **Gerenciador de Conteúdo:** Publicação de notícias, fotos da galeria e eventos público.
+
+<img src="./assets/Imagem6.png" alt="Painel do Gestor" title="Painel do Gestor">
+
+<div id="tecnologias"></div>
 
 ## 🛠️ Tecnologias Utilizadas
 
