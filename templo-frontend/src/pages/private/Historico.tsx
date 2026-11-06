@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Api } from "../../api/api";
-import { GraduationCap, CheckCircle, BookOpen } from "lucide-react";
+import { GraduationCap, CheckCircle, BookOpen, CalendarCheck, XCircle, ChevronUp, ChevronDown } from "lucide-react";
 
 interface Nota {
   idNota: number;
@@ -22,6 +22,8 @@ export function Historico() {
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState('');
   const [filtroAno, setFiltroAno] = useState<string>('todos');
+  const [isNotasOpen, setIsNotasOpen] = useState(true);
+  const [isFrequenciaOpen, setIsFrequenciaOpen] = useState(true);
 
   useEffect(() => {
     async function carregarDadosAcademicos() {
@@ -69,7 +71,7 @@ export function Historico() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <p className="text-gray-500 dark:text-slate-400 font-medium animate-pulse">Carregando diário de classe...</p>
+        <p className="text-gray-500 dark:text-slate-400 font-medium animate-pulse">Carregando histórico de classe...</p>
       </div>
     );
   }
@@ -144,44 +146,138 @@ export function Historico() {
       </div>
 
       {/*Boletim de Notas*/}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden">
-        <div className="p-5 border-b border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-800/60 flex items-center gap-2">
-          <BookOpen className="w-5 h-5 text-sys-blue" />
-          <h4 className="font-bold text-gray-700 dark:text-slate-100">Boletim de Notas</h4>
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden transition-all">
+        <div 
+          onClick={() => setIsNotasOpen(!isNotasOpen)}
+          className="p-5 border-b border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-800/50 flex justify-between items-center cursor-pointer select-none group"
+          title={isNotasOpen ? "Clique para recolher o boletim" : "Clique para expandir o boletim"}
+        >
+          <div className="flex items-center gap-2">
+            <BookOpen className="w-5 h-5 text-sys-blue" />
+            <h4 className="font-bold text-gray-700 dark:text-slate-200">Boletim de Notas</h4>
+          </div>
+
+          <button 
+            type="button"
+            className="p-1 rounded-lg text-gray-400 group-hover:text-sys-blue transition-colors cursor-pointer"
+            aria-label={isNotasOpen ? "Recolher" : "Expandir"}
+          >
+            {isNotasOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+          </button>
         </div>
         
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b border-gray-200 dark:border-slate-700 text-sm text-gray-600 dark:text-slate-300 bg-gray-50/30 dark:bg-slate-800/40">
-                <th className="p-4 font-semibold">Avaliação / Atividade</th>
-                <th className="p-4 font-semibold">Professor</th>
-                <th className="p-4 font-semibold">Data</th>
-                <th className="p-4 font-semibold">Nota</th>
-              </tr>
-            </thead>
-            <tbody className="text-sm divide-y divide-gray-100 dark:divide-slate-800">
-              {notasFiltradas.length === 0 ? (
-                <tr>
-                  <td colSpan={4} className="p-8 text-center text-gray-500 dark:text-slate-400 font-medium">
-                    Nenhuma nota lançada neste período letivo.
-                  </td>
+        {isNotasOpen && (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-gray-100 dark:border-slate-800 text-xs text-gray-500 dark:text-slate-400 uppercase bg-gray-50/20 dark:bg-slate-800/20">
+                  <th className="p-4 font-semibold">Avaliação / Atividade</th>
+                  <th className="p-4 font-semibold">Professor</th>
+                  <th className="p-4 font-semibold">Data</th>
+                  <th className="p-4 font-semibold text-right">Nota</th>
                 </tr>
-              ) : (
-                notasFiltradas.map((nota) => (
-                  <tr key={nota.idNota} className="hover:bg-gray-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                    <td className="p-4 font-semibold text-gray-800 dark:text-slate-100">{nota.tipo}</td>
-                    <td className="p-4 text-gray-600 dark:text-slate-300">{nota.professor.usuario.nome}</td>
-                    <td className="p-4 text-gray-600 dark:text-slate-300">{formatarData(nota.data)}</td>
-                    <td className={`p-4 font-bold text-lg ${nota.valor >= 7.0 ? 'text-sys-blue' : 'text-red-500 dark:text-red-400'}`}>
-                      {nota.valor.toFixed(1)}
+              </thead>
+              <tbody className="text-sm divide-y divide-gray-100 dark:divide-slate-800">
+                {notasFiltradas.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className="p-8 text-center text-gray-500 dark:text-slate-400 font-medium">
+                      Nenhuma nota lançada neste período letivo.
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  notasFiltradas.map((nota) => (
+                    <tr key={nota.idNota} className="hover:bg-gray-50/50 dark:hover:bg-slate-800/30 transition-colors">
+                      <td className="p-4 font-semibold text-gray-800 dark:text-slate-100">{nota.tipo}</td>
+                      <td className="p-4 text-gray-600 dark:text-slate-300">{nota.professor?.usuario?.nome || 'Docente'}</td>
+                      <td className="p-4 text-gray-500 dark:text-slate-400">{formatarData(nota.data)}</td>
+                      <td className={`p-4 text-right font-bold text-base ${nota.valor >= 7.0 ? 'text-sys-blue' : 'text-red-500'}`}>
+                        {nota.valor.toFixed(1)}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {/*Histórico de Chamada*/}
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden transition-all">
+        <div 
+          onClick={() => setIsFrequenciaOpen(!isFrequenciaOpen)}
+          className="p-5 border-b border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-800/50 flex justify-between items-center cursor-pointer select-none group"
+          title={isFrequenciaOpen ? "Clique para recolher o histórico" : "Clique para expandir o histórico"}
+        >
+          <div className="flex items-center gap-2">
+            <CalendarCheck className="w-5 h-5 text-green-600 dark:text-green-400" />
+            <h4 className="font-bold text-gray-700 dark:text-slate-200">Histórico de Presença</h4>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-semibold text-gray-400 dark:text-slate-500 hidden sm:inline">
+              {totalAulas} aulas registradas
+            </span>
+            <button 
+              type="button"
+              className="p-1 rounded-lg text-gray-400 group-hover:text-green-600 transition-colors cursor-pointer"
+              aria-label={isFrequenciaOpen ? "Recolher" : "Expandir"}
+            >
+              {isFrequenciaOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
+        
+        {isFrequenciaOpen && (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-gray-100 dark:border-slate-800 text-xs text-gray-500 dark:text-slate-400 uppercase bg-gray-50/20 dark:bg-slate-800/20">
+                  <th className="p-4 font-semibold">Data da Aula</th>
+                  <th className="p-4 font-semibold">Professor Responsável</th>
+                  <th className="p-4 font-semibold text-center">Status de Presença</th>
+                </tr>
+              </thead>
+              <tbody className="text-sm divide-y divide-gray-100 dark:divide-slate-800">
+                {frequenciasFiltradas.length === 0 ? (
+                  <tr>
+                    <td colSpan={3} className="p-8 text-center text-gray-500 dark:text-slate-400 font-medium">
+                      Nenhum registro de chamada encontrado para este ano letivo.
+                    </td>
+                  </tr>
+                ) : (
+                  frequenciasFiltradas.map((freq) => (
+                    <tr key={freq.idFrequencia} className="hover:bg-gray-50/50 dark:hover:bg-slate-800/30 transition-colors">
+                      <td className="p-4 font-semibold text-gray-800 dark:text-slate-100 flex items-center gap-2">
+                        {formatarData(freq.dataAula)}
+                      </td>
+                      <td className="p-4 text-gray-600 dark:text-slate-300">
+                        {freq.professor?.usuario?.nome || 'Docente'}
+                      </td>
+                      <td className="p-4 text-center">
+                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${
+                          freq.presenca 
+                            ? 'bg-green-50 text-green-700 border-green-200 dark:bg-green-950/40 dark:text-green-300 dark:border-green-800' 
+                            : 'bg-red-50 text-red-600 border-red-200 dark:bg-red-950/40 dark:text-red-300 dark:border-red-800'
+                        }`}>
+                          {freq.presenca ? (
+                            <>
+                              <CheckCircle className="w-3.5 h-3.5" /> Presente
+                            </>
+                          ) : (
+                            <>
+                              <XCircle className="w-3.5 h-3.5" /> Falta
+                            </>
+                          )}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );
