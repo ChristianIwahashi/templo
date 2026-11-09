@@ -1,4 +1,4 @@
-import { Bell, ChevronLeft, ChevronRight, DollarSign, FileText, FolderOpen, Globe, GraduationCap, Home, LogOut, Megaphone, Menu, PieChart, Shield, Star, User, UserCheck, Users, X, Sun, Moon } from "lucide-react";
+import { ChevronLeft, ChevronRight, DollarSign, FileText, FolderOpen, Globe, GraduationCap, Home, LogOut, Megaphone, Menu, PieChart, Shield, Star, User, UserCheck, Users, X, Sun, Moon } from "lucide-react";
 import { UseAuth } from "../hooks/UseAuth";
 import { useTheme } from "../contexts/ThemeContext";
 import { Link, Outlet, useLocation } from "react-router-dom";
@@ -186,11 +186,6 @@ export function PrivateLayout() {
                             title={theme === 'dark' ? "Mudar para modo claro" : "Mudar para modo escuro"}
                         >
                             {theme === 'dark' ? <Sun className="w-5 h-5 text-yellow-400" /> : <Moon className="w-5 h-5" />}
-                        </button>
-
-                        <button className="relative p-2 text-gray-400 hover:text-sys-blue transition rounded-full hover:bg-blue-50 dark:hover:bg-slate-800 cursor-pointer">
-                            <Bell className="w-5 h-5" />
-                            <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"></span>
                         </button>
                     </div>
                 </header>
