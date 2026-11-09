@@ -1,7 +1,7 @@
 # ⛩️ Templo Honpa Hongwanji de Lins — Portal Institucional & Sistema de Gestão
 
 <h1 align="center">
-  <img src="./templo-frontend/public/hongwanji-roxo.png" alt="Hongwanji logo" title="Hongwanji logo" width="150">
+  <img src="./templo-frontend/public/Hongwanji-blue.png" alt="Hongwanji logo" title="Hongwanji logo" width="150">
 </h1>
 
 > Plataforma Full-Stack que integra o **Portal Institucional Público** com um **Sistema de Gestão Educacional** para o templo Hongwanji de Lins e aulas de Nichigo Gakkou.
