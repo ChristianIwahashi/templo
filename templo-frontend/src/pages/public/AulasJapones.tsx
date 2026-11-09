@@ -49,7 +49,7 @@ export function AulasJapones() {
           Aulas de Língua Japonesa
         </h1>
         <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 opacity-90">
-          Aprenda o idioma, treine a escrita e a caligrafia e mergulhe na rica cultura nipo-brasileira preservada pelo templo através da escola Assoka.
+          Aprenda o idioma, treine a escrita e a caligrafia e mergulhe na rica cultura nipo-brasileira preservada pelo templo através da escola Asoka.
         </p>
       </header>
 
@@ -57,7 +57,7 @@ export function AulasJapones() {
         <div className="bg-blue-50/70 dark:bg-slate-800/60 p-8 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r border-gray-100 dark:border-slate-800 min-h-75 relative overflow-hidden">
           <img 
             src={imagemDinamica || LogoTemplo} 
-            alt="Escola Assoka Nichiyougakkou" 
+            alt="Escola Asoka Nichiyougakkou" 
             className={`object-contain mb-4 ${imagemDinamica ? 'w-full h-full absolute inset-0 object-cover' : 'w-32 h-32'}`}
             onError={(e) => {
               (e.target as HTMLImageElement).src = LogoTemplo;
@@ -139,7 +139,7 @@ export function AulasJapones() {
         </div>
 
         <div className="bg-slate-50 dark:bg-slate-800/60 p-5 rounded-2xl border border-slate-100 dark:border-slate-700 text-xs space-y-2 text-slate-700 dark:text-slate-300">
-          <p className="font-bold text-templo-blue dark:text-sys-blue uppercase tracking-wider">Secretaria Assoka</p>
+          <p className="font-bold text-templo-blue dark:text-sys-blue uppercase tracking-wider">Secretaria Asoka</p>
           <p className="flex items-center gap-2">
             <Phone className="w-3.5 h-3.5 text-templo-blue dark:text-sys-blue" /> (14) 3522-3184
           </p>

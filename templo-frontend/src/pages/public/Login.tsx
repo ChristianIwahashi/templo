@@ -56,7 +56,7 @@ export function Login() {
             <img src={LogoTemplo} alt="Logo Honpa Hongwanji" className="w-40 h-40 object-contain -mb-2" />
           </Link>
 
-          <h1 className="text-3xl font-bold">Assoka</h1>
+          <h1 className="text-3xl font-bold">Asoka</h1>
           <h2 className="text-xl font-bold mb-4 text-blue-100">Nichiyougakkou</h2>
           <p className="text-blue-100 dark:text-blue-200 text-sm opacity-90">Sistema de Gestão Educacional</p>
         </div>

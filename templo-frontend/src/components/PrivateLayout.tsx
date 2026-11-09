@@ -60,7 +60,7 @@ export function PrivateLayout() {
             <div className="md:hidden bg-sys-blue text-white p-4 flex justify-between items-center shadow-md z-20">
                 <Link to="/dashboard" className="flex items-center gap-2 font-bold text-lg cursor-pointer">
                     <img src={LogoTemplo} alt="Logo" className="w-8 h-8 object-contain invert" />
-                    <span>Assoka</span>
+                    <span>Asoka</span>
                 </Link>
                 <div className="flex items-center gap-2">
                     <button onClick={toggleTheme} className="p-1 hover:bg-white/20 rounded cursor-pointer">
@@ -99,7 +99,7 @@ export function PrivateLayout() {
                 >
                     <img src={LogoTemplo} alt="Logo do Templo" className="w-10 h-10 object-contain shrink-0" />
                     <div className={`transition-opacity duration-200 whitespace-nowrap overflow-hidden ${isSidebarCollapsed ? 'opacity-0 w-0 hidden' : 'opacity-100 w-auto'}`}>
-                        <h2 className="font-bold text-white">Assoka</h2>
+                        <h2 className="font-bold text-white">Asoka</h2>
                         <h2 className="text-xs text-blue-100">Nichiyougakkou</h2>
                     </div>
                 </Link>
@@ -174,7 +174,7 @@ export function PrivateLayout() {
             <main className="grow flex flex-col h-full overflow-hidden">
                 <header className="bg-white dark:bg-slate-900 shadow-sm border-b border-gray-100 dark:border-slate-800 h-18 px-4 lg:px-6 flex justify-between items-center z-10 shrink-0 transition-colors">
                     <div>
-                        <h2 className="text-xl font-bold text-gray-800 dark:text-slate-100">Assoka Gakkou</h2>
+                        <h2 className="text-xl font-bold text-gray-800 dark:text-slate-100">Asoka Gakkou</h2>
                         <p className="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">Bem-vindo(a) ao sistema do Honpa Hongwanji</p>
                     </div>
 

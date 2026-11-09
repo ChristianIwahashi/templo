@@ -22,7 +22,7 @@ export function PublicFooter() {
             <ul className="space-y-3 opacity-90 text-sm text-slate-300">
               <li className="flex items-center gap-3">
                 <Phone className="w-4 h-4 text-sys-blue shrink-0" />
-                <span>(14) 3533-0000</span>
+                <span>(14) 3522-3184</span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-sys-blue shrink-0" />
