@@ -114,6 +114,7 @@ model Mensalidade {
   mes             String   @db.VarChar(20)
   valor           Int
   dataVencimento  DateTime @db.Date
+  dataPagamento   DateTime? @db.Date 
   statusPagamento String   @db.VarChar(50)
 
   idGestor        Int

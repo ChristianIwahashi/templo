@@ -8,6 +8,7 @@ interface Mensalidade {
   mes: string;
   valor: number;
   dataVencimento: string;
+  dataPagamento: string;
   statusPagamento: 'PENDENTE' | 'PAGO' | 'ATRASADO' | 'CANCELADO';
   payDate?: string; 
 }
@@ -163,7 +164,7 @@ export function Mensalidade() {
                         {m.statusPagamento}
                       </span>
                     </td>
-                    <td className="p-4 text-gray-500 dark:text-slate-400">{m.payDate ? formatarData(m.payDate) : 'Aguardando baixa'}</td>
+                    <td className="p-4 text-gray-500 dark:text-slate-400">{m.dataPagamento ? formatarData(m.dataPagamento) : 'Aguardando baixa'}</td>
                   </tr>
                 ))
               )}

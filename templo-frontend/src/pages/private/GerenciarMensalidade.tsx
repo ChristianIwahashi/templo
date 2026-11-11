@@ -209,6 +209,7 @@ export function GerenciarMensalidade() {
                   <th className="p-4 font-semibold">Aluno / Matrícula</th>
                   <th className="p-4 font-semibold">Mês de Ref.</th>
                   <th className="p-4 font-semibold">Vencimento</th>
+                  <th className="p-4 font-semibold">Pagamento</th>
                   <th className="p-4 font-semibold">Valor</th>
                   <th className="p-4 font-semibold text-center">Status</th>
                   <th className="p-4 font-semibold text-right">Ações</th>
@@ -225,7 +226,21 @@ export function GerenciarMensalidade() {
                     </td>
 
                     <td className="p-4 font-medium text-gray-700 dark:text-slate-300">{m.mes}</td>
-                    <td className="p-4 text-gray-600 dark:text-slate-300">{formatarData(m.dataVencimento)}</td>
+                    <td className="p-4 text-gray-600 dark:text-slate-300">{formatarData(m.dataVencimento)}
+                    </td>
+                    
+                    <td className="p-4 text-gray-600 dark:text-slate-300 font-medium">
+                      {m.dataPagamento ? (
+                        <span className="text-green-600 dark:text-green-400">
+                          {formatarData(m.dataPagamento)}
+                        </span>
+                      ) : (
+                        <span className="text-gray-400 dark:text-slate-500 text-xs italic">
+                          Aguardando
+                        </span>
+                      )}
+                    </td>
+
                     <td className="p-4 font-bold text-gray-800 dark:text-slate-100">{formatarDinheiro(m.valor)}</td>
 
                     <td className="p-4 text-center">

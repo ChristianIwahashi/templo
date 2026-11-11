@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsDateString, IsIn, IsInt, IsNotEmpty, IsString, Min } from "class-validator";
+import { IsDateString, IsIn, IsInt, IsNotEmpty, IsOptional, IsString, Min } from "class-validator";
 
 export class CreateMensalidadeDto {
     @IsString()
@@ -15,6 +15,10 @@ export class CreateMensalidadeDto {
     @IsDateString({}, { message: 'A data de vencimento deve estar no formato YYYY-MM-DD.' })
     @IsNotEmpty()
     dataVencimento!: string;
+
+    @IsDateString({}, { message: 'A data de pagamento deve estar no formato YYYY-MM-DD.' })
+    @IsOptional()
+    dataPagamento?: string;
 
     @IsString()
     @IsIn(['PENDENTE', 'PAGO', 'ATRASADO', 'CANCELADO'], {

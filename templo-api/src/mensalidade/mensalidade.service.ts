@@ -23,6 +23,7 @@ export class MensalidadeService {
         mes: data.mes,
         valor: data.valor,
         dataVencimento: new Date(data.dataVencimento),
+        dataPagamento: new Date(data.dataPagamento),
         statusPagamento: data.statusPagamento,
         idGestor: data.idGestor,
         idAluno: data.idAluno
@@ -70,6 +71,7 @@ export class MensalidadeService {
         mes: data.mes,
         valor: data.valor,
         dataVencimento: data.dataVencimento ? new Date(data.dataVencimento) : undefined,
+        dataPagamento: (data as any).dataPagamento ? new Date((data as any).dataPagamento) : undefined,
         statusPagamento: data.statusPagamento,
       }
     });

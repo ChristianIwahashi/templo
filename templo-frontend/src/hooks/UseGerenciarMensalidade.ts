@@ -13,6 +13,7 @@ export interface MensalidadeAdmin {
   mes: string;
   valor: number;
   dataVencimento: string;
+  dataPagamento?: string;
   statusPagamento: 'PENDENTE' | 'PAGO' | 'ATRASADO' | 'CANCELADO';
   idAluno: number;
   idGestor: number;
@@ -36,6 +37,9 @@ export function UseGerenciarMensalidades() {
   const [mes, setMes] = useState<string>('');
   const [valorReais, setValorReais] = useState<string>('30,00');
   const [dataVencimento, setDataVencimento] = useState<string>(
+    new Date().toISOString().split('T')[0]
+  );
+  const [dataPagamento, setDataPagamento] = useState<string>(
     new Date().toISOString().split('T')[0]
   );
   const [statusPagamento, setStatusPagamento] = useState<'PENDENTE' | 'PAGO' | 'ATRASADO' | 'CANCELADO'>('PENDENTE');
@@ -95,6 +99,7 @@ export function UseGerenciarMensalidades() {
     setMes('');
     setValorReais('30,00');
     setDataVencimento(new Date().toISOString().split('T')[0]);
+    setDataPagamento('');
     setStatusPagamento('PENDENTE');
     setErro('');
     setSucesso('');
@@ -105,6 +110,7 @@ export function UseGerenciarMensalidades() {
     setMes(m.mes);
     setValorReais((m.valor / 100).toFixed(2));
     setDataVencimento(new Date(m.dataVencimento).toISOString().split('T')[0]);
+    setDataPagamento(m.dataPagamento ? new Date(m.dataPagamento).toISOString().split('T')[0] : '');
     setStatusPagamento(m.statusPagamento);
     setErro('');
     setSucesso('');
@@ -155,6 +161,7 @@ export function UseGerenciarMensalidades() {
         mes: mes.trim(),
         valor: converterParaCentavos(valorReais),
         dataVencimento,
+        dataPagamento: statusPagamento === 'PAGO' ? (dataPagamento || new Date().toISOString().split('T')[0]) : null,
         statusPagamento,
         idGestor: user.idUsuario,
         idAluno: Number(idAluno)
@@ -186,6 +193,7 @@ export function UseGerenciarMensalidades() {
         mes: mes.trim(),
         valor: converterParaCentavos(valorReais),
         dataVencimento,
+        dataPagamento,
         statusPagamento
       });
 
@@ -210,9 +218,12 @@ export function UseGerenciarMensalidades() {
     setSalvando(true);
     setErro('');
 
+    const hoje = new Date().toISOString().split('T')[0];
+
     try {
       await Api.put(`/mensalidade/${mensalidadeSelecionada.idMensalidade}`, {
-        statusPagamento: 'PAGO'
+        statusPagamento: 'PAGO',
+        dataPagamento: hoje
       });
 
       setSucesso(`Pagamento da mensalidade de ${mensalidadeSelecionada.aluno.usuario.nome} confirmado!`);
@@ -251,17 +262,34 @@ export function UseGerenciarMensalidades() {
   }
 
   //Filtros
-  const anosDisponiveis = Array.from(
-    new Set(mensalidades.map(m => new Date(m.dataVencimento).getUTCFullYear()))
-  ).sort((a, b) => b - a);
+  const todosOsAnos = mensalidades.flatMap(m => {
+    const anos: number[] = [];
+    if (m.dataVencimento) {
+      const a = new Date(m.dataVencimento).getUTCFullYear();
+      if (!isNaN(a)) anos.push(a);
+    }
+    if (m.dataPagamento) {
+      const a = new Date(m.dataPagamento).getUTCFullYear();
+      if (!isNaN(a)) anos.push(a);
+    }
+    return anos;
+  });
+
+  const anosDisponiveis = Array.from(new Set(todosOsAnos)).sort((a, b) => b - a);
 
   const mensalidadesFiltradas = mensalidades
     .filter(m => {
-      const batePesquisa = m.aluno?.usuario?.nome.toLowerCase().includes(pesquisa.toLowerCase()) ||
+      const batePesquisa =
+        m.aluno?.usuario?.nome.toLowerCase().includes(pesquisa.toLowerCase()) ||
         m.mes.toLowerCase().includes(pesquisa.toLowerCase()) ||
         m.idAluno.toString().includes(pesquisa);
+
       const bateStatus = filtroStatus === 'todos' ? true : m.statusPagamento === filtroStatus;
-      const bateAno = filtroAno === 'todos' ? true : new Date(m.dataVencimento).getUTCFullYear().toString() === filtroAno;
+
+      const anoVenc = m.dataVencimento ? new Date(m.dataVencimento).getUTCFullYear().toString() : null;
+      const anoPag = m.dataPagamento ? new Date(m.dataPagamento).getUTCFullYear().toString() : null;
+      const bateAno = filtroAno === 'todos' ? true : (anoVenc === filtroAno || anoPag === filtroAno);
+
       return batePesquisa && bateStatus && bateAno;
     })
     .sort((a, b) => {
@@ -279,7 +307,7 @@ export function UseGerenciarMensalidades() {
   const totalInadimplente = mensalidades
     .filter(m => m.statusPagamento === 'PENDENTE' || m.statusPagamento === 'ATRASADO')
     .reduce((acc, curr) => acc + curr.valor, 0);
-
+    
   return {
     mensalidadesFiltradas,
     alunos,
@@ -302,6 +330,8 @@ export function UseGerenciarMensalidades() {
     setValorReais,
     dataVencimento,
     setDataVencimento,
+    dataPagamento,
+    setDataPagamento,
     statusPagamento,
     setStatusPagamento,
     loading,
