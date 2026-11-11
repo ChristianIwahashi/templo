@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
 import { Api } from "../../api/api";
 import { DollarSign } from "lucide-react";
-import { formatarDinheiro, formatarData } from "../../utils/formatters";
+import { formatarDinheiro, formatarData, obterEstiloStatusPagamento } from "../../utils/formatters";
 
 interface Mensalidade {
   idMensalidade: number;
   mes: string;
   valor: number;
   dataVencimento: string;
-  dataPagamento: string;
+  dataPagamento?: string | null;
   statusPagamento: 'PENDENTE' | 'PAGO' | 'ATRASADO' | 'CANCELADO';
-  payDate?: string;
 }
 
 export function Mensalidade() {
@@ -142,7 +141,7 @@ export function Mensalidade() {
                 <th className="p-4 font-semibold">Mês de Ref.</th>
                 <th className="p-4 font-semibold">Vencimento</th>
                 <th className="p-4 font-semibold">Valor</th>
-                <th className="p-4 font-semibold">Status</th>
+                <th className="p-4 font-semibold text-center">Status</th>
                 <th className="p-4 font-semibold">Data do Pagamento</th>
               </tr>
             </thead>
@@ -159,18 +158,22 @@ export function Mensalidade() {
                     <td className="p-4 font-semibold text-gray-800 dark:text-slate-100">{m.mes}</td>
                     <td className="p-4 text-gray-600 dark:text-slate-300">{formatarData(m.dataVencimento)}</td>
                     <td className="p-4 font-semibold text-gray-700 dark:text-slate-200">{formatarDinheiro(m.valor)}</td>
-                    <td className="p-4 font-semibold text-gray-800 dark:text-slate-100">
+                    <td className="p-4 text-center">
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${obterEstiloStatusPagamento(m.statusPagamento)}`}>
+                        {m.statusPagamento}
+                      </span>
+                    </td>
+                    <td className="p-4 text-gray-600 dark:text-slate-300 font-medium">
                       {m.statusPagamento === 'PAGO' && m.dataPagamento && !m.dataPagamento.startsWith('1970') ? (
                         <span className="text-green-600 dark:text-green-400 font-semibold">
                           {formatarData(m.dataPagamento)}
                         </span>
                       ) : (
                         <span className="text-gray-400 dark:text-slate-500 text-xs italic">
-                          Aguardando
+                          Aguardando baixa
                         </span>
                       )}
                     </td>
-                    <td className="p-4 text-gray-500 dark:text-slate-400">{m.dataPagamento ? formatarData(m.dataPagamento) : 'Aguardando baixa'}</td>
                   </tr>
                 ))
               )}
