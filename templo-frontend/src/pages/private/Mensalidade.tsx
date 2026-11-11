@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Api } from "../../api/api";
 import { DollarSign } from "lucide-react";
-import { obterEstiloStatusPagamento, formatarDinheiro, formatarData } from "../../utils/formatters";
+import { formatarDinheiro, formatarData } from "../../utils/formatters";
 
 interface Mensalidade {
   idMensalidade: number;
@@ -10,7 +10,7 @@ interface Mensalidade {
   dataVencimento: string;
   dataPagamento: string;
   statusPagamento: 'PENDENTE' | 'PAGO' | 'ATRASADO' | 'CANCELADO';
-  payDate?: string; 
+  payDate?: string;
 }
 
 export function Mensalidade() {
@@ -73,15 +73,15 @@ export function Mensalidade() {
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6 animate-fade-in-up text-slate-800 dark:text-slate-100">
-      
+
       {/*Seção de Filtros*/}
       <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex flex-wrap gap-4 items-end">
-        
+
         <div className="flex-1 min-w-50">
           <label htmlFor="ordem" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1.5 items-center gap-1.5">
             Ordenação
           </label>
-          <select 
+          <select
             id="ordem"
             value={filtroOrdem}
             onChange={e => setFiltroOrdem(e.target.value as 'desc' | 'asc')}
@@ -96,7 +96,7 @@ export function Mensalidade() {
           <label htmlFor="status" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">
             Status
           </label>
-          <select 
+          <select
             id="status"
             value={filtroStatus}
             onChange={e => setFiltroStatus(e.target.value)}
@@ -113,7 +113,7 @@ export function Mensalidade() {
           <label htmlFor="ano" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">
             Ano
           </label>
-          <select 
+          <select
             id="ano"
             value={filtroAno}
             onChange={e => setFiltroAno(e.target.value)}
@@ -134,7 +134,7 @@ export function Mensalidade() {
           <DollarSign className="w-5 h-5 text-sys-blue" />
           <h4 className="font-bold text-gray-700 dark:text-slate-100">Histórico de Mensalidades</h4>
         </div>
-        
+
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -159,10 +159,16 @@ export function Mensalidade() {
                     <td className="p-4 font-semibold text-gray-800 dark:text-slate-100">{m.mes}</td>
                     <td className="p-4 text-gray-600 dark:text-slate-300">{formatarData(m.dataVencimento)}</td>
                     <td className="p-4 font-semibold text-gray-700 dark:text-slate-200">{formatarDinheiro(m.valor)}</td>
-                    <td className="p-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold tracking-wide ${obterEstiloStatusPagamento(m.statusPagamento)}`}>
-                        {m.statusPagamento}
-                      </span>
+                    <td className="p-4 font-semibold text-gray-800 dark:text-slate-100">
+                      {m.statusPagamento === 'PAGO' && m.dataPagamento && !m.dataPagamento.startsWith('1970') ? (
+                        <span className="text-green-600 dark:text-green-400 font-semibold">
+                          {formatarData(m.dataPagamento)}
+                        </span>
+                      ) : (
+                        <span className="text-gray-400 dark:text-slate-500 text-xs italic">
+                          Aguardando
+                        </span>
+                      )}
                     </td>
                     <td className="p-4 text-gray-500 dark:text-slate-400">{m.dataPagamento ? formatarData(m.dataPagamento) : 'Aguardando baixa'}</td>
                   </tr>

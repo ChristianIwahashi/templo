@@ -228,9 +228,9 @@ export function GerenciarMensalidade() {
                     <td className="p-4 font-medium text-gray-700 dark:text-slate-300">{m.mes}</td>
                     <td className="p-4 text-gray-600 dark:text-slate-300">{formatarData(m.dataVencimento)}
                     </td>
-                    
+
                     <td className="p-4 text-gray-600 dark:text-slate-300 font-medium">
-                      {m.dataPagamento ? (
+                      {m.statusPagamento === 'PAGO' && m.dataPagamento && !m.dataPagamento.startsWith('1970') ? (
                         <span className="text-green-600 dark:text-green-400">
                           {formatarData(m.dataPagamento)}
                         </span>

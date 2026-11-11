@@ -23,7 +23,7 @@ export class MensalidadeService {
         mes: data.mes,
         valor: data.valor,
         dataVencimento: new Date(data.dataVencimento),
-        dataPagamento: new Date(data.dataPagamento),
+        dataPagamento: data.statusPagamento === 'PAGO' && (data as any).dataPagamento ? new Date((data as any).dataPagamento) : null,
         statusPagamento: data.statusPagamento,
         idGestor: data.idGestor,
         idAluno: data.idAluno
@@ -65,13 +65,23 @@ export class MensalidadeService {
   async update(idMensalidade: number, data: UpdateMensalidadeDto) {
     await this.getById(idMensalidade);
     
+    let dataPagamentoCalculada = undefined;
+
+    if (data.statusPagamento) {
+      if (data.statusPagamento === 'PAGO') {
+        dataPagamentoCalculada = (data as any).dataPagamento ? new Date((data as any).dataPagamento) : new Date();
+      } else {
+        dataPagamentoCalculada = null;
+      }
+    }
+
     return await this.prisma.mensalidade.update({
       where: { idMensalidade },
       data: {
         mes: data.mes,
         valor: data.valor,
         dataVencimento: data.dataVencimento ? new Date(data.dataVencimento) : undefined,
-        dataPagamento: (data as any).dataPagamento ? new Date((data as any).dataPagamento) : undefined,
+        dataPagamento: dataPagamentoCalculada,
         statusPagamento: data.statusPagamento,
       }
     });

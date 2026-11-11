@@ -193,7 +193,7 @@ export function UseGerenciarMensalidades() {
         mes: mes.trim(),
         valor: converterParaCentavos(valorReais),
         dataVencimento,
-        dataPagamento,
+        dataPagamento: statusPagamento === 'PAGO' ? (dataPagamento || new Date().toISOString().split('T')[0]) : null,
         statusPagamento
       });
 
