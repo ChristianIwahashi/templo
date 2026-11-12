@@ -109,10 +109,6 @@ export function GerenciarAviso() {
                     </p>
 
                     <div className="flex items-center gap-3 flex-wrap">
-                      <span className="text-xs text-sys-blue font-semibold flex items-center gap-1 bg-blue-50 dark:bg-slate-800 px-2 py-0.5 rounded-md">
-                        Turma {aviso.idTurma}
-                      </span>
-
                       {/*Nome com Ícone*/}
                       {aviso.criadoPor && (
                         <InfoAuditoria
