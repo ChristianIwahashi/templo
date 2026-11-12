@@ -4,6 +4,7 @@ import { formatarData } from "../../utils/formatters";
 import { UploadInput } from "../../components/UploadInput";
 import { ConfirmModal } from "../../components/ConfirmModal";
 import { Megaphone, Plus, Edit, Trash2, Info, AlertCircle, Check, ZoomIn, X } from "lucide-react";
+import { InfoAuditoria } from "../../components/InfoAuditoria";
 
 export function GerenciarAviso() {
   const {
@@ -106,6 +107,21 @@ export function GerenciarAviso() {
                     <p className="text-xs text-sys-blue font-semibold mt-1.5 flex items-center gap-1">
                       Turma {aviso.idTurma}
                     </p>
+
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <span className="text-xs text-sys-blue font-semibold flex items-center gap-1 bg-blue-50 dark:bg-slate-800 px-2 py-0.5 rounded-md">
+                        Turma {aviso.idTurma}
+                      </span>
+
+                      {/*Nome com Ícone*/}
+                      {aviso.criadoPor && (
+                        <InfoAuditoria
+                          criadoPor={aviso.criadoPor}
+                          atualizadoPor={aviso.atualizadoPor}
+                        />
+                      )}
+                    </div>
+                    
                   </div>
                   <span className="text-xs text-gray-400 dark:text-slate-400 font-medium">
                     {formatarData(aviso.dataPostagem)}

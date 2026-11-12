@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { UseAuth } from "./UseAuth";
 import { Api } from "../api/api";
 import { AxiosError } from "axios";
+import type { AutorAuditoria } from "../components/InfoAuditoria";
 
 export interface Turma {
   idTurma: number;
@@ -16,6 +17,10 @@ export interface AvisoAula {
   imagemUrl?: string;
   idProfessor: number;
   idTurma: number;
+  criadoEm?: string;
+  atualizadoEm?: string;
+  criadoPor?: AutorAuditoria | null;
+  atualizadoPor?: AutorAuditoria | null;
   turmasVinculadas?: { idTurma: number; turma?: { nome?: string } }[];
   alunosVinculados?: { aluno: { usuario: { nome: string } } }[];
 }
