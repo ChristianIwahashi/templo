@@ -31,7 +31,8 @@ export function UseGerenciarAviso() {
   const [avisos, setAvisos] = useState<AvisoAula[]>([]);
   const [titulo, setTitulo] = useState<string>('');
   const [imagemUrl, setImagemUrl] = useState<string>('');
-  const [turmaSelecionada, setTurmaSelecionada] = useState<string>('');
+  const [turmaSelecionada, setTurmaSelecionada] = useState<number[]>([]);
+  const [enviarParaTodas, setEnviarParaTodas] = useState(false);
   const [loading, setLoading] = useState(true);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState('');
@@ -74,7 +75,8 @@ export function UseGerenciarAviso() {
   function abrirModalAdicionar() {
     setTitulo('');
     setImagemUrl('');
-    setTurmaSelecionada('');
+    setTurmaSelecionada([]);
+    setEnviarParaTodas(false);
     setErro('');
     setSucesso('');
     setIsAddModalOpen(true);
@@ -97,6 +99,14 @@ export function UseGerenciarAviso() {
     setIsConfirmDeleteOpen(true);
   }
 
+  function handleAlternarTurma(idTurma: number) {
+    setTurmaSelecionada(prev => 
+      prev.includes(idTurma) 
+        ? prev.filter(id => id !== idTurma) 
+        : [...prev, idTurma]
+    );
+  }
+
   //Publicar Aviso (POST)
   async function executarAdicionarAviso() {
     if (!user) return;
@@ -106,24 +116,35 @@ export function UseGerenciarAviso() {
       return;
     }
 
-    if (!turmaSelecionada) {
-      setErro('Selecione uma turma para este aviso.');
-      return;
+    let turmasAlvo: number[] = [];
+    if (enviarParaTodas) {
+      turmasAlvo = turmas.map(t => t.idTurma);
+    } else {
+      turmasAlvo = turmaSelecionada;
     }
 
-    const turmaAtual = turmas.find(t => t.idTurma.toString() === turmaSelecionada);
-    const professorId = (user?.papel === 'GESTOR' ? turmaAtual?.idProfessor : user?.idUsuario) || turmaAtual?.idProfessor;
+    if (turmasAlvo.length === 0) {
+      setErro('Selecione pelo menos uma turma de destino.');
+      return;
+    }
 
     setSalvando(true);
     setErro('');
 
     try {
-      await Api.post('/aviso-aula', {
-        titulo,
-        imagemUrl: imagemUrl || undefined,
-        idProfessor: professorId,
-        idTurma: Number(turmaSelecionada)
-      });
+      await Promise.all(
+        turmasAlvo.map(idTurma => {
+          const turmaAtual = turmas.find(t => t.idTurma === idTurma);
+          const professorId = (user?.papel === 'GESTOR' ? turmaAtual?.idProfessor : user?.idUsuario) || user?.idUsuario;
+
+          return Api.post('/aviso-aula', {
+            titulo,
+            imagemUrl: imagemUrl || undefined,
+            idProfessor: professorId,
+            idTurma: idTurma
+          });
+        })
+      );
 
       setSucesso('Aviso publicado com sucesso!');
       await atualizarMural();
@@ -203,6 +224,9 @@ export function UseGerenciarAviso() {
     setImagemUrl,
     turmaSelecionada,
     setTurmaSelecionada,
+    handleAlternarTurma,
+    enviarParaTodas,
+    setEnviarParaTodas,
     loading,
     salvando,
     erro,

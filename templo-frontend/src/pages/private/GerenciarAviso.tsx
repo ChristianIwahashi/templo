@@ -3,7 +3,7 @@ import { UseGerenciarAviso } from "../../hooks/UseGerenciarAviso";
 import { formatarData } from "../../utils/formatters";
 import { UploadInput } from "../../components/UploadInput";
 import { ConfirmModal } from "../../components/ConfirmModal";
-import { Megaphone, Plus, Edit, Trash2, Info, AlertCircle, Check, ZoomIn, X } from "lucide-react";
+import { Megaphone, Plus, Edit, Trash2, Info, AlertCircle, Check, ZoomIn, X, CheckSquare, Square } from "lucide-react";
 import { InfoAuditoria } from "../../components/InfoAuditoria";
 
 export function GerenciarAviso() {
@@ -15,7 +15,9 @@ export function GerenciarAviso() {
     imagemUrl,
     setImagemUrl,
     turmaSelecionada,
-    setTurmaSelecionada,
+    handleAlternarTurma,
+    enviarParaTodas,
+    setEnviarParaTodas,
     loading,
     salvando,
     erro,
@@ -164,22 +166,46 @@ export function GerenciarAviso() {
             )}
 
             <form onSubmit={e => { e.preventDefault(); executarAdicionarAviso(); }} className="space-y-4">
-              <div>
-                <label htmlFor="turma-aviso-add" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase mb-1">Turma de Destino *</label>
-                <select
-                  id="turma-aviso-add"
-                  value={turmaSelecionada}
-                  onChange={e => setTurmaSelecionada(e.target.value)}
-                  className="w-full p-2.5 border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50 dark:bg-slate-800 text-gray-800 dark:text-slate-100 cursor-pointer font-medium"
-                  required
+              
+              <div className="space-y-2">
+                <label className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">
+                  Turmas de Destino *
+                </label>
+
+                <div 
+                  onClick={() => setEnviarParaTodas(!enviarParaTodas)}
+                  className="flex items-center gap-2.5 p-2.5 bg-blue-50/50 dark:bg-slate-800/60 rounded-xl border border-blue-100 dark:border-slate-700 cursor-pointer"
                 >
-                  <option value="">Selecione uma turma...</option>
-                  {turmas.map(t => (
-                    <option key={t.idTurma} value={t.idTurma}>
-                      {t.nome || `Turma ${t.idTurma}`}
-                    </option>
-                  ))}
-                </select>
+                  {enviarParaTodas ? (
+                    <CheckSquare className="w-5 h-5 text-sys-blue shrink-0" />
+                  ) : (
+                    <Square className="w-5 h-5 text-gray-400 shrink-0" />
+                  )}
+                  <span className="font-bold text-xs text-sys-blue">Enviar para TODAS as turmas cadastradas</span>
+                </div>
+
+                {!enviarParaTodas && (
+                  <div className="border border-gray-200 dark:border-slate-700 rounded-xl p-3 bg-slate-50 dark:bg-slate-800 max-h-36 overflow-y-auto space-y-2 acc-scrollbar">
+                    <p className="text-[10px] uppercase font-bold text-gray-400 dark:text-slate-500 tracking-wider mb-1">Ou selecione turmas específicas:</p>
+                    {turmas.map(t => {
+                      const isSelected = turmaSelecionada.includes(t.idTurma);
+                      return (
+                        <div
+                          key={t.idTurma}
+                          onClick={() => handleAlternarTurma(t.idTurma)}
+                          className="flex items-center gap-2.5 cursor-pointer text-xs p-1.5 hover:bg-gray-100 dark:hover:bg-slate-700 rounded transition-colors"
+                        >
+                          {isSelected ? (
+                            <CheckSquare className="w-4 h-4 text-sys-blue shrink-0" />
+                          ) : (
+                            <Square className="w-4 h-4 text-gray-400 dark:text-slate-500 shrink-0" />
+                          )}
+                          <span className="font-medium text-gray-700 dark:text-slate-200">Turma {t.idTurma}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
               <div>
