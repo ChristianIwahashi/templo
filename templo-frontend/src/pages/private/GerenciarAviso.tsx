@@ -38,6 +38,14 @@ export function GerenciarAviso() {
 
   const [imagemZoom, setImagemZoom] = useState<string | null>(null);
 
+  function obterNomeTurma(idTurma: number) {
+    const turmaEncontrada = turmas.find(t => t.idTurma === idTurma);
+    if (turmaEncontrada && turmaEncontrada.nome) {
+      return turmaEncontrada.nome;
+    }
+    return `Turma ${idTurma}`;
+  }
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -104,14 +112,13 @@ export function GerenciarAviso() {
                 </div>
 
                 <div className="flex flex-wrap justify-between items-start gap-2 border-b border-gray-100 dark:border-slate-800 pb-3 pr-20">
-                  <div>
+                  <div className="space-y-2">
                     <h4 className="font-bold text-gray-800 dark:text-slate-100 text-lg leading-tight">{aviso.titulo}</h4>
-                    <p className="text-xs text-sys-blue font-semibold mt-1.5 flex items-center gap-1">
-                      Turma {aviso.idTurma}
-                    </p>
-
                     <div className="flex items-center gap-3 flex-wrap">
-                      {/*Nome com Ícone*/}
+                      <span className="text-xs text-sys-blue font-semibold flex items-center gap-1 bg-blue-50 dark:bg-slate-800 px-2.5 py-1 rounded-md border border-blue-100/50 dark:border-slate-700">
+                        {obterNomeTurma(aviso.idTurma)}
+                      </span>
+
                       {aviso.criadoPor && (
                         <InfoAuditoria
                           criadoPor={aviso.criadoPor}
@@ -166,13 +173,13 @@ export function GerenciarAviso() {
             )}
 
             <form onSubmit={e => { e.preventDefault(); executarAdicionarAviso(); }} className="space-y-4">
-              
+
               <div className="space-y-2">
                 <label className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">
                   Turmas de Destino *
                 </label>
 
-                <div 
+                <div
                   onClick={() => setEnviarParaTodas(!enviarParaTodas)}
                   className="flex items-center gap-2.5 p-2.5 bg-blue-50/50 dark:bg-slate-800/60 rounded-xl border border-blue-100 dark:border-slate-700 cursor-pointer"
                 >
@@ -181,7 +188,7 @@ export function GerenciarAviso() {
                   ) : (
                     <Square className="w-5 h-5 text-gray-400 shrink-0" />
                   )}
-                  <span className="font-bold text-xs text-sys-blue">Enviar para TODAS as turmas cadastradas</span>
+                  <span className="text-xs font-semibold text-gray-700 dark:text-slate-200">Enviar para TODAS as turmas cadastradas</span>
                 </div>
 
                 {!enviarParaTodas && (
@@ -200,7 +207,7 @@ export function GerenciarAviso() {
                           ) : (
                             <Square className="w-4 h-4 text-gray-400 dark:text-slate-500 shrink-0" />
                           )}
-                          <span className="font-medium text-gray-700 dark:text-slate-200">Turma {t.idTurma}</span>
+                          <span className="font-medium text-gray-700 dark:text-slate-200">{t.nome || `Turma ${t.idTurma}`}</span>
                         </div>
                       );
                     })}
