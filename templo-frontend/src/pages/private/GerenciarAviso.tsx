@@ -3,7 +3,7 @@ import { UseGerenciarAviso } from "../../hooks/UseGerenciarAviso";
 import { formatarData } from "../../utils/formatters";
 import { UploadInput } from "../../components/UploadInput";
 import { ConfirmModal } from "../../components/ConfirmModal";
-import { Megaphone, Plus, Edit, Trash2, Info, AlertCircle, Check, ZoomIn, X, CheckSquare, Square, ShieldAlert } from "lucide-react";
+import { Megaphone, Plus, Edit, Trash2, Info, AlertCircle, Check, ZoomIn, X, CheckSquare, Square } from "lucide-react";
 import { InfoAuditoria } from "../../components/InfoAuditoria";
 
 export function GerenciarAviso() {
@@ -113,10 +113,10 @@ export function GerenciarAviso() {
                       </>
                     ) : (
                       <span 
-                        className="inline-flex items-center gap-1 text-[10px] font-bold uppercase px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800"
-                        title="Comunicado oficial da gestão (Somente leitura)"
+                        className="inline-flex items-center gap-1 text-[10px] font-bold uppercase px-2.5 py-1 rounded-full text-gray-800 dark:text-slate-100 text-lg leading-tight"
+                        title="Comunicado oficial da gestão"
                       >
-                        <ShieldAlert className="w-3 h-3" /> Coordenação
+                        Gestor
                       </span>
                     )}
                   </div>
