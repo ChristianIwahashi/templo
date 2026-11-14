@@ -205,6 +205,12 @@ export function UseGerenciarAviso() {
     }
   }
 
+  function podeGerenciarAviso(aviso: AvisoAula): boolean {
+    if (!user) return false;
+    if (user.papel === 'GESTOR') return true;
+    return aviso.idProfessor === user.idUsuario;
+  }
+
   return {
     turmas,
     avisos,
@@ -233,6 +239,7 @@ export function UseGerenciarAviso() {
     prepararDeletar,
     executarAdicionarAviso,
     executarEditarAviso,
-    executarDeletarAviso
+    executarDeletarAviso,
+    podeGerenciarAviso
   };
 }

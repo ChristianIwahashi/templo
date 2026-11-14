@@ -18,7 +18,7 @@ export class AvisoAulaService {
     if (usuarioLogado?.papel === 'PROFESSOR') {
       const turmasEncontradas = await this.prisma.turma.findMany({
         where: {
-          idTurma: { in: data.idsTurmas },
+          idTurma: { in: idsTurmasUnicos },
           idProfessor: usuarioLogado.idUsuario,
         },
       });
@@ -63,7 +63,18 @@ export class AvisoAulaService {
 
     if (usuarioLogado) {
       if (usuarioLogado.papel === 'PROFESSOR') {
-        filtro = { idProfessor: usuarioLogado.idUsuario };
+        filtro = {
+          OR: [
+            { idProfessor: usuarioLogado.idUsuario },
+            {
+              turmasVinculadas: {
+                some: {
+                  turma: { idProfessor: usuarioLogado.idUsuario },
+                },
+              },
+            },
+          ],
+        };
       } else if (usuarioLogado.papel === 'ALUNO') {
         const aluno = await this.prisma.aluno.findUnique({ where: { idUsuario: usuarioLogado.idUsuario } });
 
@@ -105,8 +116,15 @@ export class AvisoAulaService {
     if (!aviso) throw new NotFoundException('Aviso não encontrado.');
 
     if (usuarioLogado) {
-      if (usuarioLogado.papel === 'PROFESSOR' && aviso.idProfessor !== usuarioLogado.idUsuario) {
-        throw new ForbiddenException('Acesso negado: Este aviso foi postado por outro professor.');
+      if (usuarioLogado.papel === 'PROFESSOR') {
+        const DonoDoAviso = aviso.idProfessor === usuarioLogado.idUsuario;
+        const ProfessorAlgumaTurma = aviso.turmasVinculadas.some(
+          (t) => t.turma.idProfessor === usuarioLogado.idUsuario,
+        );
+
+        if (!DonoDoAviso && !ProfessorAlgumaTurma) {
+          throw new ForbiddenException('Acesso negado: Este aviso pertence a outra turma.');
+        }
       }
 
       if (usuarioLogado.papel === 'ALUNO') {
@@ -124,7 +142,10 @@ export class AvisoAulaService {
 
   async update(idAvisoAula: number,
     data: UpdateAvisoAulaDto, usuarioLogado?: any) {
-    await this.getById(idAvisoAula, usuarioLogado);
+    const aviso = await this.getById(idAvisoAula, usuarioLogado);
+    if (usuarioLogado?.papel === 'PROFESSOR' && aviso.idProfessor !== usuarioLogado.idUsuario) {
+      throw new ForbiddenException('Você não tem permissão para editar comunicados da coordenação.');
+    }
 
     return await this.prisma.avisoAula.update({
       where: { idAvisoAula },
@@ -137,7 +158,11 @@ export class AvisoAulaService {
   }
 
   async delete(idAvisoAula: number, usuarioLogado?: any) {
-    await this.getById(idAvisoAula, usuarioLogado);
+    const aviso = await this.getById(idAvisoAula, usuarioLogado);
+
+    if (usuarioLogado?.papel === 'PROFESSOR' && aviso.idProfessor !== usuarioLogado.idUsuario) {
+      throw new ForbiddenException('Você não tem permissão para excluir comunicados da coordenação.');
+    }
     return await this.prisma.avisoAula.delete({ where: { idAvisoAula } });
   }
 }

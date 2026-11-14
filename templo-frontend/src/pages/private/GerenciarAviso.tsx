@@ -3,7 +3,7 @@ import { UseGerenciarAviso } from "../../hooks/UseGerenciarAviso";
 import { formatarData } from "../../utils/formatters";
 import { UploadInput } from "../../components/UploadInput";
 import { ConfirmModal } from "../../components/ConfirmModal";
-import { Megaphone, Plus, Edit, Trash2, Info, AlertCircle, Check, ZoomIn, X, CheckSquare, Square } from "lucide-react";
+import { Megaphone, Plus, Edit, Trash2, Info, AlertCircle, Check, ZoomIn, X, CheckSquare, Square, ShieldAlert } from "lucide-react";
 import { InfoAuditoria } from "../../components/InfoAuditoria";
 
 export function GerenciarAviso() {
@@ -33,7 +33,8 @@ export function GerenciarAviso() {
     prepararDeletar,
     executarAdicionarAviso,
     executarEditarAviso,
-    executarDeletarAviso
+    executarDeletarAviso,
+    podeGerenciarAviso
   } = UseGerenciarAviso();
 
   const [imagemZoom, setImagemZoom] = useState<string | null>(null);
@@ -82,80 +83,92 @@ export function GerenciarAviso() {
         </div>
       ) : (
         <div className="space-y-4">
-          {avisos.map(aviso => (
-            <div key={aviso.idAvisoAula} className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-xs hover:shadow-md transition overflow-hidden">
-              <div className="p-6 space-y-4 relative">
+          {avisos.map(aviso => {
+            const temPermissaoEscrita = podeGerenciarAviso(aviso);
 
-                <div className="absolute top-6 right-6 flex gap-1 z-10">
-                  <button
-                    onClick={() => abrirModalEditar(aviso)}
-                    className="text-gray-400 hover:text-sys-blue hover:bg-gray-50 dark:hover:bg-slate-800 p-1.5 rounded cursor-pointer transition-colors"
-                    title="Editar"
-                  >
-                    <Edit className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => prepararDeletar(aviso)}
-                    className="text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-slate-800 p-1.5 rounded cursor-pointer transition-colors"
-                    title="Excluir"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
+            const nomesTurmas = aviso.turmasVinculadas && aviso.turmasVinculadas.length > 0
+              ? aviso.turmasVinculadas.map(tv => tv.turma?.nome || `Turma ${tv.idTurma}`).join(', ')
+              : 'Sem turma vinculada';
 
-                <div className="flex flex-wrap justify-between items-start gap-2 border-b border-gray-100 dark:border-slate-800 pb-3 pr-20">
-                  <div className="space-y-2">
-                    <h4 className="font-bold text-gray-800 dark:text-slate-100 text-lg leading-tight">{aviso.titulo}</h4>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      {aviso.turmasVinculadas && aviso.turmasVinculadas.length > 0 ? (
-                        aviso.turmasVinculadas.map(tv => (
-                          <span
-                            key={tv.idTurma}
-                            className="text-xs text-sys-blue font-semibold bg-blue-50 dark:bg-slate-800 px-2.5 py-0.5 rounded-md border border-blue-100/50 dark:border-slate-700"
-                          >
-                            {tv.turma?.nome || `Turma ${tv.idTurma}`}
-                          </span>
-                        ))
-                      ) : (
-                        <span className="text-xs text-gray-400">Sem turmas vinculadas</span>
-                      )}
-
-                      {aviso.criadoPor && (
-                        <InfoAuditoria
-                          criadoPor={aviso.criadoPor}
-                          atualizadoPor={aviso.atualizadoPor}
-                        />
-                      )}
-                    </div>
-
-                  </div>
-                  <span className="text-xs text-gray-400 dark:text-slate-400 font-medium">
-                    {formatarData(aviso.dataPostagem)}
-                  </span>
-                </div>
-
-                {aviso.imagemUrl && (
-                  <div
-                    onClick={() => setImagemZoom(aviso.imagemUrl || null)}
-                    className="relative rounded-xl overflow-hidden h-64 sm:h-80 bg-gray-50 dark:bg-slate-800/60 border border-gray-100 dark:border-slate-800 flex items-center justify-center cursor-pointer group"
-                    title="Clique para ver em tamanho cheio"
-                  >
-                    <img
-                      src={aviso.imagemUrl}
-                      alt="Anexo do aviso"
-                      className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-[1.02]"
-                    />
-
-                    <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
-                      <span className="bg-black/50 text-white px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 backdrop-blur-xs">
-                        <ZoomIn className="w-4 h-4" /> Clique para ampliar
+            return (
+              <div key={aviso.idAvisoAula} className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-xs hover:shadow-md transition overflow-hidden">
+                <div className="p-6 space-y-4 relative">
+                  <div className="absolute top-6 right-6 flex items-center gap-1 z-10">
+                    {temPermissaoEscrita ? (
+                      <>
+                        <button
+                          onClick={() => abrirModalEditar(aviso)}
+                          className="text-gray-400 hover:text-sys-blue hover:bg-gray-50 dark:hover:bg-slate-800 p-1.5 rounded cursor-pointer transition-colors"
+                          title="Editar"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => prepararDeletar(aviso)}
+                          className="text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-slate-800 p-1.5 rounded cursor-pointer transition-colors"
+                          title="Excluir"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </>
+                    ) : (
+                      <span 
+                        className="inline-flex items-center gap-1 text-[10px] font-bold uppercase px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800"
+                        title="Comunicado oficial da gestão (Somente leitura)"
+                      >
+                        <ShieldAlert className="w-3 h-3" /> Coordenação
                       </span>
-                    </div>
+                    )}
                   </div>
-                )}
+                  <div className="flex flex-wrap justify-between items-start gap-2 border-b border-gray-100 dark:border-slate-800 pb-3 pr-28">
+                    <div className="space-y-1.5">
+                      <h4 className="font-bold text-gray-800 dark:text-slate-100 text-lg leading-tight">
+                        {aviso.titulo}
+                      </h4>
+
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-xs text-sys-blue font-semibold bg-blue-50 dark:bg-slate-800 px-2.5 py-0.5 rounded-md">
+                          {nomesTurmas}
+                        </span>
+
+                        {aviso.criadoPor && (
+                          <InfoAuditoria
+                            criadoPor={aviso.criadoPor}
+                            atualizadoPor={aviso.atualizadoPor}
+                          />
+                        )}
+                      </div>
+                    </div>
+
+                    <span className="text-xs text-gray-400 dark:text-slate-400 font-medium">
+                      {formatarData(aviso.dataPostagem)}
+                    </span>
+                  </div>
+
+                  {/*Imagem do Aviso*/}
+                  {aviso.imagemUrl && (
+                    <div
+                      onClick={() => setImagemZoom(aviso.imagemUrl || null)}
+                      className="relative rounded-xl overflow-hidden h-64 sm:h-80 bg-gray-50 dark:bg-slate-800/60 border border-gray-100 dark:border-slate-800 flex items-center justify-center cursor-pointer group"
+                      title="Clique para ver em tamanho cheio"
+                    >
+                      <img
+                        src={aviso.imagemUrl}
+                        alt="Anexo do aviso"
+                        className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-[1.02]"
+                      />
+
+                      <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
+                        <span className="bg-black/50 text-white px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 backdrop-blur-xs">
+                          <ZoomIn className="w-4 h-4" /> Clique para ampliar
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -164,7 +177,7 @@ export function GerenciarAviso() {
         <div className="fixed inset-0 bg-black/60 z-250 flex items-center justify-center p-4 backdrop-blur-xs">
           <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl shadow-2xl p-6 border border-gray-100 dark:border-slate-800 animate-modal-enter text-sm max-h-[90vh] overflow-y-auto">
             <h3 className="text-lg font-bold text-gray-800 dark:text-slate-100 mb-4 border-b border-gray-100 dark:border-slate-800 pb-2 flex items-center gap-1.5">
-              <Plus className="w-5 h-5 text-sys-blue" /> Novo Comunicado para a Turma
+              <Plus className="w-5 h-5 text-sys-blue" /> Novo Comunicado
             </h3>
 
             {erro && (
@@ -174,44 +187,46 @@ export function GerenciarAviso() {
             )}
 
             <form onSubmit={e => { e.preventDefault(); executarAdicionarAviso(); }} className="space-y-4">
-
               <div className="space-y-2">
                 <label className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">
                   Turmas de Destino *
                 </label>
 
-                <div
-                  onClick={() => setEnviarParaTodas(!enviarParaTodas)}
-                  className="flex items-center gap-2.5 p-2.5 bg-blue-50/50 dark:bg-slate-800/60 rounded-xl border border-blue-100 dark:border-slate-700 cursor-pointer"
-                >
-                  {enviarParaTodas ? (
-                    <CheckSquare className="w-5 h-5 text-sys-blue shrink-0" />
-                  ) : (
-                    <Square className="w-5 h-5 text-gray-400 shrink-0" />
-                  )}
-                  <span className="text-xs font-semibold text-gray-700 dark:text-slate-200">Enviar para TODAS as turmas cadastradas</span>
-                </div>
+                <label className="flex items-center gap-2 cursor-pointer font-semibold text-gray-700 dark:text-slate-200 p-2 rounded-lg bg-blue-50/50 dark:bg-slate-800/70 border border-blue-100 dark:border-slate-700">
+                  <input
+                    type="checkbox"
+                    checked={enviarParaTodas}
+                    onChange={e => setEnviarParaTodas(e.target.checked)}
+                    className="w-4 h-4 rounded text-sys-blue focus:ring-sys-blue cursor-pointer"
+                  />
+                  <span className="text-xs">Enviar para todas as turmas disponíveis</span>
+                </label>
 
                 {!enviarParaTodas && (
-                  <div className="border border-gray-200 dark:border-slate-700 rounded-xl p-3 bg-slate-50 dark:bg-slate-800 max-h-36 overflow-y-auto space-y-2 acc-scrollbar">
-                    <p className="text-[10px] uppercase font-bold text-gray-400 dark:text-slate-500 tracking-wider mb-1">Ou selecione turmas específicas:</p>
-                    {turmas.map(t => {
-                      const isSelected = turmaSelecionada.includes(t.idTurma);
-                      return (
-                        <div
-                          key={t.idTurma}
-                          onClick={() => handleAlternarTurma(t.idTurma)}
-                          className="flex items-center gap-2.5 cursor-pointer text-xs p-1.5 hover:bg-gray-100 dark:hover:bg-slate-700 rounded transition-colors"
-                        >
-                          {isSelected ? (
-                            <CheckSquare className="w-4 h-4 text-sys-blue shrink-0" />
-                          ) : (
-                            <Square className="w-4 h-4 text-gray-400 dark:text-slate-500 shrink-0" />
-                          )}
-                          <span className="font-medium text-gray-700 dark:text-slate-200">{t.nome || `Turma ${t.idTurma}`}</span>
-                        </div>
-                      );
-                    })}
+                  <div className="border border-gray-200 dark:border-slate-700 rounded-xl p-3 bg-slate-50 dark:bg-slate-800/40 max-h-36 overflow-y-auto space-y-1.5">
+                    {turmas.length === 0 ? (
+                      <p className="text-xs text-gray-400">Nenhuma turma disponível.</p>
+                    ) : (
+                      turmas.map(t => {
+                        const isSelected = turmaSelecionada.includes(t.idTurma);
+                        return (
+                          <div
+                            key={t.idTurma}
+                            onClick={() => handleAlternarTurma(t.idTurma)}
+                            className="flex items-center gap-2.5 cursor-pointer text-xs p-1.5 hover:bg-gray-100 dark:hover:bg-slate-800 rounded transition-colors"
+                          >
+                            {isSelected ? (
+                              <CheckSquare className="w-4 h-4 text-sys-blue shrink-0" />
+                            ) : (
+                              <Square className="w-4 h-4 text-gray-400 shrink-0" />
+                            )}
+                            <span className="font-medium text-gray-700 dark:text-slate-200">
+                              {t.nome || `Turma ${t.idTurma}`}
+                            </span>
+                          </div>
+                        );
+                      })
+                    )}
                   </div>
                 )}
               </div>
@@ -298,7 +313,7 @@ export function GerenciarAviso() {
         onClose={() => setIsConfirmDeleteOpen(false)}
         onConfirm={executarDeletarAviso}
         title="Excluir Comunicado"
-        description="Você tem certeza de que deseja apagar este aviso do mural? Os alunos da turma não terão mais acesso a ele."
+        description="Você tem certeza de que deseja apagar este aviso do mural? Os alunos das turmas vinculadas não terão mais acesso a ele."
         type="danger"
         isLoading={salvando}
       />
