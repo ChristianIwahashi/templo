@@ -77,7 +77,7 @@ export class AvisoAulaService {
         professor: { include: { usuario: { select: { nome: true } } } },
         criadoPor: { select: { idUsuario: true, nome: true, papel: true } },
         atualizadoPor: { select: { idUsuario: true, nome: true, papel: true } },
-        turma: true
+        turmasVinculadas: { include: { turma: true } }
       }
     });
 
@@ -91,12 +91,9 @@ export class AvisoAulaService {
       if (usuarioLogado.papel === 'ALUNO') {
         const aluno = await this.prisma.aluno.findUnique({ where: { idUsuario: usuarioLogado.idUsuario } });
 
-        if (usuarioLogado.papel === 'ALUNO') {
-          const aluno = await this.prisma.aluno.findUnique({ where: { idUsuario: usuarioLogado.idUsuario } });
-
-          if (aviso.idTurma !== aluno?.idTurma) {
-            throw new ForbiddenException('Acesso negado: Este aviso pertence a outra turma.');
-          }
+        const pertenceATurma = aviso.turmasVinculadas.some(t => t.idTurma === aluno?.idTurma);
+        if (!pertenceATurma) {
+          throw new ForbiddenException('Acesso negado: Este aviso pertence a outra turma.');
         }
       }
     }
