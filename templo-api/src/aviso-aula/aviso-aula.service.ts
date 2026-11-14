@@ -64,7 +64,7 @@ export class AvisoAulaService {
         professor: { include: { usuario: { select: { nome: true } } } },
         criadoPor: { select: { idUsuario: true, nome: true, papel: true } },
         atualizadoPor: { select: { idUsuario: true, nome: true, papel: true } },
-        turma: true
+        turmasVinculadas: { include: { turma: true } }
       },
       orderBy: { dataPostagem: 'desc' }
     });
