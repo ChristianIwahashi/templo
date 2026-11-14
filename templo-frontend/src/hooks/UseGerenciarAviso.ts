@@ -99,9 +99,9 @@ export function UseGerenciarAviso() {
   }
 
   function handleAlternarTurma(idTurma: number) {
-    setTurmaSelecionada(prev => 
-      prev.includes(idTurma) 
-        ? prev.filter(id => id !== idTurma) 
+    setTurmaSelecionada(prev =>
+      prev.includes(idTurma)
+        ? prev.filter(id => id !== idTurma)
         : [...prev, idTurma]
     );
   }
@@ -131,14 +131,42 @@ export function UseGerenciarAviso() {
     setErro('');
 
     try {
-      const professorId = user.idUsuario;
-      
-      await Api.post('/aviso-aula', {
-        titulo,
-        imagemUrl: imagemUrl || undefined,
-        idProfessor: professorId,
-        idsTurmas: turmasAlvo
-      });
+      if (user.papel === 'PROFESSOR') {
+        await Api.post('/aviso-aula', {
+          titulo,
+          imagemUrl: imagemUrl || undefined,
+          idProfessor: user.idUsuario,
+          idsTurmas: turmasAlvo
+        });
+      } else {
+        const turmasPorProfessor = new Map<number, number[]>();
+
+        for (const idTurma of turmasAlvo) {
+          const turmaObj = turmas.find(t => t.idTurma === idTurma);
+          if (turmaObj?.idProfessor) {
+            const lista = turmasPorProfessor.get(turmaObj.idProfessor) || [];
+            lista.push(idTurma);
+            turmasPorProfessor.set(turmaObj.idProfessor, lista);
+          }
+        }
+
+        if (turmasPorProfessor.size === 0) {
+          setErro('Nenhuma das turmas selecionadas possui um professor vinculado.');
+          setSalvando(false);
+          return;
+        }
+
+        await Promise.all(
+          Array.from(turmasPorProfessor.entries()).map(([profId, idsTurmasDoProf]) =>
+            Api.post('/aviso-aula', {
+              titulo,
+              imagemUrl: imagemUrl || undefined,
+              idProfessor: profId,
+              idsTurmas: idsTurmasDoProf
+            })
+          )
+        );
+      }
 
       setSucesso('Aviso publicado com sucesso!');
       await atualizarMural();
