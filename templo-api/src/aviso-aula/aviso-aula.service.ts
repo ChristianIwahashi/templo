@@ -5,7 +5,7 @@ import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
 export class AvisoAulaService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(data: CreateAvisoAulaDto, usuarioLogado?: any) {
     if (usuarioLogado && usuarioLogado.papel === 'PROFESSOR' && data.idProfessor !== usuarioLogado.idUsuario) {
@@ -17,13 +17,8 @@ export class AvisoAulaService {
     });
     if (!professorExists) throw new NotFoundException('Professor não encontrado.');
 
-    const turmaExists = await this.prisma.turma.findUnique({
-      where: { idTurma: data.idTurma }
-    });
-    if (!turmaExists) throw new NotFoundException('Turma não encontrada.');
-
-    if (turmaExists.idProfessor !== data.idProfessor) {
-      throw new BadRequestException('Acesso negado: Você não é o professor responsável por esta turma.');
+    if (!data.idsTurmas || data.idsTurmas.length === 0) {
+      throw new BadRequestException('Selecione ao menos uma turma de destino.');
     }
 
     return await this.prisma.avisoAula.create({
@@ -31,8 +26,13 @@ export class AvisoAulaService {
         titulo: data.titulo,
         imagemUrl: data.imagemUrl,
         idProfessor: data.idProfessor,
-        idTurma: data.idTurma,
+        turmasVinculadas: {
+          create: data.idsTurmas.map(id => ({ idTurma: id }))
+        },
         criadoPorId: usuarioLogado?.idUsuario || null,
+      },
+      include: {
+        turmasVinculadas: { include: { turma: true } }
       }
     });
   }
@@ -50,7 +50,11 @@ export class AvisoAulaService {
           return [];
         }
 
-        filtro = { idTurma: aluno.idTurma};
+        filtro = {
+          turmasVinculadas: {
+            some: { idTurma: aluno.idTurma }
+          }
+        };
       }
     }
 
@@ -77,7 +81,7 @@ export class AvisoAulaService {
       }
     });
 
-    if(!aviso) throw new NotFoundException('Aviso não encontrado.');
+    if (!aviso) throw new NotFoundException('Aviso não encontrado.');
 
     if (usuarioLogado) {
       if (usuarioLogado.papel === 'PROFESSOR' && aviso.idProfessor !== usuarioLogado.idUsuario) {
@@ -103,7 +107,7 @@ export class AvisoAulaService {
   async update(idAvisoAula: number,
     data: UpdateAvisoAulaDto, usuarioLogado?: any) {
     await this.getById(idAvisoAula, usuarioLogado);
-      
+
     return await this.prisma.avisoAula.update({
       where: { idAvisoAula },
       data: {

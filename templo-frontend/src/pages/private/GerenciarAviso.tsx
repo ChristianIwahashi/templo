@@ -38,14 +38,6 @@ export function GerenciarAviso() {
 
   const [imagemZoom, setImagemZoom] = useState<string | null>(null);
 
-  function obterNomeTurma(idTurma: number) {
-    const turmaEncontrada = turmas.find(t => t.idTurma === idTurma);
-    if (turmaEncontrada && turmaEncontrada.nome) {
-      return turmaEncontrada.nome;
-    }
-    return `Turma ${idTurma}`;
-  }
-
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -114,10 +106,19 @@ export function GerenciarAviso() {
                 <div className="flex flex-wrap justify-between items-start gap-2 border-b border-gray-100 dark:border-slate-800 pb-3 pr-20">
                   <div className="space-y-2">
                     <h4 className="font-bold text-gray-800 dark:text-slate-100 text-lg leading-tight">{aviso.titulo}</h4>
-                    <div className="flex items-center gap-3 flex-wrap">
-                      <span className="text-xs text-sys-blue font-semibold flex items-center gap-1 bg-blue-50 dark:bg-slate-800 px-2.5 py-1 rounded-md border border-blue-100/50 dark:border-slate-700">
-                        {obterNomeTurma(aviso.idTurma)}
-                      </span>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {aviso.turmasVinculadas && aviso.turmasVinculadas.length > 0 ? (
+                        aviso.turmasVinculadas.map(tv => (
+                          <span
+                            key={tv.idTurma}
+                            className="text-xs text-sys-blue font-semibold bg-blue-50 dark:bg-slate-800 px-2.5 py-0.5 rounded-md border border-blue-100/50 dark:border-slate-700"
+                          >
+                            {tv.turma?.nome || `Turma ${tv.idTurma}`}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-xs text-gray-400">Sem turmas vinculadas</span>
+                      )}
 
                       {aviso.criadoPor && (
                         <InfoAuditoria
@@ -126,7 +127,7 @@ export function GerenciarAviso() {
                         />
                       )}
                     </div>
-                    
+
                   </div>
                   <span className="text-xs text-gray-400 dark:text-slate-400 font-medium">
                     {formatarData(aviso.dataPostagem)}

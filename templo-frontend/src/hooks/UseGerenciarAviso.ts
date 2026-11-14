@@ -16,12 +16,11 @@ export interface AvisoAula {
   dataPostagem: string;
   imagemUrl?: string;
   idProfessor: number;
-  idTurma: number;
+  turmasVinculadas?: { idTurma: number; turma?: { idTurma: number; nome?: string } }[];
   criadoEm?: string;
   atualizadoEm?: string;
   criadoPor?: AutorAuditoria | null;
   atualizadoPor?: AutorAuditoria | null;
-  turmasVinculadas?: { idTurma: number; turma?: { nome?: string } }[];
   alunosVinculados?: { aluno: { usuario: { nome: string } } }[];
 }
 
@@ -132,19 +131,14 @@ export function UseGerenciarAviso() {
     setErro('');
 
     try {
-      await Promise.all(
-        turmasAlvo.map(idTurma => {
-          const turmaAtual = turmas.find(t => t.idTurma === idTurma);
-          const professorId = (user?.papel === 'GESTOR' ? turmaAtual?.idProfessor : user?.idUsuario) || user?.idUsuario;
-
-          return Api.post('/aviso-aula', {
-            titulo,
-            imagemUrl: imagemUrl || undefined,
-            idProfessor: professorId,
-            idTurma: idTurma
-          });
-        })
-      );
+      const professorId = user.idUsuario;
+      
+      await Api.post('/aviso-aula', {
+        titulo,
+        imagemUrl: imagemUrl || undefined,
+        idProfessor: professorId,
+        idsTurmas: turmasAlvo
+      });
 
       setSucesso('Aviso publicado com sucesso!');
       await atualizarMural();
