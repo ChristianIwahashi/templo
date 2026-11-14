@@ -190,7 +190,9 @@ export function Dashboard() {
                   <div key={aviso.idAvisoAula} className="border-l-2 border-sys-blue pl-3 py-1">
                     <p className="font-semibold text-sm text-gray-800 dark:text-slate-100 leading-tight">{aviso.titulo}</p>
                     <p className="text-xs text-gray-400 dark:text-slate-400 mt-1 flex items-center gap-1">
-                      <Clock className="w-3 h-3" /> {formatarData(aviso.dataPostagem)} - Por: {aviso.professor.usuario.nome}
+                      <Clock className="w-3 h-3" /> 
+                      {formatarData(aviso.dataPostagem)} - Por: 
+                      {aviso.professor?.usuario?.nome || aviso.criadoPor?.nome || 'Coordenação'}
                     </p>
                   </div>
                 ))}
@@ -249,7 +251,9 @@ export function Dashboard() {
                     <div key={aviso.idAvisoAula} className="border-l-2 border-sys-blue pl-3 py-1">
                       <p className="font-semibold text-sm text-gray-800 dark:text-slate-100 leading-tight">{aviso.titulo}</p>
                       <p className="text-xs text-gray-400 dark:text-slate-400 mt-1 flex items-center gap-1">
-                        <Clock className="w-3 h-3" /> Postado em {formatarData(aviso.dataPostagem)} para a Turma {aviso.idTurma}
+                        <Clock className="w-3 h-3" /> Postado em {formatarData(aviso.dataPostagem)} para:{' '}
+                        {aviso.turmasVinculadas?.map((tv: any) => tv.turma?.nome 
+                        || `Turma ${tv.idTurma}`).join(', ') || 'Turmas'}
                       </p>
                     </div>
                   ))}

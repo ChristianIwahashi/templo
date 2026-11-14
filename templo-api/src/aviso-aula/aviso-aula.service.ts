@@ -8,30 +8,51 @@ export class AvisoAulaService {
   constructor(private prisma: PrismaService) { }
 
   async create(data: CreateAvisoAulaDto, usuarioLogado?: any) {
-    if (usuarioLogado && usuarioLogado.papel === 'PROFESSOR' && data.idProfessor !== usuarioLogado.idUsuario) {
-      throw new ForbiddenException('Você só pode postar avisos no seu próprio nome.');
-    }
-
-    const professorExists = await this.prisma.professor.findUnique({
-      where: { idUsuario: data.idProfessor }
-    });
-    if (!professorExists) throw new NotFoundException('Professor não encontrado.');
-
     if (!data.idsTurmas || data.idsTurmas.length === 0) {
       throw new BadRequestException('Selecione ao menos uma turma de destino.');
+    }
+
+    const idsTurmasUnicos = Array.from(new Set(data.idsTurmas));
+    let professorIdFinal: number | null = null;
+
+    if (usuarioLogado?.papel === 'PROFESSOR') {
+      const turmasEncontradas = await this.prisma.turma.findMany({
+        where: {
+          idTurma: { in: data.idsTurmas },
+          idProfessor: usuarioLogado.idUsuario,
+        },
+      });
+
+      if (turmasEncontradas.length !== data.idsTurmas.length) {
+        throw new ForbiddenException(
+          'Acesso negado: Você só pode enviar avisos para turmas sob sua responsabilidade.',
+        );
+      }
+      if (data.idProfessor && data.idProfessor !== usuarioLogado.idUsuario) {
+        throw new ForbiddenException('Você só pode postar avisos no seu próprio nome.');
+      }
+      professorIdFinal = usuarioLogado.idUsuario;
+    } else if (data.idProfessor) {
+      const professorExists = await this.prisma.professor.findUnique({
+        where: { idUsuario: data.idProfessor }
+      });
+      if (!professorExists) throw new NotFoundException('Professor não encontrado.');
+      professorIdFinal = data.idProfessor;
     }
 
     return await this.prisma.avisoAula.create({
       data: {
         titulo: data.titulo,
         imagemUrl: data.imagemUrl,
-        idProfessor: data.idProfessor,
+        idProfessor: professorIdFinal,
         turmasVinculadas: {
           create: data.idsTurmas.map(id => ({ idTurma: id }))
         },
         criadoPorId: usuarioLogado?.idUsuario || null,
       },
       include: {
+        professor: { include: { usuario: { select: { nome: true } } } },
+        criadoPor: { select: { idUsuario: true, nome: true, papel: true } },
         turmasVinculadas: { include: { turma: true } }
       }
     });

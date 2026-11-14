@@ -7,7 +7,8 @@ interface AvisoAula {
   titulo: string;
   dataPostagem: string;
   imagemUrl?: string;
-  professor: { usuario: { nome: string } };
+  professor?: { usuario: { nome: string } };
+  criadoPor?: { nome: string; papel: string } | null;
 }
 
 export function Avisos() {
@@ -33,9 +34,9 @@ export function Avisos() {
   }, []);
 
   function formatarData(dataStr: string) {
-    return new Date(dataStr).toLocaleDateString('pt-BR', { 
-      day: '2-digit', 
-      month: '2-digit', 
+    return new Date(dataStr).toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
       year: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
@@ -62,7 +63,7 @@ export function Avisos() {
 
   return (
     <div className="p-6 max-w-3xl mx-auto space-y-6 animate-fade-in-up relative text-slate-800 dark:text-slate-100">
-      
+
       {/*Título da Seção*/}
       <div className="flex items-center gap-2 border-b border-gray-200 dark:border-slate-800 pb-4">
         <BookOpen className="w-6 h-6 text-sys-blue" />
@@ -80,19 +81,23 @@ export function Avisos() {
           avisos.map((aviso) => (
             <div key={aviso.idAvisoAula} className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-xs hover:shadow-md transition overflow-hidden">
               <div className="p-6 space-y-4">
-                
+
                 <div className="flex flex-wrap justify-between items-start gap-2 border-b border-gray-100 dark:border-slate-800 pb-3">
                   <div>
                     <h4 className="font-bold text-gray-800 dark:text-slate-100 text-lg leading-tight">{aviso.titulo}</h4>
                     <p className="text-xs text-sys-blue font-semibold flex items-center gap-1 mt-1.5">
-                      <User className="w-3.5 h-3.5" /> Prof: {aviso.professor.usuario.nome}
+                      <User className="w-3.5 h-3.5" />
+                      {aviso.professor?.usuario?.nome
+                        ? `Prof: ${aviso.professor.usuario.nome}`
+                        : `Coordenação / ${aviso.criadoPor?.nome || 'Gestão'}`
+                      }
                     </p>
                   </div>
                   <span className="text-xs text-gray-400 dark:text-slate-400 font-medium flex items-center gap-1">
                     <Clock className="w-3.5 h-3.5" /> {formatarData(aviso.dataPostagem)}
                   </span>
                 </div>
-                
+
                 {aviso.imagemUrl && (
                   <div
                     onClick={() => setImagemZoom(aviso.imagemUrl || null)}
@@ -120,22 +125,22 @@ export function Avisos() {
 
       {/*Modal Lightbox*/}
       {imagemZoom && (
-        <div 
-          onClick={() => setImagemZoom(null)} 
+        <div
+          onClick={() => setImagemZoom(null)}
           className="fixed inset-0 bg-black/85 z-300 flex items-center justify-center p-4 backdrop-blur-sm cursor-zoom-out animate-fade-in-up"
         >
-          <button 
+          <button
             onClick={() => setImagemZoom(null)}
             className="absolute top-4 right-4 text-white hover:text-gray-300 p-2.5 bg-black/50 rounded-full cursor-pointer transition-colors z-20 backdrop-blur-md"
             aria-label="Fechar zoom"
           >
             <X className="w-6 h-6" />
           </button>
-          <img 
-            src={imagemZoom} 
-            alt="Aviso ampliado" 
+          <img
+            src={imagemZoom}
+            alt="Aviso ampliado"
             className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl animate-modal-enter cursor-default"
-            onClick={(e) => e.stopPropagation()} 
+            onClick={(e) => e.stopPropagation()}
           />
         </div>
       )}

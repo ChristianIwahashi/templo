@@ -15,7 +15,8 @@ export interface AvisoAula {
   titulo: string;
   dataPostagem: string;
   imagemUrl?: string;
-  idProfessor: number;
+  idProfessor?: number | null;
+  professor?: { usuario: { nome: string } } | null;
   turmasVinculadas?: { idTurma: number; turma?: { idTurma: number; nome?: string } }[];
   criadoEm?: string;
   atualizadoEm?: string;
@@ -115,12 +116,9 @@ export function UseGerenciarAviso() {
       return;
     }
 
-    let turmasAlvo: number[] = [];
-    if (enviarParaTodas) {
-      turmasAlvo = turmas.map(t => t.idTurma);
-    } else {
-      turmasAlvo = turmaSelecionada;
-    }
+    const turmasAlvo = enviarParaTodas
+      ? turmas.map(t => t.idTurma)
+      : turmaSelecionada;
 
     if (turmasAlvo.length === 0) {
       setErro('Selecione pelo menos uma turma de destino.');
@@ -131,42 +129,12 @@ export function UseGerenciarAviso() {
     setErro('');
 
     try {
-      if (user.papel === 'PROFESSOR') {
-        await Api.post('/aviso-aula', {
-          titulo,
-          imagemUrl: imagemUrl || undefined,
-          idProfessor: user.idUsuario,
-          idsTurmas: turmasAlvo
-        });
-      } else {
-        const turmasPorProfessor = new Map<number, number[]>();
-
-        for (const idTurma of turmasAlvo) {
-          const turmaObj = turmas.find(t => t.idTurma === idTurma);
-          if (turmaObj?.idProfessor) {
-            const lista = turmasPorProfessor.get(turmaObj.idProfessor) || [];
-            lista.push(idTurma);
-            turmasPorProfessor.set(turmaObj.idProfessor, lista);
-          }
-        }
-
-        if (turmasPorProfessor.size === 0) {
-          setErro('Nenhuma das turmas selecionadas possui um professor vinculado.');
-          setSalvando(false);
-          return;
-        }
-
-        await Promise.all(
-          Array.from(turmasPorProfessor.entries()).map(([profId, idsTurmasDoProf]) =>
-            Api.post('/aviso-aula', {
-              titulo,
-              imagemUrl: imagemUrl || undefined,
-              idProfessor: profId,
-              idsTurmas: idsTurmasDoProf
-            })
-          )
-        );
-      }
+      await Api.post('/aviso-aula', {
+      titulo,
+      imagemUrl: imagemUrl || undefined,
+      idProfessor: user.papel === 'PROFESSOR' ? user.idUsuario : undefined,
+      idsTurmas: turmasAlvo
+    });
 
       setSucesso('Aviso publicado com sucesso!');
       await atualizarMural();
