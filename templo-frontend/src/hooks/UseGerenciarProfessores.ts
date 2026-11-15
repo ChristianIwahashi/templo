@@ -26,6 +26,7 @@ export function UseGerenciarProfessores() {
   const [loading, setLoading] = useState(true);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState('');
+  const [erroModal, setErroModal] = useState('');
   const [sucesso, setSucesso] = useState('');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -69,7 +70,7 @@ export function UseGerenciarProfessores() {
     setEmail('');
     setSenha('');
     setTelefone('');
-    setErro('');
+    setErroModal('');
     setSucesso('');
     setIsAddModalOpen(true);
   }
@@ -78,7 +79,7 @@ export function UseGerenciarProfessores() {
     setNome(prof.nome);
     setEmail(prof.email);
     setTelefone(padraoTelefone(prof.telefone));
-    setErro('');
+    setErroModal('');
     setSucesso('');
     setIsEditModalOpen(true);
   }
@@ -89,23 +90,34 @@ export function UseGerenciarProfessores() {
     setIsConfirmDeleteOpen(true);
   }
 
+  function fecharModais() {
+    setIsAddModalOpen(false);
+    setIsEditModalOpen(false);
+    setIsConfirmDeleteOpen(false);
+    setErroModal('');
+  }
+
   //Preparar Confirmações
   function prepararCadastrar() {
     if (!nome.trim() || !email.trim() || !senha.trim() || !telefone.trim()) {
-      setErro('Preencha todos os campos obrigatórios.');
+      setErroModal('Preencha todos os campos obrigatórios.');
       return;
     }
+    setErroModal('');
     setIsConfirmAddOpen(true);
   }
   function prepararEditar() {
     if (!nome.trim() || !email.trim() || !telefone.trim()) {
-      setErro('Preencha todos os campos obrigatórios.');
+      setErroModal('Preencha todos os campos obrigatórios.');
       return;
     }
+    setErroModal('');
     setIsConfirmEditOpen(true);
   }
   function prepararAlternarStatus(prof: ProfessorCompleto) {
     setProfessorSelecionado(prof);
+    setErro('');
+    setSucesso('');
     setIsConfirmStatusOpen(true);
   }
 
@@ -114,7 +126,7 @@ export function UseGerenciarProfessores() {
     if (!user) return;
     setIsConfirmAddOpen(false);
     setSalvando(true);
-    setErro('');
+    setErroModal('');
 
     try {
       await Api.post('/usuario', {
@@ -127,14 +139,14 @@ export function UseGerenciarProfessores() {
         idGestor: user.idUsuario
       });
 
-      setSucesso('Professor cadastrado com sucesso!');
+      showToastSuccess('Professor cadastrado com sucesso!');
       await atualizarListaProfessores();
       setIsAddModalOpen(false);
     } catch (error) {
       if (error instanceof AxiosError) {
-        setErro(error.response?.data?.message || 'Erro ao cadastrar professor.');
+        setErroModal(error.response?.data?.message || 'Erro ao cadastrar professor.');
       } else {
-        setErro('Erro inesperado.');
+        setErroModal('Erro inesperado.');
       }
     } finally {
       setSalvando(false);
@@ -146,7 +158,7 @@ export function UseGerenciarProfessores() {
     if (!professorSelecionado) return;
     setIsConfirmEditOpen(false);
     setSalvando(true);
-    setErro('');
+    setErroModal('');
 
     try {
       await Api.put(`/usuario/${professorSelecionado.idUsuario}`, {
@@ -156,14 +168,14 @@ export function UseGerenciarProfessores() {
         ativo: professorSelecionado.ativo
       });
 
-      setSucesso('Cadastro do professor atualizado com sucesso!');
+      showToastSuccess('Cadastro do professor atualizado com sucesso!');
       await atualizarListaProfessores();
       setIsEditModalOpen(false);
     } catch (error) {
       if (error instanceof AxiosError) {
-        setErro(error.response?.data?.message || 'Erro ao atualizar.');
+        setErroModal(error.response?.data?.message || 'Erro ao atualizar.');
       } else {
-        setErro('Erro inesperado.');
+        setErroModal('Erro inesperado.');
       }
     } finally {
       setSalvando(false);
@@ -204,7 +216,7 @@ export function UseGerenciarProfessores() {
 
     try {
       await Api.delete(`/usuario/${professorSelecionado.idUsuario}`);
-      setSucesso('Cadastro excluído permanentemente!');
+      showToastSuccess('Cadastro excluído permanentemente!');
       await atualizarListaProfessores();
       setIsConfirmDeleteOpen(false);
     } catch (error) {
@@ -252,6 +264,7 @@ export function UseGerenciarProfessores() {
     loading,
     salvando,
     erro,
+    erroModal,
     sucesso,
     isAddModalOpen,
     setIsAddModalOpen,
@@ -266,6 +279,7 @@ export function UseGerenciarProfessores() {
     setIsConfirmStatusOpen,
     isConfirmDeleteOpen,
     setIsConfirmDeleteOpen,
+    fecharModais,
     abrirModalCadastrar,
     abrirModalEditar,
     prepararDeletar,

@@ -26,6 +26,7 @@ export function UseGerenciarGestores() {
   const [loading, setLoading] = useState(true);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState('');
+  const [erroModal, setErroModal] = useState('');
   const [sucesso, setSucesso] = useState('');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -68,7 +69,7 @@ export function UseGerenciarGestores() {
     setEmail('');
     setSenha('');
     setTelefone('');
-    setErro('');
+    setErroModal('');
     setSucesso('');
     setIsAddModalOpen(true);
   }
@@ -77,7 +78,7 @@ export function UseGerenciarGestores() {
     setNome(gestor.nome);
     setEmail(gestor.email);
     setTelefone(padraoTelefone(gestor.telefone));
-    setErro('');
+    setErroModal('');
     setSucesso('');
     setIsEditModalOpen(true);
   }
@@ -91,18 +92,26 @@ export function UseGerenciarGestores() {
     setSucesso('');
     setIsConfirmDeleteOpen(true);
   }
+  function fecharModais() {
+    setIsAddModalOpen(false);
+    setIsEditModalOpen(false);
+    setIsConfirmDeleteOpen(false);
+    setErroModal('');
+  }
   function prepararCadastrar() {
     if (!nome.trim() || !email.trim() || !senha.trim() || !telefone.trim()) {
-      setErro('Preencha todos os campos obrigatórios.');
+      setErroModal('Preencha todos os campos obrigatórios.');
       return;
     }
+    setErroModal('');
     setIsConfirmAddOpen(true);
   }
   function prepararEditar() {
     if (!nome.trim() || !email.trim() || !telefone.trim()) {
-      setErro('Preencha todos os campos obrigatórios.');
+      setErroModal('Preencha todos os campos obrigatórios.');
       return;
     }
+    setErroModal('');
     setIsConfirmEditOpen(true);
   }
   function prepararAlternarStatus(gestor: GestorCompleto) {
@@ -119,7 +128,7 @@ export function UseGerenciarGestores() {
     if (!user) return;
     setIsConfirmAddOpen(false);
     setSalvando(true);
-    setErro('');
+    setErroModal('');
 
     try {
       await Api.post('/usuario', {
@@ -131,14 +140,14 @@ export function UseGerenciarGestores() {
         papel: 'GESTOR'
       });
 
-      setSucesso('Administrador cadastrado com sucesso!');
+      showToastSuccess('Administrador cadastrado com sucesso!');
       await atualizarListaGestores();
       setIsAddModalOpen(false);
     } catch (error) {
       if (error instanceof AxiosError) {
-        setErro(error.response?.data?.message || 'Erro ao cadastrar administrador.');
+        setErroModal(error.response?.data?.message || 'Erro ao cadastrar administrador.');
       } else {
-        setErro('Erro inesperado.');
+        setErroModal('Erro inesperado.');
       }
     } finally {
       setSalvando(false);
@@ -150,7 +159,7 @@ export function UseGerenciarGestores() {
     if (!gestorSelecionado) return;
     setIsConfirmEditOpen(false);
     setSalvando(true);
-    setErro('');
+    setErroModal('');
 
     try {
       await Api.put(`/usuario/${gestorSelecionado.idUsuario}`, {
@@ -160,14 +169,14 @@ export function UseGerenciarGestores() {
         ativo: gestorSelecionado.ativo
       });
 
-      setSucesso('Cadastro de administrador atualizado com sucesso!');
+      showToastSuccess('Cadastro de administrador atualizado com sucesso!');
       await atualizarListaGestores();
       setIsEditModalOpen(false);
     } catch (error) {
       if (error instanceof AxiosError) {
-        setErro(error.response?.data?.message || 'Erro ao atualizar.');
+        setErroModal(error.response?.data?.message || 'Erro ao atualizar.');
       } else {
-        setErro('Erro inesperado.');
+        setErroModal('Erro inesperado.');
       }
     } finally {
       setSalvando(false);
@@ -208,7 +217,7 @@ export function UseGerenciarGestores() {
 
     try {
       await Api.delete(`/usuario/${gestorSelecionado.idUsuario}`);
-      setSucesso('Administrador excluído permanentemente!');
+      showToastSuccess('Administrador excluído permanentemente!');
       await atualizarListaGestores();
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -254,6 +263,7 @@ export function UseGerenciarGestores() {
     loading,
     salvando,
     erro,
+    erroModal,
     sucesso,
     isAddModalOpen,
     setIsAddModalOpen,
@@ -268,6 +278,7 @@ export function UseGerenciarGestores() {
     setIsConfirmStatusOpen,
     isConfirmDeleteOpen,
     setIsConfirmDeleteOpen,
+    fecharModais,
     abrirModalCadastrar,
     abrirModalEditar,
     prepararDeletar,

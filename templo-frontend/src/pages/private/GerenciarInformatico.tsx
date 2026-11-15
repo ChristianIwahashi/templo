@@ -31,15 +31,12 @@ export function GerenciarInformatico() {
     loading,
     salvando,
     erro,
+    erroModal,
     sucesso,
     isAddConteudoOpen,
-    setIsAddConteudoOpen,
     isEditConteudoOpen,
-    setIsEditConteudoOpen,
     isAddEventoOpen,
-    setIsAddEventoOpen,
     isEditEventoOpen,
-    setIsEditEventoOpen,
     isConfirmAddConteudo,
     setIsConfirmAddConteudo,
     isConfirmEditConteudo,
@@ -51,9 +48,9 @@ export function GerenciarInformatico() {
     isConfirmEditEvento,
     setIsConfirmEditEvento,
     isConfirmDeleteEvento,
-    setIsConfirmDeleteEvento,
     isConfirmStatusEvento,
     setIsConfirmStatusEvento,
+    fecharModais,
     eventoSelecionado,
     abrirModalCriarConteudo,
     abrirModalEditarConteudo,
@@ -110,12 +107,12 @@ export function GerenciarInformatico() {
         )}
       </div>
 
-      {erro && !isAddConteudoOpen && !isEditConteudoOpen && !isAddEventoOpen && !isEditEventoOpen && (
+      {erro && (
         <div className="p-4 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-xl border border-red-150 dark:border-red-900 flex items-center gap-2 font-semibold">
           <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
         </div>
       )}
-      {sucesso && !isAddConteudoOpen && !isEditConteudoOpen && !isAddEventoOpen && !isEditEventoOpen && (
+      {sucesso && (
         <div className="p-4 bg-green-50 dark:bg-green-950/40 text-green-700 dark:text-green-300 rounded-xl border border-green-150 dark:border-green-900 flex items-center gap-2 font-semibold">
           <Check className="w-4 h-4 shrink-0" /> {sucesso}
         </div>
@@ -290,9 +287,9 @@ export function GerenciarInformatico() {
               {isAddConteudoOpen ? 'Novo Conteúdo Institucional' : 'Editar Conteúdo'}
             </h3>
 
-            {erro && (
+            {erroModal && (
               <div className="p-3 mb-4 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-lg border border-red-150 dark:border-red-900 flex items-center gap-2 font-semibold">
-                <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
+                <AlertCircle className="w-4 h-4 shrink-0" /> {erroModal}
               </div>
             )}
 
@@ -344,7 +341,7 @@ export function GerenciarInformatico() {
               />
 
               <div className="flex justify-end gap-2 pt-4 border-t border-gray-100 dark:border-slate-800">
-                <button type="button" onClick={() => { setIsAddConteudoOpen(false); setIsEditConteudoOpen(false); }} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
+                <button type="button" onClick={fecharModais} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
                 <button type="submit" disabled={salvando} className="px-4 py-2 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl font-bold cursor-pointer disabled:opacity-50">
                   {salvando ? 'Salvando...' : 'Prosseguir'}
                 </button>
@@ -363,9 +360,9 @@ export function GerenciarInformatico() {
               {isAddEventoOpen ? 'Novo Evento na Agenda' : 'Editar Evento'}
             </h3>
 
-            {erro && (
+            {erroModal && (
               <div className="p-3 mb-4 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-lg border border-red-150 dark:border-red-900 flex items-center gap-2 font-semibold">
-                <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
+                <AlertCircle className="w-4 h-4 shrink-0" /> {erroModal}
               </div>
             )}
 
@@ -430,7 +427,7 @@ export function GerenciarInformatico() {
               </div>
 
               <div className="flex justify-end gap-2 pt-4 border-t border-gray-100 dark:border-slate-800">
-                <button type="button" onClick={() => { setIsAddEventoOpen(false); setIsEditEventoOpen(false); }} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
+                <button type="button" onClick={fecharModais} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
                 <button type="submit" disabled={salvando} className="px-4 py-2 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl font-bold cursor-pointer disabled:opacity-50">
                   {salvando ? 'Salvando...' : 'Prosseguir'}
                 </button>
@@ -497,7 +494,7 @@ export function GerenciarInformatico() {
       />
       <ConfirmModal 
         isOpen={isConfirmDeleteEvento}
-        onClose={() => setIsConfirmDeleteEvento(false)}
+        onClose={fecharModais}
         onConfirm={executarDeletarEvento}
         title="Excluir Evento"
         description="Tem certeza de que deseja apagar permanentemente este evento da agenda?"

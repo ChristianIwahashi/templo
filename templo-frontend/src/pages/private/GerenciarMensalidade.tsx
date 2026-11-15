@@ -1,7 +1,7 @@
 import { UseGerenciarMensalidades, type MensalidadeAdmin } from "../../hooks/UseGerenciarMensalidade";
 import { formatarDinheiro, formatarData, obterEstiloStatusPagamento } from "../../utils/formatters";
 import { ConfirmModal } from "../../components/ConfirmModal";
-import { DollarSign, Plus, Edit, Trash2, CheckCircle2, AlertCircle, Check, TrendingUp, AlertTriangle } from "lucide-react";
+import { DollarSign, Plus, Edit, Trash2, CheckCircle2, AlertCircle, Check, TrendingUp, AlertTriangle, Search } from "lucide-react";
 
 export function GerenciarMensalidade() {
   const {
@@ -28,26 +28,27 @@ export function GerenciarMensalidade() {
     setDataVencimento,
     statusPagamento,
     setStatusPagamento,
+    dataPagamento,
+    setDataPagamento,
     loading,
     salvando,
     erro,
+    erroModal,
     sucesso,
     isAddModalOpen,
-    setIsAddModalOpen,
     isEditModalOpen,
-    setIsEditModalOpen,
     isConfirmAddOpen,
     setIsConfirmAddOpen,
     isConfirmEditOpen,
     setIsConfirmEditOpen,
     isConfirmDeleteOpen,
-    setIsConfirmDeleteOpen,
     isConfirmBaixaOpen,
     setIsConfirmBaixaOpen,
     mensalidadeSelecionada,
     alunoSelecionadoObj,
     abrirModalAdicionar,
     abrirModalEditar,
+    fecharModais,
     prepararDeletar,
     prepararDarBaixa,
     prepararCriar,
@@ -84,12 +85,12 @@ export function GerenciarMensalidade() {
         </button>
       </div>
 
-      {erro && !isAddModalOpen && !isEditModalOpen && (
+      {erro && (
         <div className="p-4 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-xl border border-red-150 dark:border-red-900 flex items-center gap-2 font-semibold">
           <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
         </div>
       )}
-      {sucesso && !isAddModalOpen && !isEditModalOpen && (
+      {sucesso && (
         <div className="p-4 bg-green-50 dark:bg-green-950/40 text-green-700 dark:text-green-300 rounded-xl border border-green-150 dark:border-green-900 flex items-center gap-2 font-semibold">
           <Check className="w-4 h-4 shrink-0" /> {sucesso}
         </div>
@@ -130,6 +131,7 @@ export function GerenciarMensalidade() {
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="w-4 h-4 text-gray-400" />
             </div>
             <input 
               id="busca-mensalidade"
@@ -292,9 +294,9 @@ export function GerenciarMensalidade() {
               <Plus className="w-5 h-5 text-sys-blue" /> Registrar Nova Cobrança
             </h3>
 
-            {erro && (
+            {erroModal && (
               <div className="p-3 mb-4 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-lg border border-red-150 dark:border-red-900 flex items-center gap-2 font-semibold">
-                <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
+                <AlertCircle className="w-4 h-4 shrink-0" /> {erroModal}
               </div>
             )}
 
@@ -380,10 +382,26 @@ export function GerenciarMensalidade() {
                 </div>
               </div>
 
+              {statusPagamento === 'PAGO' && (
+                <div>
+                  <label htmlFor="pag-add" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase mb-1">
+                    Data do Pagamento *
+                  </label>
+                  <input 
+                    id="pag-add" 
+                    type="date" 
+                    value={dataPagamento} 
+                    onChange={e => setDataPagamento(e.target.value)} 
+                    className="w-full p-2.5 border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50 dark:bg-slate-800 text-gray-800 dark:text-slate-100 font-medium" 
+                    required 
+                  />
+                </div>
+              )}
+
               <div className="flex justify-end gap-2 pt-4 border-t border-gray-100 dark:border-slate-800">
                 <button 
                   type="button" 
-                  onClick={() => setIsAddModalOpen(false)} 
+                  onClick={fecharModais} 
                   className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer"
                 >
                   Cancelar
@@ -408,9 +426,9 @@ export function GerenciarMensalidade() {
               <Edit className="w-5 h-5 text-sys-blue" /> Editar Mensalidade de {mensalidadeSelecionada?.aluno.usuario.nome}
             </h3>
 
-            {erro && (
+            {erroModal && (
               <div className="p-3 mb-4 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-lg border border-red-150 dark:border-red-900 flex items-center gap-2 font-semibold">
-                <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
+                <AlertCircle className="w-4 h-4 shrink-0" /> {erroModal}
               </div>
             )}
 
@@ -469,10 +487,26 @@ export function GerenciarMensalidade() {
                 </div>
               </div>
 
+              {statusPagamento === 'PAGO' && (
+                <div>
+                  <label htmlFor="pag-edit" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase mb-1">
+                    Data do Pagamento *
+                  </label>
+                  <input 
+                    id="pag-edit" 
+                    type="date" 
+                    value={dataPagamento} 
+                    onChange={e => setDataPagamento(e.target.value)} 
+                    className="w-full p-2.5 border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50 dark:bg-slate-800 text-gray-800 dark:text-slate-100 font-medium" 
+                    required 
+                  />
+                </div>
+              )}
+
               <div className="flex justify-end gap-2 pt-4 border-t border-gray-100 dark:border-slate-800">
                 <button 
                   type="button" 
-                  onClick={() => setIsEditModalOpen(false)} 
+                  onClick={fecharModais} 
                   className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer"
                 >
                   Cancelar
@@ -520,7 +554,7 @@ export function GerenciarMensalidade() {
       />
       <ConfirmModal 
         isOpen={isConfirmDeleteOpen}
-        onClose={() => setIsConfirmDeleteOpen(false)}
+        onClose={fecharModais}
         onConfirm={executarDeletarMensalidade}
         title="Excluir Registro de Mensalidade"
         description={`Atenção: Tem certeza de que deseja apagar permanentemente a mensalidade de ${mensalidadeSelecionada?.mes} do aluno ${mensalidadeSelecionada?.aluno.usuario.nome}?`}

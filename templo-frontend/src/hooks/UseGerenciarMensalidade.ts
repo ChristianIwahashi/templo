@@ -46,6 +46,7 @@ export function UseGerenciarMensalidades() {
   const [loading, setLoading] = useState(true);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState('');
+  const [erroModal, setErroModal] = useState('');
   const [sucesso, setSucesso] = useState('');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -101,7 +102,7 @@ export function UseGerenciarMensalidades() {
     setDataVencimento(new Date().toISOString().split('T')[0]);
     setDataPagamento('');
     setStatusPagamento('PENDENTE');
-    setErro('');
+    setErroModal('');
     setSucesso('');
     setIsAddModalOpen(true);
   }
@@ -112,7 +113,7 @@ export function UseGerenciarMensalidades() {
     setDataVencimento(new Date(m.dataVencimento).toISOString().split('T')[0]);
     setDataPagamento(m.dataPagamento ? new Date(m.dataPagamento).toISOString().split('T')[0] : '');
     setStatusPagamento(m.statusPagamento);
-    setErro('');
+    setErroModal('');
     setSucesso('');
     setIsEditModalOpen(true);
   }
@@ -128,18 +129,26 @@ export function UseGerenciarMensalidades() {
     setSucesso('');
     setIsConfirmBaixaOpen(true);
   }
+  function fecharModais() {
+    setIsAddModalOpen(false);
+    setIsEditModalOpen(false);
+    setIsConfirmDeleteOpen(false);
+    setErroModal('');
+  }
   function prepararCriar() {
     if (!idAluno || !mes.trim() || !valorReais || !dataVencimento) {
-      setErro('Preencha todos os campos obrigatórios.');
+      setErroModal('Preencha todos os campos obrigatórios.');
       return;
     }
+    setErroModal('');
     setIsConfirmAddOpen(true);
   }
   function prepararEditar() {
     if (!mes.trim() || !valorReais || !dataVencimento) {
-      setErro('Preencha todos os campos obrigatórios.');
+      setErroModal('Preencha todos os campos obrigatórios.');
       return;
     }
+    setErroModal('');
     setIsConfirmEditOpen(true);
   }
 
@@ -154,7 +163,7 @@ export function UseGerenciarMensalidades() {
     if (!user) return;
     setIsConfirmAddOpen(false);
     setSalvando(true);
-    setErro('');
+    setErroModal('');
 
     try {
       await Api.post('/mensalidade', {
@@ -172,9 +181,9 @@ export function UseGerenciarMensalidades() {
       setIsAddModalOpen(false);
     } catch (error) {
       if (error instanceof AxiosError) {
-        setErro(error.response?.data?.message || 'Erro ao registrar mensalidade.');
+        setErroModal(error.response?.data?.message || 'Erro ao registrar mensalidade.');
       } else {
-        setErro('Erro inesperado.');
+        setErroModal('Erro inesperado.');
       }
     } finally {
       setSalvando(false);
@@ -186,7 +195,7 @@ export function UseGerenciarMensalidades() {
     if (!mensalidadeSelecionada) return;
     setIsConfirmEditOpen(false);
     setSalvando(true);
-    setErro('');
+    setErroModal('');
 
     try {
       await Api.put(`/mensalidade/${mensalidadeSelecionada.idMensalidade}`, {
@@ -202,9 +211,9 @@ export function UseGerenciarMensalidades() {
       setIsEditModalOpen(false);
     } catch (error) {
       if (error instanceof AxiosError) {
-        setErro(error.response?.data?.message || 'Erro ao atualizar cobrança.');
+        setErroModal(error.response?.data?.message || 'Erro ao atualizar cobrança.');
       } else {
-        setErro('Erro inesperado.');
+        setErroModal('Erro inesperado.');
       }
     } finally {
       setSalvando(false);
@@ -337,6 +346,7 @@ export function UseGerenciarMensalidades() {
     loading,
     salvando,
     erro,
+    erroModal,
     sucesso,
     isAddModalOpen,
     setIsAddModalOpen,
@@ -348,6 +358,7 @@ export function UseGerenciarMensalidades() {
     setIsConfirmEditOpen,
     isConfirmDeleteOpen,
     setIsConfirmDeleteOpen,
+    fecharModais,
     isConfirmBaixaOpen,
     setIsConfirmBaixaOpen,
     mensalidadeSelecionada,

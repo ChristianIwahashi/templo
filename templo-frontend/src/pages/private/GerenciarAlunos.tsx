@@ -3,6 +3,7 @@ import { ConfirmModal } from "../../components/ConfirmModal";
 import { formatarData } from "../../utils/formatters";
 import { Users, UserPlus, Search, Edit, Trash2, Power, Info, AlertCircle, Check } from "lucide-react";
 import { padraoTelefone } from "../../utils/telefone";
+import { Fragment } from "react";
 
 export function GerenciarAlunos() {
   const {
@@ -29,11 +30,10 @@ export function GerenciarAlunos() {
     loading,
     salvando,
     erro,
+    erroModal,
     sucesso,
     isAddModalOpen,
-    setIsAddModalOpen,
     isEditModalOpen,
-    setIsEditModalOpen,
     alunoSelecionado,
     isConfirmAddOpen,
     setIsConfirmAddOpen,
@@ -42,10 +42,10 @@ export function GerenciarAlunos() {
     isConfirmStatusOpen,
     setIsConfirmStatusOpen,
     isConfirmDeleteOpen,
-    setIsConfirmDeleteOpen,
     abrirModalMatricular,
     abrirModalEditar,
     abrirModalDeletar,
+    fecharModais,
     prepararCadastrar,
     prepararEditar,
     prepararAlternarStatus,
@@ -82,12 +82,12 @@ export function GerenciarAlunos() {
       </div>
 
       {/* Alertas */}
-      {erro && !isAddModalOpen && !isEditModalOpen && (
+      {erro && (
         <div className="p-4 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-xl border border-red-150 dark:border-red-900 flex items-center gap-2 font-semibold">
           <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
         </div>
       )}
-      {sucesso && !isAddModalOpen && !isEditModalOpen && (
+      {sucesso && (
         <div className="p-4 bg-green-50 dark:bg-green-950/40 text-green-700 dark:text-green-300 rounded-xl border border-green-150 dark:border-green-900 flex items-center gap-2 font-semibold">
           <Check className="w-4 h-4 shrink-0" /> {sucesso}
         </div>
@@ -150,7 +150,7 @@ export function GerenciarAlunos() {
                   const nomeTurmaExibicao = turmaObj?.nome || (aluno.aluno?.idTurma ? `Turma ${aluno.aluno.idTurma}` : '-');
 
                   return (
-                    <>
+                    <Fragment key={aluno.idUsuario}>
                       <tr
                         key={aluno.idUsuario}
                         onClick={() => setAlunoExpandidoId(isExpanded ? null : aluno.idUsuario)}
@@ -223,7 +223,7 @@ export function GerenciarAlunos() {
                           </td>
                         </tr>
                       )}
-                    </>
+                    </Fragment>
                   );
                 })}
               </tbody>
@@ -240,9 +240,9 @@ export function GerenciarAlunos() {
               <UserPlus className="w-5 h-5 text-sys-blue" /> Matricular Novo Estudante
             </h3>
 
-            {erro && (
+            {erroModal && (
               <div className="p-3 mb-4 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-lg border border-red-150 dark:border-red-900 flex items-center gap-2 font-semibold">
-                <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
+                <AlertCircle className="w-4 h-4 shrink-0" /> {erroModal}
               </div>
             )}
 
@@ -334,7 +334,7 @@ export function GerenciarAlunos() {
               </div>
 
               <div className="flex justify-end gap-2 pt-4 border-t border-gray-100 dark:border-slate-800">
-                <button type="button" onClick={() => setIsAddModalOpen(false)} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
+                <button type="button" onClick={fecharModais} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
                 <button type="submit" className="px-4 py-2 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl font-bold cursor-pointer">Prosseguir</button>
               </div>
             </form>
@@ -350,9 +350,9 @@ export function GerenciarAlunos() {
               <Edit className="w-5 h-5 text-sys-blue" /> Editar Cadastro de {alunoSelecionado?.nome}
             </h3>
 
-            {erro && (
+            {erroModal && (
               <div className="p-3 mb-4 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-lg border border-red-150 dark:border-red-900 flex items-center gap-2 font-semibold">
-                <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
+                <AlertCircle className="w-4 h-4 shrink-0" /> {erroModal}
               </div>
             )}
 
@@ -414,7 +414,7 @@ export function GerenciarAlunos() {
               </div>
 
               <div className="flex justify-end gap-2 pt-4 border-t border-gray-100 dark:border-slate-800">
-                <button type="button" onClick={() => setIsEditModalOpen(false)} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
+                <button type="button" onClick={fecharModais} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
                 <button type="submit" className="px-4 py-2 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl font-bold cursor-pointer">Prosseguir</button>
               </div>
             </form>
@@ -455,7 +455,7 @@ export function GerenciarAlunos() {
 
       <ConfirmModal
         isOpen={isConfirmDeleteOpen}
-        onClose={() => setIsConfirmDeleteOpen(false)}
+        onClose={fecharModais}
         onConfirm={executarDeletarAluno}
         title="Excluir Matrícula"
         description={`Atenção: Tem certeza de que deseja excluir permanentemente o cadastro de ${alunoSelecionado?.nome}?`}

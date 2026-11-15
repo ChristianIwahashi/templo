@@ -54,6 +54,7 @@ export function UseGerenciarMateriais() {
   const [loadingAlunos, setLoadingAlunos] = useState(false);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState('');
+  const [erroModal, setErroModal] = useState('');
   const [sucesso, setSucesso] = useState('');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -115,9 +116,9 @@ export function UseGerenciarMateriais() {
 
   //Alternar seleção de aluno
   function handleAlternarAlunoExclusivo(idAluno: number) {
-    setAlunosSelecionados(prev => 
-      prev.includes(idAluno) 
-        ? prev.filter(id => id !== idAluno) 
+    setAlunosSelecionados(prev =>
+      prev.includes(idAluno)
+        ? prev.filter(id => id !== idAluno)
         : [...prev, idAluno]
     );
   }
@@ -130,7 +131,7 @@ export function UseGerenciarMateriais() {
     setTurmaSelecionada('');
     setIsExclusivo(false);
     setAlunosSelecionados([]);
-    setErro('');
+    setErroModal('');
     setSucesso('');
     setIsAddModalOpen(true);
   }
@@ -139,7 +140,7 @@ export function UseGerenciarMateriais() {
     setTitulo(material.titulo);
     setDescricao(material.descricao);
     setArquivoUrl(material.arquivoUrl);
-    setErro('');
+    setErroModal('');
     setSucesso('');
     setIsEditModalOpen(true);
   }
@@ -150,25 +151,32 @@ export function UseGerenciarMateriais() {
     setIsDeleteModalOpen(true);
   }
 
+  function fecharModais() {
+    setIsAddModalOpen(false);
+    setIsEditModalOpen(false);
+    setIsDeleteModalOpen(false);
+    setErroModal('');
+  }
+
   //POST Material
   async function executarAdicionarMaterial() {
     if (!user) return;
 
     if (!titulo.trim() || !descricao.trim() || !arquivoUrl.trim()) {
-      setErro('Preencha todos os campos obrigatórios.');
+      setErroModal('Preencha todos os campos obrigatórios.');
       return;
     }
     if (!turmaSelecionada) {
-      setErro('Selecione uma turma de destino.');
+      setErroModal('Selecione uma turma de destino.');
       return;
     }
     if (isExclusivo && alunosSelecionados.length === 0) {
-      setErro('Selecione ao menos um aluno exclusivo para este material.');
+      setErroModal('Selecione ao menos um aluno exclusivo para este material.');
       return;
     }
 
     setSalvando(true);
-    setErro('');
+    setErroModal('');
 
     const turmaAtual = turmas.find(t => t.idTurma.toString() === turmaSelecionada);
     const professorId = (user?.papel === 'GESTOR' ? turmaAtual?.idProfessor : user?.idUsuario) || turmaAtual?.idProfessor;
@@ -188,9 +196,9 @@ export function UseGerenciarMateriais() {
       setIsAddModalOpen(false);
     } catch (error) {
       if (error instanceof AxiosError) {
-        setErro(error.response?.data?.message || 'Erro ao publicar material.');
+        setErroModal(error.response?.data?.message || 'Erro ao publicar material.');
       } else {
-        setErro('Erro inesperado.');
+        setErroModal('Erro inesperado.');
       }
     } finally {
       setSalvando(false);
@@ -202,7 +210,7 @@ export function UseGerenciarMateriais() {
     if (!materialSelecionado) return;
 
     setSalvando(true);
-    setErro('');
+    setErroModal('');
 
     try {
       await Api.put(`/material-didatico/${materialSelecionado.idMaterial}`, {
@@ -216,9 +224,9 @@ export function UseGerenciarMateriais() {
       setIsEditModalOpen(false);
     } catch (error) {
       if (error instanceof AxiosError) {
-        setErro(error.response?.data?.message || 'Erro ao atualizar.');
+        setErroModal(error.response?.data?.message || 'Erro ao atualizar.');
       } else {
-        setErro('Erro inesperado.');
+        setErroModal('Erro inesperado.');
       }
     } finally {
       setSalvando(false);
@@ -268,6 +276,7 @@ export function UseGerenciarMateriais() {
     loadingAlunos,
     salvando,
     erro,
+    erroModal,
     sucesso,
     isAddModalOpen,
     setIsAddModalOpen,
@@ -275,6 +284,7 @@ export function UseGerenciarMateriais() {
     setIsEditModalOpen,
     isDeleteModalOpen,
     setIsDeleteModalOpen,
+    fecharModais,
     materialSelecionado,
     abrirModalAdicionar,
     abrirModalEditar,

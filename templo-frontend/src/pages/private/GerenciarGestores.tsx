@@ -2,6 +2,7 @@ import { UseGerenciarGestores } from "../../hooks/UseGerenciarGestores";
 import { padraoTelefone } from "../../utils/telefone";
 import { ConfirmModal } from "../../components/ConfirmModal";
 import { Shield, UserPlus, Search, Edit, Trash2, Power, Info, AlertCircle, Check, ShieldCheck } from "lucide-react";
+import { Fragment } from "react";
 
 export function GerenciarGestores() {
   const {
@@ -24,11 +25,10 @@ export function GerenciarGestores() {
     loading,
     salvando,
     erro,
+    erroModal,
     sucesso,
     isAddModalOpen,
-    setIsAddModalOpen,
     isEditModalOpen,
-    setIsEditModalOpen,
     gestorSelecionado,
     isConfirmAddOpen,
     setIsConfirmAddOpen,
@@ -37,9 +37,9 @@ export function GerenciarGestores() {
     isConfirmStatusOpen,
     setIsConfirmStatusOpen,
     isConfirmDeleteOpen,
-    setIsConfirmDeleteOpen,
     abrirModalCadastrar,
     abrirModalEditar,
+    fecharModais,
     prepararDeletar,
     prepararCadastrar,
     prepararEditar,
@@ -77,12 +77,12 @@ export function GerenciarGestores() {
       </div>
 
       {/*Alertas*/}
-      {erro && !isAddModalOpen && !isEditModalOpen && (
+      {erro && (
         <div className="p-4 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-xl border border-red-150 dark:border-red-900 flex items-center gap-2 font-semibold">
           <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
         </div>
       )}
-      {sucesso && !isAddModalOpen && !isEditModalOpen && (
+      {sucesso && (
         <div className="p-4 bg-green-50 dark:bg-green-950/40 text-green-700 dark:text-green-300 rounded-xl border border-green-150 dark:border-green-900 flex items-center gap-2 font-semibold">
           <Check className="w-4 h-4 shrink-0" /> {sucesso}
         </div>
@@ -142,9 +142,8 @@ export function GerenciarGestores() {
                   const isMe = user?.idUsuario === gestor.idUsuario;
 
                   return (
-                    <>
-                      <tr 
-                        key={gestor.idUsuario} 
+                    <Fragment key={gestor.idUsuario}>
+                      <tr
                         onClick={() => setGestorExpandidoId(isExpanded ? null : gestor.idUsuario)}
                         className="hover:bg-gray-50/20 dark:hover:bg-slate-800/30 transition-colors cursor-pointer"
                       >
@@ -230,7 +229,7 @@ export function GerenciarGestores() {
                           </td>
                         </tr>
                       )}
-                    </>
+                    </Fragment>
                   );
                 })}
               </tbody>
@@ -247,9 +246,9 @@ export function GerenciarGestores() {
               <UserPlus className="w-5 h-5 text-sys-blue" /> Novo Administrador
             </h3>
 
-            {erro && (
+            {erroModal && (
               <div className="p-3 mb-4 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-lg border border-red-150 dark:border-red-900 flex items-center gap-2 font-semibold">
-                <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
+                <AlertCircle className="w-4 h-4 shrink-0" /> {erroModal}
               </div>
             )}
 
@@ -310,7 +309,7 @@ export function GerenciarGestores() {
               </div>
 
               <div className="flex justify-end gap-2 pt-4 border-t border-gray-100 dark:border-slate-800">
-                <button type="button" onClick={() => setIsAddModalOpen(false)} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
+                <button type="button" onClick={fecharModais} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
                 <button type="submit" className="px-4 py-2 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl font-bold cursor-pointer">Prosseguir</button>
               </div>
             </form>
@@ -326,9 +325,9 @@ export function GerenciarGestores() {
               <Edit className="w-5 h-5 text-sys-blue" /> Editar Cadastro de {gestorSelecionado?.nome}
             </h3>
 
-            {erro && (
+            {erroModal && (
               <div className="p-3 mb-4 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-lg border border-red-150 dark:border-red-900 flex items-center gap-2 font-semibold">
-                <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
+                <AlertCircle className="w-4 h-4 shrink-0" /> {erroModal}
               </div>
             )}
 
@@ -371,7 +370,7 @@ export function GerenciarGestores() {
               </div>
 
               <div className="flex justify-end gap-2 pt-4 border-t border-gray-100 dark:border-slate-800">
-                <button type="button" onClick={() => setIsEditModalOpen(false)} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
+                <button type="button" onClick={fecharModais} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
                 <button type="submit" className="px-4 py-2 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl font-bold cursor-pointer">Prosseguir</button>
               </div>
             </form>
@@ -409,7 +408,7 @@ export function GerenciarGestores() {
       />
       <ConfirmModal 
         isOpen={isConfirmDeleteOpen}
-        onClose={() => setIsConfirmDeleteOpen(false)}
+        onClose={fecharModais}
         onConfirm={executarDeletarGestor}
         title="Exclusão Permanente"
         description={`Atenção: Tem certeza de que deseja remover permanentemente o administrador ${gestorSelecionado?.nome}?`}
