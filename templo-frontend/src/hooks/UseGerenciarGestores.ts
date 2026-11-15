@@ -95,6 +95,9 @@ export function UseGerenciarGestores() {
   function fecharModais() {
     setIsAddModalOpen(false);
     setIsEditModalOpen(false);
+    setIsConfirmAddOpen(false);
+    setIsConfirmEditOpen(false);
+    setIsConfirmStatusOpen(false);
     setIsConfirmDeleteOpen(false);
     setErroModal('');
   }

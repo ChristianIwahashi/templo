@@ -122,10 +122,15 @@ export function UseGerenciarInformatico() {
   function fecharModais() {
     setIsAddConteudoOpen(false);
     setIsEditConteudoOpen(false);
+    setIsAddEventoOpen(false);
+    setIsEditEventoOpen(false);
     setIsConfirmDeleteConteudo(false);
+    setIsConfirmAddConteudo(false);
+    setIsConfirmEditConteudo(false);
     setIsConfirmAddEvento(false);
     setIsConfirmEditEvento(false);
-    setIsConfirmAddEvento(false);
+    setIsConfirmDeleteEvento(false);
+    setIsConfirmStatusEvento(false);
     setErroModal('');
   }
   function prepararCriarConteudo() {
@@ -233,7 +238,7 @@ export function UseGerenciarInformatico() {
     setHorarioEvento('');
     setImagemUrlEvento('');
     setAtivoEvento(true);
-    setErro('');
+    setErroModal('');
     setSucesso('');
     setIsAddEventoOpen(true);
   }
@@ -244,7 +249,7 @@ export function UseGerenciarInformatico() {
     setHorarioEvento(item.horario || '');
     setImagemUrlEvento(item.imagemUrl || '');
     setAtivoEvento(item.ativo);
-    setErro('');
+    setErroModal('');
     setSucesso('');
     setIsEditEventoOpen(true);
   }
@@ -260,16 +265,18 @@ export function UseGerenciarInformatico() {
   }
   function prepararCriarEvento() {
     if (!tituloEvento.trim() || !descricaoEvento.trim()) {
-      setErro('Preencha os campos obrigatórios do evento.');
+      setErroModal('Preencha os campos obrigatórios do evento.');
       return;
     }
+    setErroModal('');
     setIsConfirmAddEvento(true);
   }
   function prepararEditarEvento() {
     if (!tituloEvento.trim() || !descricaoEvento.trim()) {
-      setErro('Preencha os campos obrigatórios.');
+      setErroModal('Preencha os campos obrigatórios.');
       return;
     }
+    setErroModal('');
     setIsConfirmEditEvento(true);
   }
 

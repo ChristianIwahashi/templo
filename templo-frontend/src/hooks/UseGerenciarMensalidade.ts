@@ -132,6 +132,8 @@ export function UseGerenciarMensalidades() {
   function fecharModais() {
     setIsAddModalOpen(false);
     setIsEditModalOpen(false);
+    setIsConfirmAddOpen(false);
+    setIsConfirmEditOpen(false);
     setIsConfirmDeleteOpen(false);
     setErroModal('');
   }

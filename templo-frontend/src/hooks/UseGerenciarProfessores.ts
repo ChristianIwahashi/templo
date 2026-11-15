@@ -93,6 +93,9 @@ export function UseGerenciarProfessores() {
   function fecharModais() {
     setIsAddModalOpen(false);
     setIsEditModalOpen(false);
+    setIsConfirmAddOpen(false);
+    setIsConfirmEditOpen(false);
+    setIsConfirmStatusOpen(false);
     setIsConfirmDeleteOpen(false);
     setErroModal('');
   }

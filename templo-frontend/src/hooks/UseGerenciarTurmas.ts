@@ -77,7 +77,7 @@ export function UseGerenciarTurmas() {
             ativo: p.ativo
           }));
 
-          const listaAlunos = usuariosRes.data
+        const listaAlunos = usuariosRes.data
           .filter((u: any) => u.papel === 'ALUNO' && u.ativo)
           .map((a: any) => ({
             idUsuario: a.idUsuario,
@@ -288,10 +288,16 @@ export function UseGerenciarTurmas() {
     a => a.idUsuario.toString() === idAlunoSelecionado
   );
 
-  const turmasFiltradas = turmas.filter(t => 
-    t.idTurma.toString().includes(pesquisa) ||
-    t.professor?.usuario?.nome.toLowerCase().includes(pesquisa.toLowerCase())
-  );
+  const turmasFiltradas = turmas.filter(t => {
+    const termo = pesquisa.toLowerCase();
+
+    const bateId = t.idTurma.toString().includes(termo);
+    const bateNomeTurma = t.nome ? t.nome.toLowerCase().includes(termo) : false;
+    const bateProfessor = t.professor?.usuario?.nome ? t.professor.usuario.nome.toLowerCase().includes(termo) : false;
+    const bateAluno = t.alunos?.some(a => a.usuario.nome.toLowerCase().includes(termo)) || false;
+
+    return bateId || bateNomeTurma || bateProfessor || bateAluno;
+  });
 
   return {
     turmasFiltradas,
