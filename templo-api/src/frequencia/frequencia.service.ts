@@ -21,7 +21,7 @@ export class FrequenciaService {
       where: { idUsuario: data.idAluno }
     });
     if (!alunoExists) throw new NotFoundException('Aluno não encontrado');
-    console.log("QUEM ESTÁ SALVANDO:", usuarioLogado);
+
     return await this.prisma.frequencia.create({
       data: {
         dataAula: new Date(data.dataAula),
@@ -44,26 +44,30 @@ export class FrequenciaService {
       }
     }
     
+    const incluirAuditoria = usuarioLogado && usuarioLogado.papel !== 'ALUNO';
+
     return await this.prisma.frequencia.findMany({
       where: filtro,
       include: {
         aluno: { include: { usuario: { select: { nome: true } } } },
         professor: { include: { usuario: { select: { nome: true } } } },
-        criadoPor: { select: { idUsuario: true, nome: true, papel: true } },
-        atualizadoPor: { select: { idUsuario: true, nome: true, papel: true } }
+        criadoPor: incluirAuditoria ? { select: { idUsuario: true, nome: true, papel: true } } : false,
+        atualizadoPor: incluirAuditoria ? { select: { idUsuario: true, nome: true, papel: true } } : false,
       },
       orderBy: { dataAula: 'desc' }
     });
   }
 
   async getById(idFrequencia: number, usuarioLogado?: any) {
+    const incluirAuditoria = usuarioLogado && usuarioLogado.papel !== 'ALUNO';
+
     const frequencia = await this.prisma.frequencia.findUnique({
       where: { idFrequencia },
       include: {
         aluno: { include: { usuario: { select: { nome: true } } } },
         professor: { include: { usuario: { select: { nome: true } } } },
-        criadoPor: { select: { idUsuario: true, nome: true, papel: true } },
-        atualizadoPor: { select: { idUsuario: true, nome: true, papel: true } }
+        criadoPor: incluirAuditoria ? { select: { idUsuario: true, nome: true, papel: true } } : false,
+        atualizadoPor: incluirAuditoria ? { select: { idUsuario: true, nome: true, papel: true } } : false,
       }
     });
 
@@ -83,7 +87,6 @@ export class FrequenciaService {
 
   async update(idFrequencia: number, data: UpdateFrequenciaDto, usuarioLogado?: any) {
     await this.getById(idFrequencia, usuarioLogado);
-    console.log("QUEM ESTÁ SALVANDO:", usuarioLogado);
     return await this.prisma.frequencia.update({
       where: { idFrequencia },
       data: {

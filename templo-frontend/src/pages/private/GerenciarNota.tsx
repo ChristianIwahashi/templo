@@ -1,3 +1,4 @@
+import { InfoAuditoria } from "../../components/InfoAuditoria";
 import { UseGerenciarNota } from "../../hooks/UseGerenciarNota";
 import { formatarData } from "../../utils/formatters";
 import { Plus, Edit, Trash2, Info, AlertCircle, Check, ArrowLeft, Star } from "lucide-react";
@@ -158,21 +159,33 @@ export function GerenciarNota() {
                       ) : (
                         notasFiltradasDoAluno.map(nota => (
                           <tr key={nota.idNota} className="hover:bg-gray-50/20 dark:hover:bg-slate-800/30 transition-colors">
-                            <td className="p-3 font-semibold text-gray-800 dark:text-slate-100">{nota.tipo}</td>
-                            <td className="p-3 text-gray-600 dark:text-slate-300">{formatarData(nota.data)}</td>
+                            <td className="p-3">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="font-semibold text-gray-800 dark:text-slate-100">{nota.tipo}</span>
+                                {nota.criadoPor && (
+                                  <InfoAuditoria
+                                    criadoPor={nota.criadoPor}
+                                    atualizadoPor={nota.atualizadoPor}
+                                  />
+                                )}
+                              </div>
+                            </td>
+                            <td className="p-3 text-gray-600 dark:text-slate-400">{formatarData(nota.data)}</td>
                             <td className={`p-3 font-bold text-base ${nota.valor >= 7.0 ? 'text-sys-blue' : 'text-red-500'}`}>
                               {nota.valor.toFixed(1)}
                             </td>
                             <td className="p-3 text-right space-x-1 whitespace-nowrap">
                               <button
                                 onClick={() => abrirModalEditar(nota)}
-                                className="text-blue-500 hover:bg-blue-50 dark:hover:bg-slate-800 p-1.5 rounded cursor-pointer"
+                                className="text-blue-500 hover:bg-blue-50 dark:hover:bg-slate-800 p-1.5 rounded cursor-pointer transition-colors"
+                                title="Editar"
                               >
                                 <Edit className="w-4 h-4" />
                               </button>
                               <button
                                 onClick={() => abrirModalDeletar(nota)}
-                                className="text-red-500 hover:bg-red-50 dark:hover:bg-slate-800 p-1.5 rounded cursor-pointer"
+                                className="text-red-500 hover:bg-red-50 dark:hover:bg-slate-800 p-1.5 rounded cursor-pointer transition-colors"
+                                title="Excluir"
                               >
                                 <Trash2 className="w-4 h-4" />
                               </button>

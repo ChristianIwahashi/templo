@@ -157,11 +157,15 @@ export function UseGerenciarNota() {
             return;
         }
 
+        const turmaAtual = turmas.find(t => t.idTurma.toString() === turmaSelecionada);
+        const professorId = (user?.papel === 'GESTOR' ? turmaAtual?.idProfessor : user?.idUsuario) || turmaAtual?.idProfessor; ''
+        if (!professorId) {
+            setErro('Não foi possível identificar o professor responsável pela turma.');
+            return;
+        }
+
         setSalvando(true);
         setErro('');
-
-        const turmaAtual = turmas.find(t => t.idTurma.toString() === turmaSelecionada);
-        const professorId = (user?.papel === 'GESTOR' ? turmaAtual?.idProfessor : user?.idUsuario) || turmaAtual?.idProfessor;''
         try {
             await Api.post('/nota', {
                 valor: notaNum,
@@ -195,6 +199,11 @@ export function UseGerenciarNota() {
             return;
         }
 
+        if (!tipo.trim()) {
+            setErro('O tipo de avaliação é obrigatório.');
+            return;
+        }
+        
         setSalvando(true);
         setErro('');
 

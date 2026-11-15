@@ -1,6 +1,7 @@
 import { Users, Check, Info, AlertCircle, CheckSquare, Square, Trash2 } from "lucide-react";
 import { UseGerenciarChamada } from "../../hooks/UseGerenciarChamada";
 import { ConfirmModal } from "../../components/ConfirmModal";
+import { InfoAuditoria } from "../../components/InfoAuditoria";
 
 export function GerenciarChamada() {
   const {
@@ -157,11 +158,24 @@ export function GerenciarChamada() {
                           </div>
                         </td>
                         <td className="p-4">
-                          <span className="font-semibold text-gray-800 dark:text-slate-100 block">{aluno.nome}</span>
-                          <span className="text-xs text-gray-400 dark:text-slate-400 font-medium mt-1 block">
-                            ID do Estudante: {aluno.idUsuario}
-                            {aluno.idFrequencia && <span className="ml-2 text-green-600 dark:text-green-400 font-bold bg-green-50 dark:bg-green-950/60 px-2 py-0.5 rounded text-[10px] uppercase border border-green-200 dark:border-green-800">Salvo no Banco</span>}
-                          </span>
+                          <div className="flex items-center justify-between gap-2 flex-wrap">
+                            <div>
+                              <span className="font-semibold text-gray-800 dark:text-slate-100 block">{aluno.nome}</span>
+                              <span className="text-xs text-gray-400 dark:text-slate-400 font-medium mt-1 block">
+                                ID do Estudante: {aluno.idUsuario}
+                                {aluno.idFrequencia && <span className="ml-2 text-green-600 dark:text-green-400 font-bold bg-green-50 dark:bg-green-950/60 px-2 py-0.5 rounded text-[10px] uppercase border border-green-200 dark:border-green-800">Salvo no Banco</span>}
+                              </span>
+                            </div>
+
+                            {aluno.idFrequencia && aluno.criadoPor && (
+                              <div onClick={e => e.stopPropagation()}>
+                                <InfoAuditoria
+                                  criadoPor={aluno.criadoPor}
+                                  atualizadoPor={aluno.atualizadoPor}
+                                />
+                              </div>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))}

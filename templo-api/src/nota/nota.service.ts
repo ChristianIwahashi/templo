@@ -45,24 +45,30 @@ export class NotaService {
       }
     }
 
+    const incluirAuditoria = usuarioLogado && usuarioLogado.papel !== 'ALUNO';
+
     return await this.prisma.nota.findMany({
       where: filtro,
       include: {
         aluno: { include: { usuario: { select: { nome: true } } } },
         professor: { include: { usuario: { select: { nome: true } } } },
-        criadoPor: { select: { idUsuario: true, nome: true, papel: true } },
-        atualizadoPor: { select: { idUsuario: true, nome: true, papel: true } }
+        criadoPor: incluirAuditoria ? { select: { idUsuario: true, nome: true, papel: true } } : false,
+        atualizadoPor: incluirAuditoria ? { select: { idUsuario: true, nome: true, papel: true } } : false
       },
       orderBy: { data: 'desc' }
     });
   }
 
   async getById(idNota: number, usuarioLogado?: any) {
+    const incluirAuditoria = usuarioLogado && usuarioLogado.papel !== 'ALUNO';
+
     const nota = await this.prisma.nota.findUnique({
       where: { idNota },
       include: {
         aluno: { include: { usuario: { select: { nome: true } } } },
-        professor: { include: { usuario: { select: { nome: true } } } }
+        professor: { include: { usuario: { select: { nome: true } } } },
+        criadoPor: incluirAuditoria ? { select: { idUsuario: true, nome: true, papel: true } } : false,
+        atualizadoPor: incluirAuditoria ? { select: { idUsuario: true, nome: true, papel: true } } : false
       }
     });
 
