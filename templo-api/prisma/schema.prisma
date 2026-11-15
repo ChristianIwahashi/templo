@@ -173,8 +173,8 @@ model AvisoAula {
   dataPostagem  DateTime  @default(now())
   imagemUrl     String?   @db.VarChar(255)
 
-  idProfessor   Int
-  professor     Professor @relation("ProfessorParaAvisoAula", fields: [idProfessor], references: [idUsuario], onDelete: Cascade)
+  idProfessor   Int?
+  professor     Professor? @relation("ProfessorParaAvisoAula", fields: [idProfessor], references: [idUsuario], onDelete: SetNull)
 
   turmasVinculadas TurmaAvisoAula[]
 

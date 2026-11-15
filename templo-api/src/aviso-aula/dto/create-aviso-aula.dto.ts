@@ -12,9 +12,9 @@ export class CreateAvisoAulaDto {
     imagemUrl?: string;
 
     @IsInt()
-    @IsNotEmpty()
+    @IsOptional()
     @Type(() => Number)
-    idProfessor!: number;
+    idProfessor?: number;
 
     @IsArray({ message: 'As turmas de destino devem ser informadas como lista.' })
     @IsInt({ each: true, message: 'Cada ID de turma deve ser um número inteiro.' })
