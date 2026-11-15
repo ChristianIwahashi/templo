@@ -36,6 +36,7 @@ export function UseGerenciarAviso() {
   const [loading, setLoading] = useState(true);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState('');
+  const [erroModal, setErroModal] = useState('');
   const [sucesso, setSucesso] = useState('');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -77,7 +78,7 @@ export function UseGerenciarAviso() {
     setImagemUrl('');
     setTurmaSelecionada([]);
     setEnviarParaTodas(false);
-    setErro('');
+    setErroModal('');
     setSucesso('');
     setIsAddModalOpen(true);
   }
@@ -86,7 +87,7 @@ export function UseGerenciarAviso() {
     setAvisoSelecionado(aviso);
     setTitulo(aviso.titulo);
     setImagemUrl(aviso.imagemUrl || '');
-    setErro('');
+    setErroModal('');
     setSucesso('');
     setIsEditModalOpen(true);
   }
@@ -107,12 +108,19 @@ export function UseGerenciarAviso() {
     );
   }
 
+  function fecharModais() {
+    setIsAddModalOpen(false);
+    setIsEditModalOpen(false);
+    setIsConfirmDeleteOpen(false);
+    setErroModal('');
+  }
+
   //Publicar Aviso (POST)
   async function executarAdicionarAviso() {
     if (!user) return;
 
     if (!titulo.trim()) {
-      setErro('O conteúdo do aviso é obrigatório.');
+      setErroModal('O conteúdo do aviso é obrigatório.');
       return;
     }
 
@@ -121,29 +129,29 @@ export function UseGerenciarAviso() {
       : turmaSelecionada;
 
     if (turmasAlvo.length === 0) {
-      setErro('Selecione pelo menos uma turma de destino.');
+      setErroModal('Selecione pelo menos uma turma de destino.');
       return;
     }
 
     setSalvando(true);
-    setErro('');
+    setErroModal('');
 
     try {
       await Api.post('/aviso-aula', {
-      titulo,
-      imagemUrl: imagemUrl || undefined,
-      idProfessor: user.papel === 'PROFESSOR' ? user.idUsuario : undefined,
-      idsTurmas: turmasAlvo
-    });
+        titulo,
+        imagemUrl: imagemUrl || undefined,
+        idProfessor: user.papel === 'PROFESSOR' ? user.idUsuario : undefined,
+        idsTurmas: turmasAlvo
+      });
 
       setSucesso('Aviso publicado com sucesso!');
       await atualizarMural();
       setIsAddModalOpen(false);
     } catch (error) {
       if (error instanceof AxiosError) {
-        setErro(error.response?.data?.message || 'Erro ao publicar aviso.');
+        setErroModal(error.response?.data?.message || 'Erro ao publicar aviso.');
       } else {
-        setErro('Erro inesperado.');
+        setErroModal('Erro inesperado.');
       }
     } finally {
       setSalvando(false);
@@ -155,12 +163,12 @@ export function UseGerenciarAviso() {
     if (!avisoSelecionado) return;
 
     if (!titulo.trim()) {
-      setErro('O conteúdo do aviso é obrigatório.');
+      setErroModal('O conteúdo do aviso é obrigatório.');
       return;
     }
 
     setSalvando(true);
-    setErro('');
+    setErroModal('');
 
     try {
       await Api.put(`/aviso-aula/${avisoSelecionado.idAvisoAula}`, {
@@ -173,9 +181,9 @@ export function UseGerenciarAviso() {
       setIsEditModalOpen(false);
     } catch (error) {
       if (error instanceof AxiosError) {
-        setErro(error.response?.data?.message || 'Erro ao atualizar aviso.');
+        setErroModal(error.response?.data?.message || 'Erro ao atualizar aviso.');
       } else {
-        setErro('Erro inesperado.');
+        setErroModal('Erro inesperado.');
       }
     } finally {
       setSalvando(false);
@@ -226,6 +234,7 @@ export function UseGerenciarAviso() {
     loading,
     salvando,
     erro,
+    erroModal,
     sucesso,
     isAddModalOpen,
     setIsAddModalOpen,
@@ -233,6 +242,7 @@ export function UseGerenciarAviso() {
     setIsEditModalOpen,
     isConfirmDeleteOpen,
     setIsConfirmDeleteOpen,
+    fecharModais,
     avisoSelecionado,
     abrirModalAdicionar,
     abrirModalEditar,

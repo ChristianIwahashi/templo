@@ -21,13 +21,12 @@ export function GerenciarAviso() {
     loading,
     salvando,
     erro,
+    erroModal,
     sucesso,
     isAddModalOpen,
-    setIsAddModalOpen,
     isEditModalOpen,
-    setIsEditModalOpen,
     isConfirmDeleteOpen,
-    setIsConfirmDeleteOpen,
+    fecharModais,
     abrirModalAdicionar,
     abrirModalEditar,
     prepararDeletar,
@@ -64,12 +63,12 @@ export function GerenciarAviso() {
         </button>
       </div>
 
-      {erro && !isAddModalOpen && !isEditModalOpen && (
+      {erro && (
         <div className="p-4 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-xl border border-red-150 dark:border-red-900 flex items-center gap-2 font-semibold">
           <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
         </div>
       )}
-      {sucesso && !isAddModalOpen && !isEditModalOpen && (
+      {sucesso && (
         <div className="p-4 bg-green-50 dark:bg-green-950/40 text-green-700 dark:text-green-300 rounded-xl border border-green-150 dark:border-green-900 flex items-center gap-2 font-semibold">
           <Check className="w-4 h-4 shrink-0" /> {sucesso}
         </div>
@@ -180,9 +179,9 @@ export function GerenciarAviso() {
               <Plus className="w-5 h-5 text-sys-blue" /> Novo Comunicado
             </h3>
 
-            {erro && (
+            {erroModal && (
               <div className="p-3 mb-4 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-lg border border-red-150 dark:border-red-900 flex items-center gap-2 font-semibold">
-                <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
+                <AlertCircle className="w-4 h-4 shrink-0" /> {erroModal}
               </div>
             )}
 
@@ -252,7 +251,7 @@ export function GerenciarAviso() {
               />
 
               <div className="flex justify-end gap-2 pt-4 border-t border-gray-100 dark:border-slate-800">
-                <button type="button" onClick={() => setIsAddModalOpen(false)} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
+                <button type="button" onClick={fecharModais} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
                 <button type="submit" disabled={salvando} className="px-4 py-2 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl font-bold cursor-pointer disabled:opacity-50">
                   {salvando ? 'Publicando...' : 'Publicar Aviso'}
                 </button>
@@ -270,9 +269,9 @@ export function GerenciarAviso() {
               <Edit className="w-5 h-5 text-sys-blue" /> Editar Comunicado
             </h3>
 
-            {erro && (
+            {erroModal && (
               <div className="p-3 mb-4 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-lg border border-red-150 dark:border-red-900 flex items-center gap-2 font-semibold">
-                <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
+                <AlertCircle className="w-4 h-4 shrink-0" /> {erroModal}
               </div>
             )}
 
@@ -297,7 +296,7 @@ export function GerenciarAviso() {
               />
 
               <div className="flex justify-end gap-2 pt-4 border-t border-gray-100 dark:border-slate-800">
-                <button type="button" onClick={() => setIsEditModalOpen(false)} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
+                <button type="button" onClick={fecharModais} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
                 <button type="submit" disabled={salvando} className="px-4 py-2 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl font-bold cursor-pointer disabled:opacity-50">
                   {salvando ? 'Salvando...' : 'Salvar Alterações'}
                 </button>
@@ -310,7 +309,7 @@ export function GerenciarAviso() {
       {/*Modal Deletar*/}
       <ConfirmModal
         isOpen={isConfirmDeleteOpen}
-        onClose={() => setIsConfirmDeleteOpen(false)}
+        onClose={fecharModais}
         onConfirm={executarDeletarAviso}
         title="Excluir Comunicado"
         description="Você tem certeza de que deseja apagar este aviso do mural? Os alunos das turmas vinculadas não terão mais acesso a ele."
