@@ -13,6 +13,7 @@ export interface MensalidadeAdmin {
   mes: string;
   valor: number;
   dataVencimento: string;
+  dataPagamento?: string;
   statusPagamento: 'PENDENTE' | 'PAGO' | 'ATRASADO' | 'CANCELADO';
   idAluno: number;
   idGestor: number;
@@ -38,10 +39,14 @@ export function UseGerenciarMensalidades() {
   const [dataVencimento, setDataVencimento] = useState<string>(
     new Date().toISOString().split('T')[0]
   );
+  const [dataPagamento, setDataPagamento] = useState<string>(
+    new Date().toISOString().split('T')[0]
+  );
   const [statusPagamento, setStatusPagamento] = useState<'PENDENTE' | 'PAGO' | 'ATRASADO' | 'CANCELADO'>('PENDENTE');
   const [loading, setLoading] = useState(true);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState('');
+  const [erroModal, setErroModal] = useState('');
   const [sucesso, setSucesso] = useState('');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -95,8 +100,9 @@ export function UseGerenciarMensalidades() {
     setMes('');
     setValorReais('30,00');
     setDataVencimento(new Date().toISOString().split('T')[0]);
+    setDataPagamento('');
     setStatusPagamento('PENDENTE');
-    setErro('');
+    setErroModal('');
     setSucesso('');
     setIsAddModalOpen(true);
   }
@@ -105,8 +111,9 @@ export function UseGerenciarMensalidades() {
     setMes(m.mes);
     setValorReais((m.valor / 100).toFixed(2));
     setDataVencimento(new Date(m.dataVencimento).toISOString().split('T')[0]);
+    setDataPagamento(m.dataPagamento ? new Date(m.dataPagamento).toISOString().split('T')[0] : '');
     setStatusPagamento(m.statusPagamento);
-    setErro('');
+    setErroModal('');
     setSucesso('');
     setIsEditModalOpen(true);
   }
@@ -122,18 +129,28 @@ export function UseGerenciarMensalidades() {
     setSucesso('');
     setIsConfirmBaixaOpen(true);
   }
+  function fecharModais() {
+    setIsAddModalOpen(false);
+    setIsEditModalOpen(false);
+    setIsConfirmAddOpen(false);
+    setIsConfirmEditOpen(false);
+    setIsConfirmDeleteOpen(false);
+    setErroModal('');
+  }
   function prepararCriar() {
     if (!idAluno || !mes.trim() || !valorReais || !dataVencimento) {
-      setErro('Preencha todos os campos obrigatórios.');
+      setErroModal('Preencha todos os campos obrigatórios.');
       return;
     }
+    setErroModal('');
     setIsConfirmAddOpen(true);
   }
   function prepararEditar() {
     if (!mes.trim() || !valorReais || !dataVencimento) {
-      setErro('Preencha todos os campos obrigatórios.');
+      setErroModal('Preencha todos os campos obrigatórios.');
       return;
     }
+    setErroModal('');
     setIsConfirmEditOpen(true);
   }
 
@@ -148,13 +165,14 @@ export function UseGerenciarMensalidades() {
     if (!user) return;
     setIsConfirmAddOpen(false);
     setSalvando(true);
-    setErro('');
+    setErroModal('');
 
     try {
       await Api.post('/mensalidade', {
         mes: mes.trim(),
         valor: converterParaCentavos(valorReais),
         dataVencimento,
+        dataPagamento: statusPagamento === 'PAGO' ? (dataPagamento || new Date().toISOString().split('T')[0]) : null,
         statusPagamento,
         idGestor: user.idUsuario,
         idAluno: Number(idAluno)
@@ -165,9 +183,9 @@ export function UseGerenciarMensalidades() {
       setIsAddModalOpen(false);
     } catch (error) {
       if (error instanceof AxiosError) {
-        setErro(error.response?.data?.message || 'Erro ao registrar mensalidade.');
+        setErroModal(error.response?.data?.message || 'Erro ao registrar mensalidade.');
       } else {
-        setErro('Erro inesperado.');
+        setErroModal('Erro inesperado.');
       }
     } finally {
       setSalvando(false);
@@ -179,13 +197,14 @@ export function UseGerenciarMensalidades() {
     if (!mensalidadeSelecionada) return;
     setIsConfirmEditOpen(false);
     setSalvando(true);
-    setErro('');
+    setErroModal('');
 
     try {
       await Api.put(`/mensalidade/${mensalidadeSelecionada.idMensalidade}`, {
         mes: mes.trim(),
         valor: converterParaCentavos(valorReais),
         dataVencimento,
+        dataPagamento: statusPagamento === 'PAGO' ? (dataPagamento || new Date().toISOString().split('T')[0]) : null,
         statusPagamento
       });
 
@@ -194,9 +213,9 @@ export function UseGerenciarMensalidades() {
       setIsEditModalOpen(false);
     } catch (error) {
       if (error instanceof AxiosError) {
-        setErro(error.response?.data?.message || 'Erro ao atualizar cobrança.');
+        setErroModal(error.response?.data?.message || 'Erro ao atualizar cobrança.');
       } else {
-        setErro('Erro inesperado.');
+        setErroModal('Erro inesperado.');
       }
     } finally {
       setSalvando(false);
@@ -210,9 +229,12 @@ export function UseGerenciarMensalidades() {
     setSalvando(true);
     setErro('');
 
+    const hoje = new Date().toISOString().split('T')[0];
+
     try {
       await Api.put(`/mensalidade/${mensalidadeSelecionada.idMensalidade}`, {
-        statusPagamento: 'PAGO'
+        statusPagamento: 'PAGO',
+        dataPagamento: hoje
       });
 
       setSucesso(`Pagamento da mensalidade de ${mensalidadeSelecionada.aluno.usuario.nome} confirmado!`);
@@ -251,17 +273,34 @@ export function UseGerenciarMensalidades() {
   }
 
   //Filtros
-  const anosDisponiveis = Array.from(
-    new Set(mensalidades.map(m => new Date(m.dataVencimento).getUTCFullYear()))
-  ).sort((a, b) => b - a);
+  const todosOsAnos = mensalidades.flatMap(m => {
+    const anos: number[] = [];
+    if (m.dataVencimento) {
+      const a = new Date(m.dataVencimento).getUTCFullYear();
+      if (!isNaN(a)) anos.push(a);
+    }
+    if (m.dataPagamento) {
+      const a = new Date(m.dataPagamento).getUTCFullYear();
+      if (!isNaN(a)) anos.push(a);
+    }
+    return anos;
+  });
+
+  const anosDisponiveis = Array.from(new Set(todosOsAnos)).sort((a, b) => b - a);
 
   const mensalidadesFiltradas = mensalidades
     .filter(m => {
-      const batePesquisa = m.aluno?.usuario?.nome.toLowerCase().includes(pesquisa.toLowerCase()) ||
+      const batePesquisa =
+        m.aluno?.usuario?.nome.toLowerCase().includes(pesquisa.toLowerCase()) ||
         m.mes.toLowerCase().includes(pesquisa.toLowerCase()) ||
         m.idAluno.toString().includes(pesquisa);
+
       const bateStatus = filtroStatus === 'todos' ? true : m.statusPagamento === filtroStatus;
-      const bateAno = filtroAno === 'todos' ? true : new Date(m.dataVencimento).getUTCFullYear().toString() === filtroAno;
+
+      const anoVenc = m.dataVencimento ? new Date(m.dataVencimento).getUTCFullYear().toString() : null;
+      const anoPag = m.dataPagamento ? new Date(m.dataPagamento).getUTCFullYear().toString() : null;
+      const bateAno = filtroAno === 'todos' ? true : (anoVenc === filtroAno || anoPag === filtroAno);
+
       return batePesquisa && bateStatus && bateAno;
     })
     .sort((a, b) => {
@@ -279,7 +318,7 @@ export function UseGerenciarMensalidades() {
   const totalInadimplente = mensalidades
     .filter(m => m.statusPagamento === 'PENDENTE' || m.statusPagamento === 'ATRASADO')
     .reduce((acc, curr) => acc + curr.valor, 0);
-
+    
   return {
     mensalidadesFiltradas,
     alunos,
@@ -302,11 +341,14 @@ export function UseGerenciarMensalidades() {
     setValorReais,
     dataVencimento,
     setDataVencimento,
+    dataPagamento,
+    setDataPagamento,
     statusPagamento,
     setStatusPagamento,
     loading,
     salvando,
     erro,
+    erroModal,
     sucesso,
     isAddModalOpen,
     setIsAddModalOpen,
@@ -318,6 +360,7 @@ export function UseGerenciarMensalidades() {
     setIsConfirmEditOpen,
     isConfirmDeleteOpen,
     setIsConfirmDeleteOpen,
+    fecharModais,
     isConfirmBaixaOpen,
     setIsConfirmBaixaOpen,
     mensalidadeSelecionada,

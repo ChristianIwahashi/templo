@@ -41,6 +41,7 @@ export function UseGerenciarInformatico() {
   const [loading, setLoading] = useState(true);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState('');
+  const [erroModal, setErroModal] = useState('');
   const [sucesso, setSucesso] = useState('');
   const [isAddConteudoOpen, setIsAddConteudoOpen] = useState(false);
   const [isEditConteudoOpen, setIsEditConteudoOpen] = useState(false);
@@ -98,7 +99,7 @@ export function UseGerenciarInformatico() {
     setTituloConteudo('');
     setTextoConteudo('');
     setImagemUrlConteudo('');
-    setErro('');
+    setErroModal('');
     setSucesso('');
     setIsAddConteudoOpen(true);
   }
@@ -108,7 +109,7 @@ export function UseGerenciarInformatico() {
     setTituloConteudo(item.titulo);
     setTextoConteudo(item.texto);
     setImagemUrlConteudo(item.imagemUrl);
-    setErro('');
+    setErroModal('');
     setSucesso('');
     setIsEditConteudoOpen(true);
   }
@@ -118,18 +119,34 @@ export function UseGerenciarInformatico() {
     setSucesso('');
     setIsConfirmDeleteConteudo(true);
   }
+  function fecharModais() {
+    setIsAddConteudoOpen(false);
+    setIsEditConteudoOpen(false);
+    setIsAddEventoOpen(false);
+    setIsEditEventoOpen(false);
+    setIsConfirmDeleteConteudo(false);
+    setIsConfirmAddConteudo(false);
+    setIsConfirmEditConteudo(false);
+    setIsConfirmAddEvento(false);
+    setIsConfirmEditEvento(false);
+    setIsConfirmDeleteEvento(false);
+    setIsConfirmStatusEvento(false);
+    setErroModal('');
+  }
   function prepararCriarConteudo() {
     if (!tituloConteudo.trim() || !textoConteudo.trim() || !imagemUrlConteudo.trim()) {
-      setErro('Preencha todos os campos obrigatórios do conteúdo.');
+      setErroModal('Preencha todos os campos obrigatórios do conteúdo.');
       return;
     }
+    setErroModal('');
     setIsConfirmAddConteudo(true);
   }
   function prepararEditarConteudo() {
     if (!tituloConteudo.trim() || !textoConteudo.trim() || !imagemUrlConteudo.trim()) {
-      setErro('Preencha todos os campos obrigatórios.');
+      setErroModal('Preencha todos os campos obrigatórios.');
       return;
     }
+    setErroModal('');
     setIsConfirmEditConteudo(true);
   }
 
@@ -138,7 +155,7 @@ export function UseGerenciarInformatico() {
     if (!user) return;
     setIsConfirmAddConteudo(false);
     setSalvando(true);
-    setErro('');
+    setErroModal('');
 
     try {
       await Api.post('/conteudo-informativo', {
@@ -154,9 +171,9 @@ export function UseGerenciarInformatico() {
       setIsAddConteudoOpen(false);
     } catch (error) {
       if (error instanceof AxiosError) {
-        setErro(error.response?.data?.message || 'Erro ao publicar conteúdo.');
+        setErroModal(error.response?.data?.message || 'Erro ao publicar conteúdo.');
       } else {
-        setErro('Erro inesperado.');
+        setErroModal('Erro inesperado.');
       }
     } finally {
       setSalvando(false);
@@ -168,7 +185,7 @@ export function UseGerenciarInformatico() {
     if (!conteudoSelecionado) return;
     setIsConfirmEditConteudo(false);
     setSalvando(true);
-    setErro('');
+    setErroModal('');
 
     try {
       await Api.patch(`/conteudo-informativo/${conteudoSelecionado.idConteudo}`, {
@@ -183,9 +200,9 @@ export function UseGerenciarInformatico() {
       setIsEditConteudoOpen(false);
     } catch (error) {
       if (error instanceof AxiosError) {
-        setErro(error.response?.data?.message || 'Erro ao atualizar conteúdo.');
+        setErroModal(error.response?.data?.message || 'Erro ao atualizar conteúdo.');
       } else {
-        setErro('Erro inesperado.');
+        setErroModal('Erro inesperado.');
       }
     } finally {
       setSalvando(false);
@@ -221,7 +238,7 @@ export function UseGerenciarInformatico() {
     setHorarioEvento('');
     setImagemUrlEvento('');
     setAtivoEvento(true);
-    setErro('');
+    setErroModal('');
     setSucesso('');
     setIsAddEventoOpen(true);
   }
@@ -232,7 +249,7 @@ export function UseGerenciarInformatico() {
     setHorarioEvento(item.horario || '');
     setImagemUrlEvento(item.imagemUrl || '');
     setAtivoEvento(item.ativo);
-    setErro('');
+    setErroModal('');
     setSucesso('');
     setIsEditEventoOpen(true);
   }
@@ -248,16 +265,18 @@ export function UseGerenciarInformatico() {
   }
   function prepararCriarEvento() {
     if (!tituloEvento.trim() || !descricaoEvento.trim()) {
-      setErro('Preencha os campos obrigatórios do evento.');
+      setErroModal('Preencha os campos obrigatórios do evento.');
       return;
     }
+    setErroModal('');
     setIsConfirmAddEvento(true);
   }
   function prepararEditarEvento() {
     if (!tituloEvento.trim() || !descricaoEvento.trim()) {
-      setErro('Preencha os campos obrigatórios.');
+      setErroModal('Preencha os campos obrigatórios.');
       return;
     }
+    setErroModal('');
     setIsConfirmEditEvento(true);
   }
 
@@ -266,7 +285,7 @@ export function UseGerenciarInformatico() {
     if (!user) return;
     setIsConfirmAddEvento(false);
     setSalvando(true);
-    setErro('');
+    setErroModal('');
 
     try {
       await Api.post('/aviso-evento', {
@@ -283,9 +302,9 @@ export function UseGerenciarInformatico() {
       setIsAddEventoOpen(false);
     } catch (error) {
       if (error instanceof AxiosError) {
-        setErro(error.response?.data?.message || 'Erro ao publicar evento.');
+        setErroModal(error.response?.data?.message || 'Erro ao publicar evento.');
       } else {
-        setErro('Erro inesperado.');
+        setErroModal('Erro inesperado.');
       }
     } finally {
       setSalvando(false);
@@ -297,7 +316,7 @@ export function UseGerenciarInformatico() {
     if (!eventoSelecionado) return;
     setIsConfirmEditEvento(false);
     setSalvando(true);
-    setErro('');
+    setErroModal('');
 
     try {
       await Api.patch(`/aviso-evento/${eventoSelecionado.idAvisoEvento}`, {
@@ -313,9 +332,9 @@ export function UseGerenciarInformatico() {
       setIsEditEventoOpen(false);
     } catch (error) {
       if (error instanceof AxiosError) {
-        setErro(error.response?.data?.message || 'Erro ao atualizar evento.');
+        setErroModal(error.response?.data?.message || 'Erro ao atualizar evento.');
       } else {
-        setErro('Erro inesperado.');
+        setErroModal('Erro inesperado.');
       }
     } finally {
       setSalvando(false);
@@ -392,6 +411,7 @@ export function UseGerenciarInformatico() {
     loading,
     salvando,
     erro,
+    erroModal,
     sucesso,
     isAddConteudoOpen,
     setIsAddConteudoOpen,
@@ -415,6 +435,7 @@ export function UseGerenciarInformatico() {
     setIsConfirmDeleteEvento,
     isConfirmStatusEvento,
     setIsConfirmStatusEvento,
+    fecharModais,
     eventoSelecionado,
     abrirModalCriarConteudo,
     abrirModalEditarConteudo,

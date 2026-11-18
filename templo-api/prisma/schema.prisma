@@ -103,7 +103,7 @@ model Turma {
   professor    Professor   @relation("ProfessorParaTurma", fields: [idProfessor], references: [idUsuario], onDelete: Cascade)
 
   alunos            Aluno[] @relation("TurmaParaAluno")
-  avisosAula        AvisoAula[]  @relation("TurmaParaAvisoAula")
+  avisosVinculados  TurmaAvisoAula[]
   materiaisBaixados TurmaMaterialDidatico[]
 
   @@map("turmas")
@@ -114,6 +114,7 @@ model Mensalidade {
   mes             String   @db.VarChar(20)
   valor           Int
   dataVencimento  DateTime @db.Date
+  dataPagamento   DateTime? @db.Date 
   statusPagamento String   @db.VarChar(50)
 
   idGestor        Int
@@ -172,11 +173,10 @@ model AvisoAula {
   dataPostagem  DateTime  @default(now())
   imagemUrl     String?   @db.VarChar(255)
 
-  idProfessor   Int
-  professor     Professor @relation("ProfessorParaAvisoAula", fields: [idProfessor], references: [idUsuario], onDelete: Cascade)
+  idProfessor   Int?
+  professor     Professor? @relation("ProfessorParaAvisoAula", fields: [idProfessor], references: [idUsuario], onDelete: SetNull)
 
-  idTurma       Int
-  turma         Turma @relation("TurmaParaAvisoAula", fields: [idTurma], references: [idTurma], onDelete: Cascade)
+  turmasVinculadas TurmaAvisoAula[]
 
   criadoPorId     Int?
   criadoPor       Usuario?  @relation("AvisoAulaCriadaPor", fields: [criadoPorId], references: [idUsuario], onDelete: SetNull, map: "fk_aviso_aula_criado_por")
@@ -186,6 +186,17 @@ model AvisoAula {
 
 
   @@map("avisos_aulas")
+}
+
+model TurmaAvisoAula {
+  idTurma     Int
+  turma       Turma      @relation(fields: [idTurma], references: [idTurma], onDelete: Cascade)
+
+  idAvisoAula Int
+  avisoAula   AvisoAula  @relation(fields: [idAvisoAula], references: [idAvisoAula], onDelete: Cascade)
+
+  @@id([idTurma, idAvisoAula])
+  @@map("turma_aviso_aula")
 }
 
 model MaterialDidatico {

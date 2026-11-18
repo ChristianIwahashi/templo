@@ -1,3 +1,4 @@
+import { InfoAuditoria } from "../../components/InfoAuditoria";
 import { UseGerenciarNota } from "../../hooks/UseGerenciarNota";
 import { formatarData } from "../../utils/formatters";
 import { Plus, Edit, Trash2, Info, AlertCircle, Check, ArrowLeft, Star } from "lucide-react";
@@ -21,16 +22,15 @@ export function GerenciarNota() {
     loadingAlunos,
     salvando,
     erro,
+    erroModal,
     sucesso,
     isAddModalOpen,
-    setIsAddModalOpen,
     isEditModalOpen,
-    setIsEditModalOpen,
     isDeleteModalOpen,
-    setIsDeleteModalOpen,
     abrirModalAdicionar,
     abrirModalEditar,
     abrirModalDeletar,
+    fecharModais,
     executarAdicionarNota,
     executarEditarNota,
     executarDeletarNota
@@ -53,12 +53,12 @@ export function GerenciarNota() {
         <h2 className="text-2xl font-bold text-gray-800 dark:text-slate-100">Gerenciar Notas</h2>
       </div>
 
-      {erro && !isAddModalOpen && !isEditModalOpen && !isDeleteModalOpen && (
+      {erro && (
         <div className="p-4 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-xl border border-red-150 dark:border-red-900 flex items-center gap-2 font-semibold">
           <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
         </div>
       )}
-      {sucesso && !isAddModalOpen && !isEditModalOpen && !isDeleteModalOpen && (
+      {sucesso && (
         <div className="p-4 bg-green-50 dark:bg-green-950/40 text-green-700 dark:text-green-300 rounded-xl border border-green-150 dark:border-green-900 flex items-center gap-2 font-semibold">
           <Check className="w-4 h-4 shrink-0" /> {sucesso}
         </div>
@@ -66,7 +66,7 @@ export function GerenciarNota() {
 
       {/*Seleção de Turma*/}
       <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800">
-        <label htmlFor="select-turma" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1.5 items-center gap-1.5">
+        <label htmlFor="select-turma" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">
           Selecione a Turma
         </label>
         <select
@@ -158,21 +158,33 @@ export function GerenciarNota() {
                       ) : (
                         notasFiltradasDoAluno.map(nota => (
                           <tr key={nota.idNota} className="hover:bg-gray-50/20 dark:hover:bg-slate-800/30 transition-colors">
-                            <td className="p-3 font-semibold text-gray-800 dark:text-slate-100">{nota.tipo}</td>
-                            <td className="p-3 text-gray-600 dark:text-slate-300">{formatarData(nota.data)}</td>
+                            <td className="p-3">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="font-semibold text-gray-800 dark:text-slate-100">{nota.tipo}</span>
+                                {nota.criadoPor && (
+                                  <InfoAuditoria
+                                    criadoPor={nota.criadoPor}
+                                    atualizadoPor={nota.atualizadoPor}
+                                  />
+                                )}
+                              </div>
+                            </td>
+                            <td className="p-3 text-gray-600 dark:text-slate-400">{formatarData(nota.data)}</td>
                             <td className={`p-3 font-bold text-base ${nota.valor >= 7.0 ? 'text-sys-blue' : 'text-red-500'}`}>
                               {nota.valor.toFixed(1)}
                             </td>
                             <td className="p-3 text-right space-x-1 whitespace-nowrap">
                               <button
                                 onClick={() => abrirModalEditar(nota)}
-                                className="text-blue-500 hover:bg-blue-50 dark:hover:bg-slate-800 p-1.5 rounded cursor-pointer"
+                                className="text-blue-500 hover:bg-blue-50 dark:hover:bg-slate-800 p-1.5 rounded cursor-pointer transition-colors"
+                                title="Editar"
                               >
                                 <Edit className="w-4 h-4" />
                               </button>
                               <button
                                 onClick={() => abrirModalDeletar(nota)}
-                                className="text-red-500 hover:bg-red-50 dark:hover:bg-slate-800 p-1.5 rounded cursor-pointer"
+                                className="text-red-500 hover:bg-red-50 dark:hover:bg-slate-800 p-1.5 rounded cursor-pointer transition-colors"
+                                title="Excluir"
                               >
                                 <Trash2 className="w-4 h-4" />
                               </button>
@@ -204,9 +216,9 @@ export function GerenciarNota() {
               <Plus className="w-5 h-5 text-sys-blue" /> Lançar Nota para {alunoSelecionado?.nome}
             </h3>
 
-            {erro && (
+            {erroModal && (
               <div className="p-3 mb-4 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-lg border border-red-150 dark:border-red-900 flex items-center gap-2 font-semibold">
-                <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
+                <AlertCircle className="w-4 h-4 shrink-0" /> {erroModal}
               </div>
             )}
 
@@ -254,7 +266,7 @@ export function GerenciarNota() {
               </div>
 
               <div className="flex justify-end gap-2 pt-4 border-t border-gray-100 dark:border-slate-800">
-                <button type="button" onClick={() => setIsAddModalOpen(false)} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
+                <button type="button" onClick={fecharModais} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
                 <button type="submit" disabled={salvando} className="px-4 py-2 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl font-bold cursor-pointer disabled:opacity-50">
                   {salvando ? 'Salvando...' : 'Lançar Nota'}
                 </button>
@@ -272,9 +284,9 @@ export function GerenciarNota() {
               <Edit className="w-5 h-5 text-sys-blue" /> Editar Nota de {alunoSelecionado?.nome}
             </h3>
 
-            {erro && (
+            {erroModal && (
               <div className="p-3 mb-4 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-lg border border-red-150 dark:border-red-900 flex items-center gap-2 font-semibold">
-                <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
+                <AlertCircle className="w-4 h-4 shrink-0" /> {erroModal}
               </div>
             )}
 
@@ -320,7 +332,7 @@ export function GerenciarNota() {
               </div>
 
               <div className="flex justify-end gap-2 pt-4 border-t border-gray-100 dark:border-slate-800">
-                <button type="button" onClick={() => setIsEditModalOpen(false)} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
+                <button type="button" onClick={fecharModais} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
                 <button type="submit" disabled={salvando} className="px-4 py-2 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl font-bold cursor-pointer disabled:opacity-50">
                   {salvando ? 'Salvando...' : 'Salvar Alterações'}
                 </button>
@@ -340,7 +352,7 @@ export function GerenciarNota() {
             </p>
             <div className="flex gap-3">
               <button
-                onClick={() => setIsDeleteModalOpen(false)}
+                onClick={fecharModais}
                 className="flex-1 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm font-semibold text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer"
               >
                 Cancelar

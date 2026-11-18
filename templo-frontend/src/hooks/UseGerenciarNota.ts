@@ -45,6 +45,7 @@ export function UseGerenciarNota() {
     const [loadingAlunos, setLoadingAlunos] = useState(false);
     const [salvando, setSalvando] = useState(false);
     const [erro, setErro] = useState('');
+    const [erroModal, setErroModal] = useState('');
     const [sucesso, setSucesso] = useState('');
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -121,7 +122,7 @@ export function UseGerenciarNota() {
         setValor('');
         setTipo('');
         setDataNota(new Date().toISOString().split('T')[0]);
-        setErro('');
+        setErroModal('');
         setSucesso('');
         setIsAddModalOpen(true);
     }
@@ -131,7 +132,7 @@ export function UseGerenciarNota() {
         setValor(nota.valor.toString());
         setTipo(nota.tipo);
         setDataNota(new Date(nota.data).toISOString().split('T')[0]);
-        setErro('');
+        setErroModal('');
         setSucesso('');
         setIsEditModalOpen(true);
     }
@@ -143,25 +144,36 @@ export function UseGerenciarNota() {
         setIsDeleteModalOpen(true);
     }
 
+    function fecharModais() {
+        setIsAddModalOpen(false);
+        setIsEditModalOpen(false);
+        setIsDeleteModalOpen(false);
+        setErroModal('');
+    }
+
     //POST nota
     async function executarAdicionarNota() {
         if (!alunoSelecionado || !user) return;
         const notaNum = parseFloat(valor);
 
         if (isNaN(notaNum) || notaNum < 0 || notaNum > 10) {
-            setErro('A nota deve ser um número entre 0 e 10.');
+            setErroModal('A nota deve ser um número entre 0 e 10.');
             return;
         }
         if (!tipo.trim()) {
-            setErro('O tipo de avaliação é obrigatório.');
+            setErroModal('O tipo de avaliação é obrigatório.');
+            return;
+        }
+
+        const turmaAtual = turmas.find(t => t.idTurma.toString() === turmaSelecionada);
+        const professorId = (user?.papel === 'GESTOR' ? turmaAtual?.idProfessor : user?.idUsuario) || turmaAtual?.idProfessor;
+        if (!professorId) {
+            setErroModal('Não foi possível identificar o professor responsável pela turma.');
             return;
         }
 
         setSalvando(true);
-        setErro('');
-
-        const turmaAtual = turmas.find(t => t.idTurma.toString() === turmaSelecionada);
-        const professorId = (user?.papel === 'GESTOR' ? turmaAtual?.idProfessor : user?.idUsuario) || turmaAtual?.idProfessor;''
+        setErroModal('');
         try {
             await Api.post('/nota', {
                 valor: notaNum,
@@ -176,9 +188,9 @@ export function UseGerenciarNota() {
             setIsAddModalOpen(false);
         } catch (error) {
             if (error instanceof AxiosError) {
-                setErro(error.response?.data?.message || 'Erro ao lançar nota.');
+                setErroModal(error.response?.data?.message || 'Erro ao lançar nota.');
             } else {
-                setErro('Erro inesperado.');
+                setErroModal('Erro inesperado.');
             }
         } finally {
             setSalvando(false);
@@ -191,12 +203,17 @@ export function UseGerenciarNota() {
         const notaNum = parseFloat(valor);
 
         if (isNaN(notaNum) || notaNum < 0 || notaNum > 10) {
-            setErro('A nota deve ser um número entre 0 e 10.');
+            setErroModal('A nota deve ser um número entre 0 e 10.');
+            return;
+        }
+
+        if (!tipo.trim()) {
+            setErroModal('O tipo de avaliação é obrigatório.');
             return;
         }
 
         setSalvando(true);
-        setErro('');
+        setErroModal('');
 
         try {
             await Api.put(`/nota/${notaSelecionada.idNota}`, {
@@ -210,9 +227,9 @@ export function UseGerenciarNota() {
             setIsEditModalOpen(false);
         } catch (error) {
             if (error instanceof AxiosError) {
-                setErro(error.response?.data?.message || 'Erro ao atualizar nota.');
+                setErroModal(error.response?.data?.message || 'Erro ao atualizar nota.');
             } else {
-                setErro('Erro inesperado.');
+                setErroModal('Erro inesperado.');
             }
         } finally {
             setSalvando(false);
@@ -260,6 +277,7 @@ export function UseGerenciarNota() {
         loadingAlunos,
         salvando,
         erro,
+        erroModal,
         sucesso,
         isAddModalOpen,
         setIsAddModalOpen,
@@ -267,6 +285,7 @@ export function UseGerenciarNota() {
         setIsEditModalOpen,
         isDeleteModalOpen,
         setIsDeleteModalOpen,
+        fecharModais,
         notaSelecionada,
         abrirModalAdicionar,
         abrirModalEditar,

@@ -1,6 +1,7 @@
 import { UseGerenciarTurmas, type TurmaCompleta } from "../../hooks/UseGerenciarTurmas";
 import { ConfirmModal } from "../../components/ConfirmModal";
 import { BookOpen, Plus, Search, Edit, Trash2, Users, UserPlus, Info, AlertCircle, Check, GraduationCap } from "lucide-react";
+import { Fragment } from "react";
 
 export function GerenciarTurmas() {
   const {
@@ -21,25 +22,23 @@ export function GerenciarTurmas() {
     loading,
     salvando,
     erro,
+    erroModal,
     sucesso,
     isAddModalOpen,
-    setIsAddModalOpen,
     isEditModalOpen,
-    setIsEditModalOpen,
     isMatricularModalOpen,
-    setIsMatricularModalOpen,
     isConfirmAddOpen,
     setIsConfirmAddOpen,
     isConfirmEditOpen,
     setIsConfirmEditOpen,
     isConfirmDeleteOpen,
-    setIsConfirmDeleteOpen,
     isConfirmMatricularOpen,
     setIsConfirmMatricularOpen,
     turmaSelecionada,
     abrirModalCriar,
     abrirModalEditar,
     abrirModalMatricularAluno,
+    fecharModais,
     prepararDeletar,
     prepararCriar,
     prepararEditar,
@@ -77,12 +76,12 @@ export function GerenciarTurmas() {
       </div>
 
       {/* Alertas */}
-      {erro && !isAddModalOpen && !isEditModalOpen && !isMatricularModalOpen && (
+      {erro && (
         <div className="p-4 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-xl border border-red-150 dark:border-red-900 flex items-center gap-2 font-semibold">
           <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
         </div>
       )}
-      {sucesso && !isAddModalOpen && !isEditModalOpen && !isMatricularModalOpen && (
+      {sucesso && (
         <div className="p-4 bg-green-50 dark:bg-green-950/40 text-green-700 dark:text-green-300 rounded-xl border border-green-150 dark:border-green-900 flex items-center gap-2 font-semibold">
           <Check className="w-4 h-4 shrink-0" /> {sucesso}
         </div>
@@ -129,9 +128,8 @@ export function GerenciarTurmas() {
                   const totalAlunos = turma.alunos?.length || 0;
 
                   return (
-                    <>
+                    <Fragment key={turma.idTurma}>
                       <tr 
-                        key={turma.idTurma} 
                         onClick={() => setTurmaExpandidaId(isExpanded ? null : turma.idTurma)}
                         className="hover:bg-gray-50/20 dark:hover:bg-slate-800/30 transition-colors cursor-pointer"
                       >
@@ -218,7 +216,7 @@ export function GerenciarTurmas() {
                           </td>
                         </tr>
                       )}
-                    </>
+                    </Fragment>
                   );
                 })}
               </tbody>
@@ -235,9 +233,9 @@ export function GerenciarTurmas() {
               <Plus className="w-5 h-5 text-sys-blue" /> Abrir Nova Turma
             </h3>
 
-            {erro && (
+            {erroModal && (
               <div className="p-3 mb-4 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-lg border border-red-150 dark:border-red-900 flex items-center gap-2 font-semibold">
-                <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
+                <AlertCircle className="w-4 h-4 shrink-0" /> {erroModal}
               </div>
             )}
 
@@ -277,7 +275,7 @@ export function GerenciarTurmas() {
               </div>
 
               <div className="flex justify-end gap-2 pt-4 border-t border-gray-100 dark:border-slate-800">
-                <button type="button" onClick={() => setIsAddModalOpen(false)} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
+                <button type="button" onClick={fecharModais} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
                 <button type="submit" className="px-4 py-2 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl font-bold cursor-pointer">Prosseguir</button>
               </div>
             </form>
@@ -293,9 +291,9 @@ export function GerenciarTurmas() {
               <Edit className="w-5 h-5 text-sys-blue" /> Editar {turmaSelecionada?.nome || `Turma ${turmaSelecionada?.idTurma}`}
             </h3>
 
-            {erro && (
+            {erroModal && (
               <div className="p-3 mb-4 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-lg border border-red-150 dark:border-red-900 flex items-center gap-2 font-semibold">
-                <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
+                <AlertCircle className="w-4 h-4 shrink-0" /> {erroModal}
               </div>
             )}
 
@@ -335,7 +333,7 @@ export function GerenciarTurmas() {
               </div>
 
               <div className="flex justify-end gap-2 pt-4 border-t border-gray-100 dark:border-slate-800">
-                <button type="button" onClick={() => setIsEditModalOpen(false)} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
+                <button type="button" onClick={fecharModais} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
                 <button type="submit" className="px-4 py-2 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl font-bold cursor-pointer">Prosseguir</button>
               </div>
             </form>
@@ -383,7 +381,7 @@ export function GerenciarTurmas() {
               </div>
 
               <div className="flex justify-end gap-2 pt-4 border-t border-gray-100 dark:border-slate-800">
-                <button type="button" onClick={() => setIsMatricularModalOpen(false)} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
+                <button type="button" onClick={fecharModais} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
                 <button type="submit" className="px-4 py-2 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl font-bold cursor-pointer">Prosseguir</button>
               </div>
             </form>
@@ -424,7 +422,7 @@ export function GerenciarTurmas() {
 
       <ConfirmModal 
         isOpen={isConfirmDeleteOpen}
-        onClose={() => setIsConfirmDeleteOpen(false)}
+        onClose={fecharModais}
         onConfirm={executarDeletarTurma}
         title="Excluir Turma"
         description={`Atenção: Tem certeza de que deseja encerrar e excluir permanentemente a turma "${turmaSelecionada?.nome || `Turma ${turmaSelecionada?.idTurma}`}"? Todos os diários de presença e avisos associados serão apagados.`}

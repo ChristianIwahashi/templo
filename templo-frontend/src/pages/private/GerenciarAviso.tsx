@@ -3,7 +3,8 @@ import { UseGerenciarAviso } from "../../hooks/UseGerenciarAviso";
 import { formatarData } from "../../utils/formatters";
 import { UploadInput } from "../../components/UploadInput";
 import { ConfirmModal } from "../../components/ConfirmModal";
-import { Megaphone, Plus, Edit, Trash2, Info, AlertCircle, Check, ZoomIn, X } from "lucide-react";
+import { Megaphone, Plus, Edit, Trash2, Info, AlertCircle, Check, ZoomIn, X, CheckSquare, Square } from "lucide-react";
+import { InfoAuditoria } from "../../components/InfoAuditoria";
 
 export function GerenciarAviso() {
   const {
@@ -14,23 +15,25 @@ export function GerenciarAviso() {
     imagemUrl,
     setImagemUrl,
     turmaSelecionada,
-    setTurmaSelecionada,
+    handleAlternarTurma,
+    enviarParaTodas,
+    setEnviarParaTodas,
     loading,
     salvando,
     erro,
+    erroModal,
     sucesso,
     isAddModalOpen,
-    setIsAddModalOpen,
     isEditModalOpen,
-    setIsEditModalOpen,
     isConfirmDeleteOpen,
-    setIsConfirmDeleteOpen,
+    fecharModais,
     abrirModalAdicionar,
     abrirModalEditar,
     prepararDeletar,
     executarAdicionarAviso,
     executarEditarAviso,
-    executarDeletarAviso
+    executarDeletarAviso,
+    podeGerenciarAviso
   } = UseGerenciarAviso();
 
   const [imagemZoom, setImagemZoom] = useState<string | null>(null);
@@ -60,12 +63,12 @@ export function GerenciarAviso() {
         </button>
       </div>
 
-      {erro && !isAddModalOpen && !isEditModalOpen && (
+      {erro && (
         <div className="p-4 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-xl border border-red-150 dark:border-red-900 flex items-center gap-2 font-semibold">
           <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
         </div>
       )}
-      {sucesso && !isAddModalOpen && !isEditModalOpen && (
+      {sucesso && (
         <div className="p-4 bg-green-50 dark:bg-green-950/40 text-green-700 dark:text-green-300 rounded-xl border border-green-150 dark:border-green-900 flex items-center gap-2 font-semibold">
           <Check className="w-4 h-4 shrink-0" /> {sucesso}
         </div>
@@ -79,61 +82,92 @@ export function GerenciarAviso() {
         </div>
       ) : (
         <div className="space-y-4">
-          {avisos.map(aviso => (
-            <div key={aviso.idAvisoAula} className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-xs hover:shadow-md transition overflow-hidden">
-              <div className="p-6 space-y-4 relative">
+          {avisos.map(aviso => {
+            const temPermissaoEscrita = podeGerenciarAviso(aviso);
 
-                <div className="absolute top-6 right-6 flex gap-1 z-10">
-                  <button
-                    onClick={() => abrirModalEditar(aviso)}
-                    className="text-gray-400 hover:text-sys-blue hover:bg-gray-50 dark:hover:bg-slate-800 p-1.5 rounded cursor-pointer transition-colors"
-                    title="Editar"
-                  >
-                    <Edit className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => prepararDeletar(aviso)}
-                    className="text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-slate-800 p-1.5 rounded cursor-pointer transition-colors"
-                    title="Excluir"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
+            const nomesTurmas = aviso.turmasVinculadas && aviso.turmasVinculadas.length > 0
+              ? aviso.turmasVinculadas.map(tv => tv.turma?.nome || `Turma ${tv.idTurma}`).join(', ')
+              : 'Sem turma vinculada';
 
-                <div className="flex flex-wrap justify-between items-start gap-2 border-b border-gray-100 dark:border-slate-800 pb-3 pr-20">
-                  <div>
-                    <h4 className="font-bold text-gray-800 dark:text-slate-100 text-lg leading-tight">{aviso.titulo}</h4>
-                    <p className="text-xs text-sys-blue font-semibold mt-1.5 flex items-center gap-1">
-                      Turma {aviso.idTurma}
-                    </p>
-                  </div>
-                  <span className="text-xs text-gray-400 dark:text-slate-400 font-medium">
-                    {formatarData(aviso.dataPostagem)}
-                  </span>
-                </div>
-
-                {aviso.imagemUrl && (
-                  <div
-                    onClick={() => setImagemZoom(aviso.imagemUrl || null)}
-                    className="relative rounded-xl overflow-hidden h-64 sm:h-80 bg-gray-50 dark:bg-slate-800/60 border border-gray-100 dark:border-slate-800 flex items-center justify-center cursor-pointer group"
-                    title="Clique para ver em tamanho cheio"
-                  >
-                    <img
-                      src={aviso.imagemUrl}
-                      alt="Anexo do aviso"
-                      className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-[1.02]"
-                    />
-
-                    <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
-                      <span className="bg-black/50 text-white px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 backdrop-blur-xs">
-                        <ZoomIn className="w-4 h-4" /> Clique para ampliar
+            return (
+              <div key={aviso.idAvisoAula} className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-xs hover:shadow-md transition overflow-hidden">
+                <div className="p-6 space-y-4 relative">
+                  <div className="absolute top-6 right-6 flex items-center gap-1 z-10">
+                    {temPermissaoEscrita ? (
+                      <>
+                        <button
+                          onClick={() => abrirModalEditar(aviso)}
+                          className="text-gray-400 hover:text-sys-blue hover:bg-gray-50 dark:hover:bg-slate-800 p-1.5 rounded cursor-pointer transition-colors"
+                          title="Editar"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => prepararDeletar(aviso)}
+                          className="text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-slate-800 p-1.5 rounded cursor-pointer transition-colors"
+                          title="Excluir"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </>
+                    ) : (
+                      <span 
+                        className="inline-flex items-center gap-1 text-[10px] font-bold uppercase px-2.5 py-1 rounded-full text-gray-800 dark:text-slate-100 text-lg leading-tight"
+                        title="Comunicado oficial da gestão"
+                      >
+                        Gestor
                       </span>
-                    </div>
+                    )}
                   </div>
-                )}
+                  <div className="flex flex-wrap justify-between items-start gap-2 border-b border-gray-100 dark:border-slate-800 pb-3 pr-28">
+                    <div className="space-y-1.5">
+                      <h4 className="font-bold text-gray-800 dark:text-slate-100 text-lg leading-tight">
+                        {aviso.titulo}
+                      </h4>
+
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-xs text-sys-blue font-semibold bg-blue-50 dark:bg-slate-800 px-2.5 py-0.5 rounded-md">
+                          {nomesTurmas}
+                        </span>
+
+                        {aviso.criadoPor && (
+                          <InfoAuditoria
+                            criadoPor={aviso.criadoPor}
+                            atualizadoPor={aviso.atualizadoPor}
+                          />
+                        )}
+                      </div>
+                    </div>
+
+                    <span className="text-xs text-gray-400 dark:text-slate-400 font-medium">
+                      {formatarData(aviso.dataPostagem)}
+                    </span>
+                  </div>
+
+                  {/*Imagem do Aviso*/}
+                  {aviso.imagemUrl && (
+                    <div
+                      onClick={() => setImagemZoom(aviso.imagemUrl || null)}
+                      className="relative rounded-xl overflow-hidden h-64 sm:h-80 bg-gray-50 dark:bg-slate-800/60 border border-gray-100 dark:border-slate-800 flex items-center justify-center cursor-pointer group"
+                      title="Clique para ver em tamanho cheio"
+                    >
+                      <img
+                        src={aviso.imagemUrl}
+                        alt="Anexo do aviso"
+                        className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-[1.02]"
+                      />
+
+                      <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
+                        <span className="bg-black/50 text-white px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 backdrop-blur-xs">
+                          <ZoomIn className="w-4 h-4" /> Clique para ampliar
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -142,32 +176,58 @@ export function GerenciarAviso() {
         <div className="fixed inset-0 bg-black/60 z-250 flex items-center justify-center p-4 backdrop-blur-xs">
           <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl shadow-2xl p-6 border border-gray-100 dark:border-slate-800 animate-modal-enter text-sm max-h-[90vh] overflow-y-auto">
             <h3 className="text-lg font-bold text-gray-800 dark:text-slate-100 mb-4 border-b border-gray-100 dark:border-slate-800 pb-2 flex items-center gap-1.5">
-              <Plus className="w-5 h-5 text-sys-blue" /> Novo Comunicado para a Turma
+              <Plus className="w-5 h-5 text-sys-blue" /> Novo Comunicado
             </h3>
 
-            {erro && (
+            {erroModal && (
               <div className="p-3 mb-4 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-lg border border-red-150 dark:border-red-900 flex items-center gap-2 font-semibold">
-                <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
+                <AlertCircle className="w-4 h-4 shrink-0" /> {erroModal}
               </div>
             )}
 
             <form onSubmit={e => { e.preventDefault(); executarAdicionarAviso(); }} className="space-y-4">
-              <div>
-                <label htmlFor="turma-aviso-add" className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase mb-1">Turma de Destino *</label>
-                <select
-                  id="turma-aviso-add"
-                  value={turmaSelecionada}
-                  onChange={e => setTurmaSelecionada(e.target.value)}
-                  className="w-full p-2.5 border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:border-sys-blue bg-slate-50/50 dark:bg-slate-800 text-gray-800 dark:text-slate-100 cursor-pointer font-medium"
-                  required
-                >
-                  <option value="">Selecione uma turma...</option>
-                  {turmas.map(t => (
-                    <option key={t.idTurma} value={t.idTurma}>
-                      {t.nome || `Turma ${t.idTurma}`}
-                    </option>
-                  ))}
-                </select>
+              <div className="space-y-2">
+                <label className="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">
+                  Turmas de Destino *
+                </label>
+
+                <label className="flex items-center gap-2 cursor-pointer font-semibold text-gray-700 dark:text-slate-200 p-2 rounded-lg bg-blue-50/50 dark:bg-slate-800/70 border border-blue-100 dark:border-slate-700">
+                  <input
+                    type="checkbox"
+                    checked={enviarParaTodas}
+                    onChange={e => setEnviarParaTodas(e.target.checked)}
+                    className="w-4 h-4 rounded text-sys-blue focus:ring-sys-blue cursor-pointer"
+                  />
+                  <span className="text-xs">Enviar para todas as turmas disponíveis</span>
+                </label>
+
+                {!enviarParaTodas && (
+                  <div className="border border-gray-200 dark:border-slate-700 rounded-xl p-3 bg-slate-50 dark:bg-slate-800/40 max-h-36 overflow-y-auto space-y-1.5">
+                    {turmas.length === 0 ? (
+                      <p className="text-xs text-gray-400">Nenhuma turma disponível.</p>
+                    ) : (
+                      turmas.map(t => {
+                        const isSelected = turmaSelecionada.includes(t.idTurma);
+                        return (
+                          <div
+                            key={t.idTurma}
+                            onClick={() => handleAlternarTurma(t.idTurma)}
+                            className="flex items-center gap-2.5 cursor-pointer text-xs p-1.5 hover:bg-gray-100 dark:hover:bg-slate-800 rounded transition-colors"
+                          >
+                            {isSelected ? (
+                              <CheckSquare className="w-4 h-4 text-sys-blue shrink-0" />
+                            ) : (
+                              <Square className="w-4 h-4 text-gray-400 shrink-0" />
+                            )}
+                            <span className="font-medium text-gray-700 dark:text-slate-200">
+                              {t.nome || `Turma ${t.idTurma}`}
+                            </span>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                )}
               </div>
 
               <div>
@@ -191,7 +251,7 @@ export function GerenciarAviso() {
               />
 
               <div className="flex justify-end gap-2 pt-4 border-t border-gray-100 dark:border-slate-800">
-                <button type="button" onClick={() => setIsAddModalOpen(false)} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
+                <button type="button" onClick={fecharModais} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
                 <button type="submit" disabled={salvando} className="px-4 py-2 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl font-bold cursor-pointer disabled:opacity-50">
                   {salvando ? 'Publicando...' : 'Publicar Aviso'}
                 </button>
@@ -209,9 +269,9 @@ export function GerenciarAviso() {
               <Edit className="w-5 h-5 text-sys-blue" /> Editar Comunicado
             </h3>
 
-            {erro && (
+            {erroModal && (
               <div className="p-3 mb-4 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-lg border border-red-150 dark:border-red-900 flex items-center gap-2 font-semibold">
-                <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
+                <AlertCircle className="w-4 h-4 shrink-0" /> {erroModal}
               </div>
             )}
 
@@ -236,7 +296,7 @@ export function GerenciarAviso() {
               />
 
               <div className="flex justify-end gap-2 pt-4 border-t border-gray-100 dark:border-slate-800">
-                <button type="button" onClick={() => setIsEditModalOpen(false)} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
+                <button type="button" onClick={fecharModais} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
                 <button type="submit" disabled={salvando} className="px-4 py-2 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl font-bold cursor-pointer disabled:opacity-50">
                   {salvando ? 'Salvando...' : 'Salvar Alterações'}
                 </button>
@@ -249,10 +309,10 @@ export function GerenciarAviso() {
       {/*Modal Deletar*/}
       <ConfirmModal
         isOpen={isConfirmDeleteOpen}
-        onClose={() => setIsConfirmDeleteOpen(false)}
+        onClose={fecharModais}
         onConfirm={executarDeletarAviso}
         title="Excluir Comunicado"
-        description="Você tem certeza de que deseja apagar este aviso do mural? Os alunos da turma não terão mais acesso a ele."
+        description="Você tem certeza de que deseja apagar este aviso do mural? Os alunos das turmas vinculadas não terão mais acesso a ele."
         type="danger"
         isLoading={salvando}
       />

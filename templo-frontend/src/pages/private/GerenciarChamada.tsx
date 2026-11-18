@@ -1,6 +1,7 @@
 import { Users, Check, Info, AlertCircle, CheckSquare, Square, Trash2 } from "lucide-react";
 import { UseGerenciarChamada } from "../../hooks/UseGerenciarChamada";
 import { ConfirmModal } from "../../components/ConfirmModal";
+import { InfoAuditoria } from "../../components/InfoAuditoria";
 
 export function GerenciarChamada() {
   const {
@@ -87,7 +88,7 @@ export function GerenciarChamada() {
 
       {/*Lista de Alunos*/}
       {turmaSelecionada && (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800">
 
           <div className="p-4 bg-gray-50/50 dark:bg-slate-800/60 border-b border-gray-100 dark:border-slate-800 flex flex-wrap justify-between items-center gap-4">
             <h4 className="font-bold text-gray-700 dark:text-slate-100">Lista de Alunos</h4>
@@ -132,42 +133,53 @@ export function GerenciarChamada() {
             </div>
           ) : (
             <>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="border-b border-gray-100 dark:border-slate-800 text-xs text-gray-600 dark:text-slate-300 uppercase bg-gray-50/20 dark:bg-slate-800/40">
-                      <th className="p-4 font-semibold text-center w-20">Presença</th>
-                      <th className="p-4 font-semibold">Nome do Aluno</th>
-                    </tr>
-                  </thead>
-                  <tbody className="text-sm divide-y divide-gray-100 dark:divide-slate-800">
-                    {alunos.map((aluno) => (
-                      <tr
-                        key={aluno.idUsuario}
-                        onClick={() => handleAlternarPresenca(aluno.idUsuario)}
-                        className="hover:bg-gray-50/30 dark:hover:bg-slate-800/40 transition-colors cursor-pointer"
-                      >
-                        <td className="p-4 text-center">
-                          <div className="flex justify-center">
-                            {aluno.presente ? (
-                              <CheckSquare className="w-6 h-6 text-green-600 dark:text-green-400 shrink-0" />
-                            ) : (
-                              <Square className="w-6 h-6 text-red-400 shrink-0" />
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-gray-100 dark:border-slate-800 text-xs text-gray-600 dark:text-slate-300 uppercase bg-gray-50/20 dark:bg-slate-800/40">
+                    <th className="p-4 font-semibold text-center w-20">Presença</th>
+                    <th className="p-4 font-semibold">Nome do Aluno</th>
+                  </tr>
+                </thead>
+                <tbody className="text-sm divide-y divide-gray-100 dark:divide-slate-800">
+                  {alunos.map((aluno) => (
+                    <tr
+                      key={aluno.idUsuario}
+                      onClick={() => handleAlternarPresenca(aluno.idUsuario)}
+                      className="hover:bg-gray-50/30 dark:hover:bg-slate-800/40 transition-colors cursor-pointer"
+                    >
+                      <td className="p-4 text-center">
+                        <div className="flex justify-center">
+                          {aluno.presente ? (
+                            <CheckSquare className="w-6 h-6 text-green-600 dark:text-green-400 shrink-0" />
+                          ) : (
+                            <Square className="w-6 h-6 text-red-400 shrink-0" />
+                          )}
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex flex-col">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="font-semibold text-gray-800 dark:text-slate-100 block">{aluno.nome}</span>
+
+                            {aluno.idFrequencia && aluno.criadoPor && (
+                              <div onClick={e => e.stopPropagation()}>
+                                <InfoAuditoria
+                                  criadoPor={aluno.criadoPor}
+                                  atualizadoPor={aluno.atualizadoPor}
+                                />
+                              </div>
                             )}
+
+                            <span className="text-xs text-gray-400 dark:text-slate-400 font-medium mt-1 block">
+                              {aluno.idFrequencia && <span className="ml-2 text-green-600 dark:text-green-400 font-bold bg-green-50 dark:bg-green-950/60 px-2 py-0.5 rounded text-[10px] uppercase border border-green-200 dark:border-green-800">Registrado</span>}
+                            </span>
                           </div>
-                        </td>
-                        <td className="p-4">
-                          <span className="font-semibold text-gray-800 dark:text-slate-100 block">{aluno.nome}</span>
-                          <span className="text-xs text-gray-400 dark:text-slate-400 font-medium mt-1 block">
-                            ID do Estudante: {aluno.idUsuario}
-                            {aluno.idFrequencia && <span className="ml-2 text-green-600 dark:text-green-400 font-bold bg-green-50 dark:bg-green-950/60 px-2 py-0.5 rounded text-[10px] uppercase border border-green-200 dark:border-green-800">Salvo no Banco</span>}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
 
               <div className="p-4 bg-gray-50/50 dark:bg-slate-800/60 border-t border-gray-100 dark:border-slate-800 flex justify-between items-center flex-wrap gap-4">
                 {temChamadaSalvaNoDia ? (

@@ -2,6 +2,7 @@ import { UseGerenciarProfessores } from "../../hooks/UseGerenciarProfessores";
 import { padraoTelefone } from "../../utils/telefone";
 import { ConfirmModal } from "../../components/ConfirmModal";
 import { UserCheck, UserPlus, Search, Edit, Trash2, Power, Info, AlertCircle, Check } from "lucide-react";
+import { Fragment } from "react";
 
 export function GerenciarProfessores() {
   const {
@@ -23,11 +24,10 @@ export function GerenciarProfessores() {
     loading,
     salvando,
     erro,
+    erroModal,
     sucesso,
     isAddModalOpen,
-    setIsAddModalOpen,
     isEditModalOpen,
-    setIsEditModalOpen,
     professorSelecionado,
     isConfirmAddOpen,
     setIsConfirmAddOpen,
@@ -36,9 +36,9 @@ export function GerenciarProfessores() {
     isConfirmStatusOpen,
     setIsConfirmStatusOpen,
     isConfirmDeleteOpen,
-    setIsConfirmDeleteOpen,
     abrirModalCadastrar,
     abrirModalEditar,
+    fecharModais,
     prepararDeletar,
     prepararCadastrar,
     prepararEditar,
@@ -76,12 +76,12 @@ export function GerenciarProfessores() {
       </div>
 
       {/*Alertas*/}
-      {erro && !isAddModalOpen && !isEditModalOpen && (
+      {erro && (
         <div className="p-4 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-xl border border-red-150 dark:border-red-900 flex items-center gap-2 font-semibold">
           <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
         </div>
       )}
-      {sucesso && !isAddModalOpen && !isEditModalOpen && (
+      {sucesso && (
         <div className="p-4 bg-green-50 dark:bg-green-950/40 text-green-700 dark:text-green-300 rounded-xl border border-green-150 dark:border-green-900 flex items-center gap-2 font-semibold">
           <Check className="w-4 h-4 shrink-0" /> {sucesso}
         </div>
@@ -139,7 +139,7 @@ export function GerenciarProfessores() {
                 {professoresFiltrados.map(prof => {
                   const isExpanded = profExpandidoId === prof.idUsuario;
                   return (
-                    <>
+                    <Fragment key={prof.idUsuario}>
                       <tr 
                         key={prof.idUsuario} 
                         onClick={() => setProfExpandidoId(isExpanded ? null : prof.idUsuario)}
@@ -205,7 +205,7 @@ export function GerenciarProfessores() {
                           </td>
                         </tr>
                       )}
-                    </>
+                    </Fragment>
                   );
                 })}
               </tbody>
@@ -222,9 +222,9 @@ export function GerenciarProfessores() {
               <UserPlus className="w-5 h-5 text-sys-blue" /> Cadastrar Novo Professor
             </h3>
 
-            {erro && (
+            {erroModal && (
               <div className="p-3 mb-4 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-lg border border-red-150 dark:border-red-900 flex items-center gap-2 font-semibold">
-                <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
+                <AlertCircle className="w-4 h-4 shrink-0" /> {erroModal}
               </div>
             )}
 
@@ -285,7 +285,7 @@ export function GerenciarProfessores() {
               </div>
 
               <div className="flex justify-end gap-2 pt-4 border-t border-gray-100 dark:border-slate-800">
-                <button type="button" onClick={() => setIsAddModalOpen(false)} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
+                <button type="button" onClick={fecharModais} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
                 <button type="submit" className="px-4 py-2 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl font-bold cursor-pointer">Prosseguir</button>
               </div>
             </form>
@@ -301,9 +301,9 @@ export function GerenciarProfessores() {
               <Edit className="w-5 h-5 text-sys-blue" /> Editar Cadastro de {professorSelecionado?.nome}
             </h3>
 
-            {erro && (
+            {erroModal && (
               <div className="p-3 mb-4 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-lg border border-red-150 dark:border-red-900 flex items-center gap-2 font-semibold">
-                <AlertCircle className="w-4 h-4 shrink-0" /> {erro}
+                <AlertCircle className="w-4 h-4 shrink-0" /> {erroModal}
               </div>
             )}
 
@@ -346,7 +346,7 @@ export function GerenciarProfessores() {
               </div>
 
               <div className="flex justify-end gap-2 pt-4 border-t border-gray-100 dark:border-slate-800">
-                <button type="button" onClick={() => setIsEditModalOpen(false)} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
+                <button type="button" onClick={fecharModais} className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer">Cancelar</button>
                 <button type="submit" className="px-4 py-2 bg-sys-blue hover:bg-sys-blue-hover text-white rounded-xl font-bold cursor-pointer">Prosseguir</button>
               </div>
             </form>
@@ -385,7 +385,7 @@ export function GerenciarProfessores() {
       />
       <ConfirmModal 
         isOpen={isConfirmDeleteOpen}
-        onClose={() => setIsConfirmDeleteOpen(false)}
+        onClose={fecharModais}
         onConfirm={executarDeletarProfessor}
         title="Excluir Permanente"
         description={`Atenção: Tem certeza de que deseja excluir permanentemente o cadastro de ${professorSelecionado?.nome}? Esta ação é irreversível.`}

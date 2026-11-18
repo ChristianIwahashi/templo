@@ -5,34 +5,55 @@ import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
 export class AvisoAulaService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(data: CreateAvisoAulaDto, usuarioLogado?: any) {
-    if (usuarioLogado && usuarioLogado.papel === 'PROFESSOR' && data.idProfessor !== usuarioLogado.idUsuario) {
-      throw new ForbiddenException('Você só pode postar avisos no seu próprio nome.');
+    if (!data.idsTurmas || data.idsTurmas.length === 0) {
+      throw new BadRequestException('Selecione ao menos uma turma de destino.');
     }
 
-    const professorExists = await this.prisma.professor.findUnique({
-      where: { idUsuario: data.idProfessor }
-    });
-    if (!professorExists) throw new NotFoundException('Professor não encontrado.');
+    const idsTurmasUnicos = Array.from(new Set(data.idsTurmas));
+    let professorIdFinal: number | null = null;
 
-    const turmaExists = await this.prisma.turma.findUnique({
-      where: { idTurma: data.idTurma }
-    });
-    if (!turmaExists) throw new NotFoundException('Turma não encontrada.');
+    if (usuarioLogado?.papel === 'PROFESSOR') {
+      const turmasEncontradas = await this.prisma.turma.findMany({
+        where: {
+          idTurma: { in: idsTurmasUnicos },
+          idProfessor: usuarioLogado.idUsuario,
+        },
+      });
 
-    if (turmaExists.idProfessor !== data.idProfessor) {
-      throw new BadRequestException('Acesso negado: Você não é o professor responsável por esta turma.');
+      if (turmasEncontradas.length !== data.idsTurmas.length) {
+        throw new ForbiddenException(
+          'Acesso negado: Você só pode enviar avisos para turmas sob sua responsabilidade.',
+        );
+      }
+      if (data.idProfessor && data.idProfessor !== usuarioLogado.idUsuario) {
+        throw new ForbiddenException('Você só pode postar avisos no seu próprio nome.');
+      }
+      professorIdFinal = usuarioLogado.idUsuario;
+    } else if (data.idProfessor) {
+      const professorExists = await this.prisma.professor.findUnique({
+        where: { idUsuario: data.idProfessor }
+      });
+      if (!professorExists) throw new NotFoundException('Professor não encontrado.');
+      professorIdFinal = data.idProfessor;
     }
 
     return await this.prisma.avisoAula.create({
       data: {
         titulo: data.titulo,
         imagemUrl: data.imagemUrl,
-        idProfessor: data.idProfessor,
-        idTurma: data.idTurma,
+        idProfessor: professorIdFinal,
+        turmasVinculadas: {
+          create: data.idsTurmas.map(id => ({ idTurma: id }))
+        },
         criadoPorId: usuarioLogado?.idUsuario || null,
+      },
+      include: {
+        professor: { include: { usuario: { select: { nome: true } } } },
+        criadoPor: { select: { idUsuario: true, nome: true, papel: true } },
+        turmasVinculadas: { include: { turma: true } }
       }
     });
   }
@@ -42,7 +63,18 @@ export class AvisoAulaService {
 
     if (usuarioLogado) {
       if (usuarioLogado.papel === 'PROFESSOR') {
-        filtro = { idProfessor: usuarioLogado.idUsuario };
+        filtro = {
+          OR: [
+            { idProfessor: usuarioLogado.idUsuario },
+            {
+              turmasVinculadas: {
+                some: {
+                  turma: { idProfessor: usuarioLogado.idUsuario },
+                },
+              },
+            },
+          ],
+        };
       } else if (usuarioLogado.papel === 'ALUNO') {
         const aluno = await this.prisma.aluno.findUnique({ where: { idUsuario: usuarioLogado.idUsuario } });
 
@@ -50,7 +82,11 @@ export class AvisoAulaService {
           return [];
         }
 
-        filtro = { idTurma: aluno.idTurma};
+        filtro = {
+          turmasVinculadas: {
+            some: { idTurma: aluno.idTurma }
+          }
+        };
       }
     }
 
@@ -60,7 +96,7 @@ export class AvisoAulaService {
         professor: { include: { usuario: { select: { nome: true } } } },
         criadoPor: { select: { idUsuario: true, nome: true, papel: true } },
         atualizadoPor: { select: { idUsuario: true, nome: true, papel: true } },
-        turma: true
+        turmasVinculadas: { include: { turma: true } }
       },
       orderBy: { dataPostagem: 'desc' }
     });
@@ -73,26 +109,30 @@ export class AvisoAulaService {
         professor: { include: { usuario: { select: { nome: true } } } },
         criadoPor: { select: { idUsuario: true, nome: true, papel: true } },
         atualizadoPor: { select: { idUsuario: true, nome: true, papel: true } },
-        turma: true
+        turmasVinculadas: { include: { turma: true } }
       }
     });
 
-    if(!aviso) throw new NotFoundException('Aviso não encontrado.');
+    if (!aviso) throw new NotFoundException('Aviso não encontrado.');
 
     if (usuarioLogado) {
-      if (usuarioLogado.papel === 'PROFESSOR' && aviso.idProfessor !== usuarioLogado.idUsuario) {
-        throw new ForbiddenException('Acesso negado: Este aviso foi postado por outro professor.');
+      if (usuarioLogado.papel === 'PROFESSOR') {
+        const DonoDoAviso = aviso.idProfessor === usuarioLogado.idUsuario;
+        const ProfessorAlgumaTurma = aviso.turmasVinculadas.some(
+          (t) => t.turma.idProfessor === usuarioLogado.idUsuario,
+        );
+
+        if (!DonoDoAviso && !ProfessorAlgumaTurma) {
+          throw new ForbiddenException('Acesso negado: Este aviso pertence a outra turma.');
+        }
       }
 
       if (usuarioLogado.papel === 'ALUNO') {
         const aluno = await this.prisma.aluno.findUnique({ where: { idUsuario: usuarioLogado.idUsuario } });
 
-        if (usuarioLogado.papel === 'ALUNO') {
-          const aluno = await this.prisma.aluno.findUnique({ where: { idUsuario: usuarioLogado.idUsuario } });
-
-          if (aviso.idTurma !== aluno?.idTurma) {
-            throw new ForbiddenException('Acesso negado: Este aviso pertence a outra turma.');
-          }
+        const pertenceATurma = aviso.turmasVinculadas.some(t => t.idTurma === aluno?.idTurma);
+        if (!pertenceATurma) {
+          throw new ForbiddenException('Acesso negado: Este aviso pertence a outra turma.');
         }
       }
     }
@@ -102,8 +142,11 @@ export class AvisoAulaService {
 
   async update(idAvisoAula: number,
     data: UpdateAvisoAulaDto, usuarioLogado?: any) {
-    await this.getById(idAvisoAula, usuarioLogado);
-      
+    const aviso = await this.getById(idAvisoAula, usuarioLogado);
+    if (usuarioLogado?.papel === 'PROFESSOR' && aviso.idProfessor !== usuarioLogado.idUsuario) {
+      throw new ForbiddenException('Você não tem permissão para editar comunicados da coordenação.');
+    }
+
     return await this.prisma.avisoAula.update({
       where: { idAvisoAula },
       data: {
@@ -115,7 +158,11 @@ export class AvisoAulaService {
   }
 
   async delete(idAvisoAula: number, usuarioLogado?: any) {
-    await this.getById(idAvisoAula, usuarioLogado);
+    const aviso = await this.getById(idAvisoAula, usuarioLogado);
+
+    if (usuarioLogado?.papel === 'PROFESSOR' && aviso.idProfessor !== usuarioLogado.idUsuario) {
+      throw new ForbiddenException('Você não tem permissão para excluir comunicados da coordenação.');
+    }
     return await this.prisma.avisoAula.delete({ where: { idAvisoAula } });
   }
 }

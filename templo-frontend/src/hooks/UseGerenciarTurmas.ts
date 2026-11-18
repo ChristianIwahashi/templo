@@ -47,6 +47,7 @@ export function UseGerenciarTurmas() {
   const [loading, setLoading] = useState(true);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState('');
+  const [erroModal, setErroModal] = useState('');
   const [sucesso, setSucesso] = useState('');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -76,7 +77,7 @@ export function UseGerenciarTurmas() {
             ativo: p.ativo
           }));
 
-          const listaAlunos = usuariosRes.data
+        const listaAlunos = usuariosRes.data
           .filter((u: any) => u.papel === 'ALUNO' && u.ativo)
           .map((a: any) => ({
             idUsuario: a.idUsuario,
@@ -123,7 +124,7 @@ export function UseGerenciarTurmas() {
   function abrirModalCriar() {
     setIdProfessorSelecionado('');
     setNomeTurma('');
-    setErro('');
+    setErroModal('');
     setSucesso('');
     setIsAddModalOpen(true);
   }
@@ -131,7 +132,7 @@ export function UseGerenciarTurmas() {
     setTurmaSelecionada(turma);
     setIdProfessorSelecionado(turma.idProfessor.toString());
     setNomeTurma(turma.nome);
-    setErro('');
+    setErroModal('');
     setSucesso('');
     setIsEditModalOpen(true);
   }
@@ -148,25 +149,36 @@ export function UseGerenciarTurmas() {
     setSucesso('');
     setIsConfirmDeleteOpen(true);
   }
+  function fecharModais() {
+    setIsAddModalOpen(false);
+    setIsEditModalOpen(false);
+    setIsConfirmDeleteOpen(false);
+    setIsMatricularModalOpen(false);
+    setIsConfirmMatricularOpen(false);
+    setErroModal('');
+  }
   function prepararCriar() {
     if (!idProfessorSelecionado) {
-      setErro('Selecione um professor responsável para a turma.');
+      setErroModal('Selecione um professor responsável para a turma.');
       return;
     }
+    setErroModal('');
     setIsConfirmAddOpen(true);
   }
   function prepararEditar() {
     if (!idProfessorSelecionado) {
-      setErro('Selecione um professor responsável.');
+      setErroModal('Selecione um professor responsável.');
       return;
     }
+    setErroModal('');
     setIsConfirmEditOpen(true);
   }
   function prepararMatricular() {
     if (!idAlunoSelecionado) {
-      setErro('Selecione um aluno para vincular a esta turma.');
+      setErroModal('Selecione um aluno para vincular a esta turma.');
       return;
     }
+    setErroModal('');
     setIsConfirmMatricularOpen(true);
   }
 
@@ -174,7 +186,7 @@ export function UseGerenciarTurmas() {
   async function executarCriarTurma() {
     setIsConfirmAddOpen(false);
     setSalvando(true);
-    setErro('');
+    setErroModal('');
 
     try {
       await Api.post('/turma', {
@@ -187,9 +199,9 @@ export function UseGerenciarTurmas() {
       setIsAddModalOpen(false);
     } catch (error) {
       if (error instanceof AxiosError) {
-        setErro(error.response?.data?.message || 'Erro ao criar turma.');
+        setErroModal(error.response?.data?.message || 'Erro ao criar turma.');
       } else {
-        setErro('Erro inesperado.');
+        setErroModal('Erro inesperado.');
       }
     } finally {
       setSalvando(false);
@@ -201,7 +213,7 @@ export function UseGerenciarTurmas() {
     if (!turmaSelecionada) return;
     setIsConfirmEditOpen(false);
     setSalvando(true);
-    setErro('');
+    setErroModal('');
 
     try {
       await Api.put(`/turma/${turmaSelecionada.idTurma}`, {
@@ -214,9 +226,9 @@ export function UseGerenciarTurmas() {
       setIsEditModalOpen(false);
     } catch (error) {
       if (error instanceof AxiosError) {
-        setErro(error.response?.data?.message || 'Erro ao atualizar turma.');
+        setErroModal(error.response?.data?.message || 'Erro ao atualizar turma.');
       } else {
-        setErro('Erro inesperado.');
+        setErroModal('Erro inesperado.');
       }
     } finally {
       setSalvando(false);
@@ -228,7 +240,7 @@ export function UseGerenciarTurmas() {
     if (!turmaSelecionada || !idAlunoSelecionado) return;
     setIsConfirmMatricularOpen(false);
     setSalvando(true);
-    setErro('');
+    setErroModal('');
 
     try {
       await Api.post(`/turma/${turmaSelecionada.idTurma}/matricular`, {
@@ -240,9 +252,9 @@ export function UseGerenciarTurmas() {
       setIsMatricularModalOpen(false);
     } catch (error) {
       if (error instanceof AxiosError) {
-        setErro(error.response?.data?.message || 'Erro ao vincular aluno.');
+        setErroModal(error.response?.data?.message || 'Erro ao vincular aluno.');
       } else {
-        setErro('Erro inesperado ao vincular aluno.');
+        setErroModal('Erro inesperado ao vincular aluno.');
       }
     } finally {
       setSalvando(false);
@@ -276,10 +288,16 @@ export function UseGerenciarTurmas() {
     a => a.idUsuario.toString() === idAlunoSelecionado
   );
 
-  const turmasFiltradas = turmas.filter(t => 
-    t.idTurma.toString().includes(pesquisa) ||
-    t.professor?.usuario?.nome.toLowerCase().includes(pesquisa.toLowerCase())
-  );
+  const turmasFiltradas = turmas.filter(t => {
+    const termo = pesquisa.toLowerCase();
+
+    const bateId = t.idTurma.toString().includes(termo);
+    const bateNomeTurma = t.nome ? t.nome.toLowerCase().includes(termo) : false;
+    const bateProfessor = t.professor?.usuario?.nome ? t.professor.usuario.nome.toLowerCase().includes(termo) : false;
+    const bateAluno = t.alunos?.some(a => a.usuario.nome.toLowerCase().includes(termo)) || false;
+
+    return bateId || bateNomeTurma || bateProfessor || bateAluno;
+  });
 
   return {
     turmasFiltradas,
@@ -297,6 +315,7 @@ export function UseGerenciarTurmas() {
     loading,
     salvando,
     erro,
+    erroModal,
     sucesso,
     isAddModalOpen,
     setIsAddModalOpen,
@@ -310,6 +329,7 @@ export function UseGerenciarTurmas() {
     setIsConfirmEditOpen,
     isConfirmDeleteOpen,
     setIsConfirmDeleteOpen,
+    fecharModais,
     isConfirmMatricularOpen,
     setIsConfirmMatricularOpen,
     turmaSelecionada,

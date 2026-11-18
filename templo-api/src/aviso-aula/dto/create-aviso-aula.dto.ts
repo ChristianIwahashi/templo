@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsInt, IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator";
+import { IsArray, IsInt, IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator";
 
 export class CreateAvisoAulaDto {
     @IsString()
@@ -12,12 +12,12 @@ export class CreateAvisoAulaDto {
     imagemUrl?: string;
 
     @IsInt()
-    @IsNotEmpty()
+    @IsOptional()
     @Type(() => Number)
-    idProfessor!: number;
+    idProfessor?: number;
 
-    @IsInt()
-    @IsNotEmpty()
+    @IsArray({ message: 'As turmas de destino devem ser informadas como lista.' })
+    @IsInt({ each: true, message: 'Cada ID de turma deve ser um número inteiro.' })
     @Type(() => Number)
-    idTurma!: number;
+    idsTurmas!: number[];
 }

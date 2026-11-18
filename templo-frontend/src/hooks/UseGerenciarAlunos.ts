@@ -24,36 +24,25 @@ export interface AlunoCompleto {
 
 export function UseGerenciarAlunos() {
   const { user } = UseAuth();
-
-  // Estados de dados
   const [alunos, setAlunos] = useState<AlunoCompleto[]>([]);
   const [turmas, setTurmas] = useState<Turma[]>([]);
-
-  // Estados do formulário (Matrícula / Edição)
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [telefone, setTelefone] = useState('');
   const [dataNascimento, setDataNascimento] = useState('');
   const [turmaSelecionada, setTurmaSelecionada] = useState('');
-
-  // Estados de busca
   const [pesquisa, setPesquisa] = useState('');
   const [ocultarInativos, setOcultarInativos] = useState(false);
   const [profExpandidoId, setProfExpandidoId] = useState<number | null>(null);
-
-  // Estados de controle de UI
   const [loading, setLoading] = useState(true);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState('');
+  const [erroModal, setErroModal] = useState('');
   const [sucesso, setSucesso] = useState('');
-
-  // Modais de formulário
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [alunoSelecionado, setAlunoSelecionado] = useState<AlunoCompleto | null>(null);
-
-  // Modais de Confirmação (ConfirmModal)
   const [isConfirmAddOpen, setIsConfirmAddOpen] = useState(false);
   const [isConfirmEditOpen, setIsConfirmEditOpen] = useState(false);
   const [isConfirmStatusOpen, setIsConfirmStatusOpen] = useState(false);
@@ -101,7 +90,7 @@ export function UseGerenciarAlunos() {
     setTelefone('');
     setDataNascimento('');
     setTurmaSelecionada('');
-    setErro('');
+    setErroModal('');
     setSucesso('');
     setIsAddModalOpen(true);
   }
@@ -113,7 +102,7 @@ export function UseGerenciarAlunos() {
     setTelefone(padraoTelefone(aluno.telefone || ''));
     setTurmaSelecionada(aluno.aluno?.idTurma ? aluno.aluno.idTurma.toString() : '');
     setDataNascimento(aluno.aluno?.dataNascimento ? new Date(aluno.aluno.dataNascimento).toISOString().split('T')[0] : '');
-    setErro('');
+    setErroModal('');
     setSucesso('');
     setIsEditModalOpen(true);
   }
@@ -125,19 +114,31 @@ export function UseGerenciarAlunos() {
     setIsConfirmDeleteOpen(true);
   }
 
+  function fecharModais() {
+    setIsAddModalOpen(false);
+    setIsEditModalOpen(false);
+    setIsConfirmAddOpen(false);
+    setIsConfirmEditOpen(false);
+    setIsConfirmStatusOpen(false);
+    setIsConfirmDeleteOpen(false);
+    setErroModal('');
+  }
+
   function prepararCadastrar() {
     if (!nome.trim() || !email.trim() || !senha.trim() || !telefone.trim() || !dataNascimento.trim()) {
-      setErro('Preencha todos os campos obrigatórios.');
+      setErroModal('Preencha todos os campos obrigatórios.');
       return;
     }
+    setErroModal('');
     setIsConfirmAddOpen(true);
   }
 
   function prepararEditar() {
     if (!nome.trim() || !email.trim() || !telefone.trim()) {
-      setErro('Preencha todos os campos obrigatórios.');
+      setErroModal('Preencha todos os campos obrigatórios.');
       return;
     }
+    setErroModal('');
     setIsConfirmEditOpen(true);
   }
 
@@ -151,7 +152,7 @@ export function UseGerenciarAlunos() {
     if (!user) return;
     setIsConfirmAddOpen(false);
     setSalvando(true);
-    setErro('');
+    setErroModal('');
 
     try {
       await Api.post('/usuario', {
@@ -166,14 +167,14 @@ export function UseGerenciarAlunos() {
         idTurma: turmaSelecionada ? Number(turmaSelecionada) : undefined
       });
 
-      setSucesso('Aluno matriculado com sucesso!');
+      showToastSuccess('Aluno matriculado com sucesso!');
       await atualizarListaAlunos();
       setIsAddModalOpen(false);
     } catch (error) {
       if (error instanceof AxiosError) {
-        setErro(error.response?.data?.message || 'Erro ao realizar matrícula.');
+        setErroModal(error.response?.data?.message || 'Erro ao realizar matrícula.');
       } else {
-        setErro('Erro inesperado.');
+        setErroModal('Erro inesperado.');
       }
     } finally {
       setSalvando(false);
@@ -185,7 +186,7 @@ export function UseGerenciarAlunos() {
     if (!alunoSelecionado) return;
     setIsConfirmEditOpen(false);
     setSalvando(true);
-    setErro('');
+    setErroModal('');
 
     try {
       await Api.put(`/usuario/${alunoSelecionado.idUsuario}`, {
@@ -193,18 +194,17 @@ export function UseGerenciarAlunos() {
         email,
         telefone,
         ativo: alunoSelecionado.ativo,
-        // 📍 Envia o idTurma atualizado (ou null se desvincular)
         idTurma: turmaSelecionada ? Number(turmaSelecionada) : null
       });
 
-      setSucesso('Cadastro do aluno atualizado com sucesso!');
+      showToastSuccess('Cadastro do aluno atualizado com sucesso!');
       await atualizarListaAlunos();
       setIsEditModalOpen(false);
     } catch (error) {
       if (error instanceof AxiosError) {
-        setErro(error.response?.data?.message || 'Erro ao atualizar.');
+        setErroModal(error.response?.data?.message || 'Erro ao atualizar.');
       } else {
-        setErro('Erro inesperado.');
+        setErroModal('Erro inesperado.');
       }
     } finally {
       setSalvando(false);
@@ -245,7 +245,7 @@ export function UseGerenciarAlunos() {
 
     try {
       await Api.delete(`/usuario/${alunoSelecionado.idUsuario}`);
-      setSucesso('Matrícula excluída permanentemente!');
+      showToastSuccess('Matrícula excluída permanentemente!');
       await atualizarListaAlunos();
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -295,6 +295,7 @@ export function UseGerenciarAlunos() {
     loading,
     salvando,
     erro,
+    erroModal,
     sucesso,
     isAddModalOpen,
     setIsAddModalOpen,
@@ -308,6 +309,7 @@ export function UseGerenciarAlunos() {
     setIsConfirmStatusOpen,
     isConfirmDeleteOpen,
     setIsConfirmDeleteOpen,
+    fecharModais,
     alunoSelecionado,
     abrirModalMatricular,
     abrirModalEditar,

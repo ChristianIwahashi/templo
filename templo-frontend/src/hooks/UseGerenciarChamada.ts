@@ -22,6 +22,8 @@ export interface AlunoChamada {
     nome: string;
     presente: boolean;
     idFrequencia: number | null;
+    criadoPor?: AutorAuditoria | null;
+    atualizadoPor?: AutorAuditoria | null;
 }
 
 export function UseGerenciarChamada() {
@@ -87,7 +89,9 @@ export function UseGerenciarChamada() {
                             idUsuario: aluno.idUsuario,
                             nome: aluno.usuario.nome,
                             presente: chamadaExistente ? chamadaExistente.presenca : true,
-                            idFrequencia: chamadaExistente ? chamadaExistente.idFrequencia : null
+                            idFrequencia: chamadaExistente ? chamadaExistente.idFrequencia : null,
+                            criadoPor: chamadaExistente ? chamadaExistente.criadoPor : null,
+                            atualizadoPor: chamadaExistente ? chamadaExistente.atualizadoPor : null
                         };
                     });
 
@@ -174,8 +178,10 @@ export function UseGerenciarChamada() {
                 });
                 return {
                     ...aluno,
-                    idFrequencia: correspondente ? correspondente.idFrequencia : null
-                }
+                    idFrequencia: correspondente ? correspondente.idFrequencia : null,
+                    criadoPor: correspondente ? correspondente.criadoPor : null,
+                    atualizadoPor: correspondente ? correspondente.atualizadoPor : null
+                };
             }));
         } catch (error) {
             if (error instanceof AxiosError) {
@@ -205,7 +211,9 @@ export function UseGerenciarChamada() {
             setAlunos(prev => prev.map(aluno => ({
                 ...aluno,
                 presente: true,
-                idFrequencia: null
+                idFrequencia: null,
+                criadoPor: null,
+                atualizadoPor: null
             })));
 
         } catch (error) {
