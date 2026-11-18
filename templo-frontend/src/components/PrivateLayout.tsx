@@ -174,7 +174,7 @@ export function PrivateLayout() {
             <main className="grow flex flex-col h-full overflow-hidden">
                 <header className="bg-white dark:bg-slate-900 shadow-sm border-b border-gray-100 dark:border-slate-800 h-18 px-4 lg:px-6 flex justify-between items-center z-10 shrink-0 transition-colors">
                     <div>
-                        <h2 className="text-xl font-bold text-gray-800 dark:text-slate-100">Asoka Gakkou</h2>
+                        <h2 className="text-xl font-bold text-gray-800 dark:text-slate-100">Asoka Nichiyougakkou</h2>
                         <p className="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">Bem-vindo(a) ao sistema do Honpa Hongwanji</p>
                     </div>
 

@@ -4,7 +4,7 @@
   <img src="./templo-frontend/public/Hongwanji-blue.png" alt="Hongwanji logo" title="Hongwanji logo" width="150">
 </h1>
 
-> Plataforma Full-Stack que integra o **Portal Institucional Público** com um **Sistema de Gestão Educacional** para o templo Hongwanji de Lins e aulas de Nichigo Gakkou.
+> Plataforma Full-Stack que integra o **Portal Institucional Público** com um **Sistema de Gestão Educacional** para o Templo Hongwanji de Lins e aulas de Nichiyougakkou.
 
 ![Status do Projeto](https://img.shields.io/badge/Status-Em%20Produção-success?style=for-the-badge)
 ![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)
@@ -38,7 +38,7 @@ A aplicação resolve o desafio de unir em um único ecossistema:
 - **História & Institucional:** Apresentação da fundação de 1954, pioneiros e linhagem do Shin Budismo.
 - **Agenda de Eventos:** Mural dinâmico de celebrações (Hanamatsuri, Festival do Yakisoba, Iminsai).
 - **Galeria de Fotos:** Acervo fotográfico interativo.
-- **Aulas de Japonês:** Informações do Nichigo Gakkou como horários, mensalidade e canal de contato da secretaria.
+- **Aulas de Japonês:** Informações do Nichiyougakkou como horários, mensalidade e canal de contato da secretaria.
 - **Dark Mode:** Alternância nativa de temas claro/escuro com persistência local.
 
 <img src="./assets/Imagem1.png" alt="Site Institucional" title="Site Institucional">
